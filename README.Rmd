@@ -1,0 +1,83 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include=FALSE}
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+
+
+# jtdm - Joint trait distribution modeling
+
+## About the method
+
+The method is described in Poggiato et al., in prep. Joint models and predictions of community traits. The code for producing the results in this paper is available under the subfolder publications in this repo.
+
+The method itself is implemented in this repo.
+
+## Installing the R package
+
+### R-package
+
+Install the package via
+```{r,eval=FALSE}
+install_github("giopogg/jtdm")
+```
+
+The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of both JAGS and runjags. 
+
+Once the dependencies are installed, the following code should run:
+
+Fits a JTDM
+```{r}
+library(jtdm)
+library(ggplot2)
+set.seed(1712)
+data(Y)
+data(X)
+# Short MCMC to obtain a fast example: results are unreliable !
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100)
+
+# Inferred parameters
+getB(m)$Bmean
+get_sigma(m)$Smean
+```
+Trait-environment relationships
+```{r, fig.height=5, fig.width=5}
+partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
+```
+
+Partial response curve of the most suitable community-level strategy and envelop of possible community-level strategies of SLA and LNC along the GDD gradient
+```{r, fig.height=5, fig.width=5}
+ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
+```
+
+Computes joint probabilities of both SLA and LNC to be greater than 10 in the sites of the study.
+```{r}
+joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"), bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+
+```
+
+And this joint probability along the GDD gradient
+```{r}
+joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+
+table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
+                                   q02 = joint$GradProbsq025,
+                                   q97 = joint$GradProbsq975)
+
+ ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
+
+
+
+```
