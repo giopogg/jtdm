@@ -74,37 +74,19 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 getB(m)$Bmean
 ```
 
-    ##        (Intercept)          GDD       FDD    forest
-    ## SLA       12.79411 0.0067378932 0.4905653 13.597159
-    ## LNC       22.12768 0.0003882103 0.1524716  3.896916
-    ## Height    10.72094 0.0193361073 0.2240482  2.303663
+    ##        (Intercept)         GDD       FDD    forest
+    ## SLA       10.50979 0.008854437 0.4896142 11.769861
+    ## LNC       21.39144 0.001005003 0.1472568  3.366346
+    ## Height    12.13099 0.016846515 0.1165499  4.043582
 
 ``` r
 get_sigma(m)$Smean
 ```
 
-    ##              SLA       LNC     Height
-    ## SLA     76.66133 17.781450 -13.483373
-    ## LNC     17.78145  9.375974   1.002433
-    ## Height -13.48337  1.002433  94.371301
-
-Trait-environment relationships
-
-``` r
-partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
-```
-
-![](Figs/unnamed-chunk-3-1.png)<!-- -->
-
-Partial response curve of the most suitable community-level strategy and
-envelop of possible community-level strategies of SLA and LNC along the
-GDD gradient
-
-``` r
-ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
-```
-
-![](Figs/unnamed-chunk-4-1.png)<!-- -->
+    ##              SLA        LNC      Height
+    ## SLA     75.46582 17.1209341 -13.7401827
+    ## LNC     17.12093  9.0821226   0.9269098
+    ## Height -13.74018  0.9269098  95.7111518
 
 Computes joint probabilities of both SLA and LNC to be greater than 10
 in the sites of the study.
@@ -112,17 +94,3 @@ in the sites of the study.
 ``` r
 joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"), bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 ```
-
-And this joint probability along the GDD gradient
-
-``` r
-joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
-
-table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
-                                   q02 = joint$GradProbsq025,
-                                   q97 = joint$GradProbsq975)
-
- ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
-```
-
-![](Figs/unnamed-chunk-6-1.png)<!-- -->
