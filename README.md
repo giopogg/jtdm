@@ -1,10 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-``` r
-knitr::opts_chunk$set(fig.path='Figs/')
-```
-
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -75,18 +71,18 @@ getB(m)$Bmean
 ```
 
     ##        (Intercept)         GDD       FDD    forest
-    ## SLA       10.50979 0.008854437 0.4896142 11.769861
-    ## LNC       21.39144 0.001005003 0.1472568  3.366346
-    ## Height    12.13099 0.016846515 0.1165499  4.043582
+    ## SLA      10.688690 0.008869035 0.5082769 12.047667
+    ## LNC      21.266320 0.001260721 0.1621972  3.315239
+    ## Height    9.569676 0.019658559 0.1837339  2.610661
 
 ``` r
 get_sigma(m)$Smean
 ```
 
-    ##              SLA        LNC      Height
-    ## SLA     75.46582 17.1209341 -13.7401827
-    ## LNC     17.12093  9.0821226   0.9269098
-    ## Height -13.74018  0.9269098  95.7111518
+    ##              SLA       LNC     Height
+    ## SLA     75.64895 17.242914 -12.777664
+    ## LNC     17.24291  9.120715   1.158795
+    ## Height -12.77766  1.158795  95.383528
 
 Computes joint probabilities of both SLA and LNC to be greater than 10
 in the sites of the study.
