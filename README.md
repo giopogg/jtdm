@@ -1,6 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+``` r
+knitr::opts_chunk$set(fig.path='Figs/')
+```
+
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -70,19 +74,19 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 getB(m)$Bmean
 ```
 
-    ##        (Intercept)         GDD       FDD    forest
-    ## SLA       8.709366 0.010931116 0.5426283 10.773786
-    ## LNC      20.796791 0.001769834 0.1717788  2.975887
-    ## Height   10.641650 0.019130713 0.2290345  3.271167
+    ##        (Intercept)          GDD       FDD    forest
+    ## SLA       12.79411 0.0067378932 0.4905653 13.597159
+    ## LNC       22.12768 0.0003882103 0.1524716  3.896916
+    ## Height    10.72094 0.0193361073 0.2240482  2.303663
 
 ``` r
 get_sigma(m)$Smean
 ```
 
-    ##              SLA        LNC      Height
-    ## SLA     76.04511 17.6305775 -13.0446075
-    ## LNC     17.63058  9.1987859   0.8967539
-    ## Height -13.04461  0.8967539  97.0050890
+    ##              SLA       LNC     Height
+    ## SLA     76.66133 17.781450 -13.483373
+    ## LNC     17.78145  9.375974   1.002433
+    ## Height -13.48337  1.002433  94.371301
 
 Trait-environment relationships
 
@@ -90,7 +94,7 @@ Trait-environment relationships
 partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Figs/unnamed-chunk-3-1.png)<!-- -->
 
 Partial response curve of the most suitable community-level strategy and
 envelop of possible community-level strategies of SLA and LNC along the
@@ -100,7 +104,7 @@ GDD gradient
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Figs/unnamed-chunk-4-1.png)<!-- -->
 
 Computes joint probabilities of both SLA and LNC to be greater than 10
 in the sites of the study.
@@ -121,4 +125,4 @@ table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
  ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Figs/unnamed-chunk-6-1.png)<!-- -->
