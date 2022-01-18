@@ -1,0 +1,103 @@
+#' Predict method for joint trait distribution model
+#'
+#' Obtains predictions from a fitted joint trait distribution model and optionally computes their R squared and root mean square error (RMSE)
+#' @param m a model fitted with \code{jtdm_fit}
+#' @param Xnew optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used
+#' @param validation  boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.
+#' @param Ynew   Optional. The observed response variables at sites specified in Xnew. It is used to compute goodness of fit metrics when validation= T.
+#' @param FullPost   The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).
+#' @details To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
+#' @export
+#' @return A list containing:\tabular{ll}{
+#'    \code{Pred} \tab Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.
+#'    \tab \cr
+#'    \code{PredMean} \tab Posterior mean of posterior predictive distribution \cr
+#'    \tab \cr
+#'    \code{Predq975,Predq025} \tab97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE. \cr
+#'    \tab \cr
+#'    \code{R2} \tab R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. \cr
+#'    \tab \cr
+#'    \code{RMSE} Root square mean error between  squared of predictions. NULL if validation=FALSE.
+#' }
+#' @examples
+#' data(Y)  \cr
+#' data(X)  \cr
+#' # Short MCMC to obtain a fast example: results are unreliable !
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
+#'         burnin = 100,  \cr
+#'         sample = 100)  \cr
+#' # marginal predictions of traits in the sites of X
+#' pred = jtdm_predict(m)  \cr
+
+
+jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = F, FullPost=T){
+
+  data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)),  X_raw = m$X_raw)
+
+  if(is.null(Xnew)) Xnew=m$X_raw
+  if(is.null(dim(Xnew))){Xnew=t(as.matrix(Xnew))}
+  if(validation == T & is.null(Ynew)) stop(" if validation = T, you need to provide Ynew!")
+  if(ncol(Xnew) != ncol(data$X_raw)) stop("The number of columns of X and Xnew differ")
+  if(!is.null(Ynew)){
+    if(nrow(Xnew) != nrow(Ynew)) stop("The number of line of Xnew and Ynew differ")
+    if(ncol(Ynew) != ncol(data$Y)) stop("The number of columns of Y and Ynew differ")
+  }
+  if(is.null(FullPost)) stop("please tell whether you want predictions or fitted")
+  if(!identical(colnames(Xnew),colnames(m$X_raw))) stop("Provide same column names and same order of the colums in Xnew!")
+
+  ###### trasform Xnew with formula
+  Xnew_raw = Xnew
+  Xnew=model.frame(m$mt,as.data.frame(Xnew))
+  Xnew=model.matrix(m$mt,Xnew)
+
+  ### Compute predictions
+  if(FullPost != FALSE){
+    mcmc_param=suppressWarnings(coda::as.mcmc(m$model))
+
+    B=getB(m)$Bsamples
+    Sigma=get_sigma(m)$Ssamples
+    ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains
+
+    Predictions = array(dim=c(nrow(Xnew),ncol(data$Y),ntot))
+    for(i in 1:ntot){
+      if(FullPost==T){
+        Predictions[,,i] = t(apply(Xnew, FUN=function(x) {mvrnorm(n=1, mu=B[,,i]%*%x , Sigma=Sigma[,,i])},MARGIN = 1))
+      }else{
+        Predictions[,,i] = t(apply(Xnew, FUN=function(x) {B[,,i]%*%x},MARGIN = 1))
+      }
+    }
+
+    meanPred = apply(Predictions,mean,MARGIN = c(1,2))
+    Pred975 = apply(Predictions, quantile, MARGIN=c(1,2),0.975)
+    Pred025 = apply(Predictions, quantile, MARGIN=c(1,2),0.025)
+    colnames(meanPred)=colnames(Pred975)=colnames(Pred025)=colnames(data$Y)
+    if(!is.null(rownames(Xnew))) rownames(meanPred)=rownames(Pred975)=rownames(Pred025)=rownames(Xnew)
+
+
+  }else{ #If we only want to compoute the mean
+    meanPred = as.matrix(Xnew) %*% t(as.matrix(getB(m)$Bmean))
+
+    colnames(meanPred)=colnames(data$Y)
+    if(!is.null(rownames(Xnew))) rownames(meanPred)=rownames(Xnew)
+
+    Pred025 = Pred975 = NULL
+    Predictions = NULL
+  }
+
+  R2_mod=RMSE_mod=NULL
+  if(validation){
+    #RMSE
+    RMSE = function(obs,pred){sqrt(mean((obs - pred)^2))}
+    RMSE_mod = vector()
+    for(j in 1:ncol(Ynew)) RMSE_mod[j] = RMSE(Ynew[,j],meanPred[,j])
+    names(RMSE_mod)=colnames(data$Y)
+    #R2
+    R2= function(obs,pred){cor(obs, pred) ^ 2}
+    R2_mod = vector()
+    for(j in 1:ncol(Ynew)) R2_mod[j] = R2(Ynew[,j],meanPred[,j])
+    names(R2_mod)=colnames(data$Y)
+  }
+
+  list(Pred = Predictions, PredMean = meanPred, Predq025 = Pred025, Predq975 = Pred975, R2 = R2_mod, RMSE = RMSE_mod)
+
+}

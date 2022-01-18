@@ -1,0 +1,44 @@
+#' Get the inferred regression coefficients
+#'
+#' Get the samples from the posterior distribution of the regression coefficient matrix B, together with the posterior mean and quantiles. The regression coefficient matrix B is a matrix where the number of rows is defined by the number of traits that are modelled, and the number of columns is the number of columns of the matrix m$X (the number of explanatory variables after transformation via formula)
+#' @param m a model fitted with \code{jtdm_fit}
+#' @export
+#' @return A list containing:\tabular{ll}{
+#'    \code{Bsamples} \tab Sample from the posterior distribution of the regression coefficient matrix. It is an array where the first dimension is the number of traits, the second the number of columns in m$X (the number of variables after transformation via formula) and the third the number of MCMC samples. \cr
+#'    \tab \cr
+#'    \code{Bmean} \tab Posterior mean of the regression coefficient matrix. \cr
+#'    \tab \cr
+#'    \code{Bq975,Bq025} \tab 97.5\% and 0.25\% posterior quantiles of the regression coefficient matrix. \cr
+#' }
+#' @examples
+#' data(Y)  \cr
+#' data(X)  \cr
+#' # Short MCMC to obtain a fast example: results are unreliable !
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
+#'         burnin = 100,  \cr
+#'         sample = 100)  \cr
+#' # get the inferred regression coefficients
+#' B=getB(m)
+
+
+
+
+getB=function(m){
+
+  data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)))
+
+  mcmc_param=suppressWarnings(coda::as.mcmc(m$model))
+  ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains
+
+  B= array(dim=c(data$J,data$K,ntot))
+  for(i in 1:ntot){
+    B[,,i]=matrix(mcmc_param[i,grep("B",colnames(mcmc_param))],ncol=data$K)
+  }
+
+  B_hat = apply( B, mean, MARGIN=c(1,2))
+  B_975 = apply( B, quantile, MARGIN=c(1,2),0.975)
+  B_025 = apply( B, quantile, MARGIN=c(1,2),0.025)
+  colnames(B_hat)=colnames(B_975)=colnames(B_025)=colnames(m$X)
+  rownames(B_hat)=rownames(B_975)=rownames(B_025)=colnames(m$Y)
+  list(Bsamples = B, Bmean=B_hat, Bq025=B_025,Bq975=B_975)
+}
