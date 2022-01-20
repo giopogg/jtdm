@@ -43,7 +43,7 @@ library(devtools)
 install_github("giopogg/jtdm")
 ```
 
-    ## Skipping install of 'jtdm' from a github remote, the SHA1 (ad1b73ec) has not changed since last install.
+    ## Skipping install of 'jtdm' from a github remote, the SHA1 (2d97b3e5) has not changed since last install.
     ##   Use `force = TRUE` to force installation
 
 ``` r
@@ -174,14 +174,14 @@ predictions$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.4817794 0.2773453 0.4737574
+    ## 0.4857956 0.2813487 0.4745638
 
 ``` r
 predictions$RMSE
 ```
 
     ##      SLA      LNC   Height 
-    ## 8.523748 2.957123 9.574219
+    ## 8.487992 2.948744 9.577230
 
 We can evaluate the performances of the model using a K-fold
 cross-validation using the function `jtdmCV`
@@ -195,13 +195,13 @@ predictionsCV$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.4934387 0.2488438 0.4605619
+    ## 0.5613550 0.2598376 0.5018175
 
 ``` r
 predictionsCV$RMSE
 ```
 
-    ## [1]  8.671853  3.074239 10.116165
+    ## [1] 8.078553 3.065515 9.537835
 
 We can now analyse the inferred trait-environment relationships using
 the function `partial_response`, that computes and plots the partial
@@ -259,10 +259,12 @@ advice here to obtain smoother curves).
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- --> The user can
-also choose to fix the non-focal environmental variables to another
-value. For example, we can obtain the partial response curves of the
-most suitable CLS and envelop of possible CLSs of SLA and GDD in forest.
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+The user can also choose to fix the non-focal environmental variables to
+another value. For example, we can obtain the partial response curves of
+the most suitable CLS and envelop of possible CLSs of SLA and GDD in
+forest.
 
 ``` r
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
@@ -295,7 +297,7 @@ joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(
 ```
 
     ##         1 
-    ## 0.1403008
+    ## 0.1107953
 
 Unsurprisingly, the probability is low. Then, we compute how this
 probability vary along the GDD gradient using the function

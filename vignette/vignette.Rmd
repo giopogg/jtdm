@@ -122,6 +122,8 @@ We can then compute the partial response curves of pairwise CWM trait combinatio
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
+
+
 The user can also choose to fix the non-focal environmental variables to another value. For example, we can obtain the partial response curves of the most suitable CLS and envelop of possible CLSs of SLA and GDD in forest.
 ```{r}
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient

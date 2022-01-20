@@ -50,7 +50,7 @@ install_github("giopogg/jtdm")
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of both JAGS and runjags. 
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
-```{r,warning=FALSE}
+```{r,warning=FALSE,results='hide'}
 library(jtdm)
 library(ggplot2)
 set.seed(1712)
@@ -73,16 +73,20 @@ Partial response curve of the most suitable community-level strategy and envelop
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site
+Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
 ```{r}
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 
 ```
-Unsurprisingly, the probability is low. Then, we compute this probability along the GDD gradient
+
+
+Unsurprisingly, the probability is low. Then, we compute how this probability varies along the GDD gradient.
 ``` {r}
 joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 ```
-And plot it
+
+
+And we plot it.
 
 ```{r,echo=FALSE}
 table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
@@ -90,4 +94,6 @@ table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
                                    q97 = joint$GradProbsq975)
 ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
 ```
+
+
 As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.
