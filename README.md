@@ -22,7 +22,8 @@ publications in this repo.
 
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
-the installation of JAGS.
+the installation of JAGS. Its installation is easy and depends on your
+operating system:
 
 ##### Ubutntu
 
@@ -36,7 +37,7 @@ sudo apt-get install jags
 
 <https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/>
 
-Once JAGS have been installed, the following code should run:
+Once JAGS has been installed, the following code should run:
 
 ``` r
 library(devtools)
@@ -47,18 +48,10 @@ The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
 the installation of both JAGS and runjags.
 
-Once the dependencies are installed, the following code should run:
-
-Fits a JTDM
+Fitting a JTDM the case study dataset of Poggiato et al. In prep.
 
 ``` r
 library(jtdm)
-```
-
-    ## Warning: remplacement de l'importation précédente 'arm::traceplot' par
-    ## 'coda::traceplot' lors du chargement de 'jtdm'
-
-``` r
 library(ggplot2)
 set.seed(1712)
 data(Y)
@@ -87,18 +80,18 @@ getB(m)$Bmean
 ```
 
     ##        (Intercept)         GDD       FDD    forest
-    ## SLA       7.555723 0.011747051 0.5269073 10.295137
-    ## LNC      20.221662 0.002155121 0.1596305  2.644149
-    ## Height   12.004760 0.017649086 0.1777885  3.378382
+    ## SLA       8.008574 0.010900906 0.4912318 10.621769
+    ## LNC      20.383691 0.001789419 0.1440694  2.889193
+    ## Height   10.369534 0.018586089 0.1465588  2.981464
 
 ``` r
 get_sigma(m)$Smean
 ```
 
-    ##              SLA        LNC      Height
-    ## SLA     77.13453 17.7142774 -12.9350023
-    ## LNC     17.71428  9.1781229   0.8783576
-    ## Height -12.93500  0.8783576  94.2272649
+    ##              SLA       LNC    Height
+    ## SLA     77.05206 17.760589 -12.61709
+    ## LNC     17.76059  9.261374   1.04773
+    ## Height -12.61709  1.047730  94.63345
 
 Trait-environment relationships
 
@@ -117,16 +110,19 @@ ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 Computes joint probabilities of both SLA and LNC to be greater than 20
-in a high altitude site.
+in a high altitude site. This measures the relative suitability of
+communities where both SLA and LNC are higher than 20 in a high altitude
+site
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ```
 
     ##         1 
-    ## 0.0972723
+    ## 0.1057429
 
-Then, we compute this probability along the GDD gradient
+Unsurprisingly, the probability is low. Then, we compute this
+probability along the GDD gradient
 
 ``` r
 joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
@@ -134,4 +130,6 @@ joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD"
 
 And plot it
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> As climatic
+conditions become more favourable (i.e. GDD increases), the probability
+of having high values of both traits increases.

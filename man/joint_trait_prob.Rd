@@ -19,7 +19,7 @@ joint_trait_prob(
 
 \item{indexTrait}{A vector of the names (as specified in the column names of Y) of the two (or more!) traits we want to compute the joint probabilities of.}
 
-\item{bounds}{The parameter to specify a region in the community-trait space where the function computes the joint probabilities of traits. It is a list of the length of "index", each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits, bounds=list(c(10,Inf),c(10,Inf)) corresponds to the region in the community-trait space where both traits both take values greater than 10.}
+\item{bounds}{The parameter to specify a region in the community-trait space where the function computes the joint probabilities of traits. It is a list of the length of "indexTrait", each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits, bounds=list(c(10,Inf),c(10,Inf)) corresponds to the region in the community-trait space where both traits both take values greater than 10.}
 
 \item{Xnew}{Optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used.}
 

@@ -24,7 +24,7 @@ joint_trait_prob_gradient(
 
 \item{indexGradient}{The name (as specified in the column names of X) of the focal variable.}
 
-\item{bounds}{The parameter to specify a region in the community-trait space where the function computes the joint probabilities of traits. It is a list of the length of "index", each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits, bounds=list(c(10,Inf),c(10,Inf)) corresponds to the region in the community-trait space where both traits both take values greater than 10.}
+\item{bounds}{The parameter to specify a region in the community-trait space where the function computes the joint probabilities of traits. It is a list of the length of "indexTrait", each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits, bounds=list(c(10,Inf),c(10,Inf)) corresponds to the region in the community-trait space where both traits both take values greater than 10.}
 
 \item{grid.length}{The number of points along the gradient of the focal variable. Default to 200.}
 

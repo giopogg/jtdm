@@ -27,7 +27,7 @@ A list containing:\tabular{ll}{
    \tab \cr
    \code{R2} \tab R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. \cr
    \tab \cr
-   \code{RMSE} Root square mean error between  squared of predictions. NULL if validation=FALSE.\cr
+   \code{RMSE} \tab Root square mean error between  squared of predictions. NULL if validation=FALSE.\cr
 }
 }
 \description{
