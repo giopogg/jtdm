@@ -43,6 +43,7 @@ https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/
 Once JAGS have been installed, the following code should run:
 
 ```{r,eval=FALSE}
+library(devtools)
 install_github("giopogg/jtdm")
 ```
 

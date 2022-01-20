@@ -39,6 +39,7 @@ sudo apt-get install jags
 Once JAGS have been installed, the following code should run:
 
 ``` r
+library(devtools)
 install_github("giopogg/jtdm")
 ```
 
@@ -86,18 +87,18 @@ getB(m)$Bmean
 ```
 
     ##        (Intercept)         GDD       FDD    forest
-    ## SLA        8.78095 0.010872252 0.5490040 11.059551
-    ## LNC       20.65485 0.001937326 0.1814652  3.021635
-    ## Height    12.36151 0.016775119 0.1248564  3.824376
+    ## SLA       7.555723 0.011747051 0.5269073 10.295137
+    ## LNC      20.221662 0.002155121 0.1596305  2.644149
+    ## Height   12.004760 0.017649086 0.1777885  3.378382
 
 ``` r
 get_sigma(m)$Smean
 ```
 
     ##              SLA        LNC      Height
-    ## SLA     75.81373 17.3085241 -14.5933684
-    ## LNC     17.30852  9.1407323   0.6651481
-    ## Height -14.59337  0.6651481  95.4718023
+    ## SLA     77.13453 17.7142774 -12.9350023
+    ## LNC     17.71428  9.1781229   0.8783576
+    ## Height -12.93500  0.8783576  94.2272649
 
 Trait-environment relationships
 
@@ -123,7 +124,7 @@ joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(
 ```
 
     ##         1 
-    ## 0.1077798
+    ## 0.0972723
 
 Then, we compute this probability along the GDD gradient
 
