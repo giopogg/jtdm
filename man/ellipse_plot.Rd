@@ -45,7 +45,7 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
 # Compute probability of SLA and LNC to be joint-high at sites in the studies
 
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
-plot = ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",indexTrait="SLA")
+ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 #  plot the pairwise SLA-LNC partial response curve along the GDD gradient in forest (i.e. when forest=1)
-plot =  ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",FixX=list(GDD=NULL,FDD=NULL,forest=1))#'
+ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",FixX=list(GDD=NULL,FDD=NULL,forest=1))
 }

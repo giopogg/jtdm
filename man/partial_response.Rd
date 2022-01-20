@@ -50,6 +50,8 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
 
 # SLA-GDD relationship
 plot = partial_response(m,indexGradient="GDD",indexTrait="SLA")
+plot$p
 # SLA-GDD relationship in forest (i.e. when forest=1)
 plot = partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))
+plot$p
 }

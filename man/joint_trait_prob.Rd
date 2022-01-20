@@ -41,6 +41,9 @@ A list containing:\tabular{ll}{
 \description{
 Computes the joint probability of CWM traits in regions in the community-trait space specified by bounds and in sites specified in Xnew.
 }
+\details{
+This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+}
 \examples{
 data(Y)  \cr
 data(X)  \cr

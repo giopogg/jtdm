@@ -52,6 +52,9 @@ A list containing:\tabular{ll}{
 \description{
 Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
 }
+\details{
+This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+}
 \examples{
 data(Y)  \cr
 data(X)  \cr
