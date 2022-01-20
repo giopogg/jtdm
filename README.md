@@ -11,17 +11,32 @@ v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org
 
 ## About the method
 
-The method is described in Poggiato et al., in prep. Joint models and
-predictions of community traits. The code for producing the results in
-this paper is available under the subfolder publications in this repo.
-
-The method itself is implemented in this repo.
+The package jtdm implements the method described in Poggiato et al., in
+prep. Joint models and predictions of community traits. The code for
+producing the results in this paper is available under the subfolder
+publications in this repo.
 
 ## Installing the R package
 
 ### R-package
 
-Install the package via
+The package implements jtdm using the Markov Chain Monte Carlo Bayesian
+modeling software JAGS via the R package runjags. Therefore, it requires
+the installation of JAGS.
+
+##### Ubutntu
+
+sudo apt-get install jags
+
+##### Windows
+
+<https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/>
+
+##### Mac
+
+<https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/>
+
+Once JAGS have been installed, the following code should run:
 
 ``` r
 install_github("giopogg/jtdm")
@@ -71,22 +86,49 @@ getB(m)$Bmean
 ```
 
     ##        (Intercept)         GDD       FDD    forest
-    ## SLA      10.688690 0.008869035 0.5082769 12.047667
-    ## LNC      21.266320 0.001260721 0.1621972  3.315239
-    ## Height    9.569676 0.019658559 0.1837339  2.610661
+    ## SLA       8.052593 0.009900278 0.4139134 11.352902
+    ## LNC      20.459299 0.001518372 0.1263077  3.101789
+    ## Height   10.772495 0.018821083 0.1944367  3.042952
 
 ``` r
 get_sigma(m)$Smean
 ```
 
-    ##              SLA       LNC     Height
-    ## SLA     75.64895 17.242914 -12.777664
-    ## LNC     17.24291  9.120715   1.158795
-    ## Height -12.77766  1.158795  95.383528
+    ##              SLA        LNC      Height
+    ## SLA     75.50516 17.2239580 -13.4631402
+    ## LNC     17.22396  9.0167120   0.8089354
+    ## Height -13.46314  0.8089354  97.2255179
 
-Computes joint probabilities of both SLA and LNC to be greater than 10
-in the sites of the study.
+Trait-environment relationships
 
 ``` r
-joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"), bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+ partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
 ```
+
+Partial response curve of the most suitable community-level strategy and
+envelop of possible community-level strategies of SLA and LNC along the
+GDD gradient.
+
+``` r
+ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+Computes joint probabilities of both SLA and LNC to be greater than 20
+in a high altitude site.
+
+``` r
+joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
+```
+
+    ##        1 
+    ## 0.104072
+
+Then, we compute this probability along the GDD gradient
+
+``` r
+joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+```
+
+And plot it ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
