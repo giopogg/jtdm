@@ -86,18 +86,18 @@ getB(m)$Bmean
 ```
 
     ##        (Intercept)         GDD       FDD    forest
-    ## SLA       8.052593 0.009900278 0.4139134 11.352902
-    ## LNC      20.459299 0.001518372 0.1263077  3.101789
-    ## Height   10.772495 0.018821083 0.1944367  3.042952
+    ## SLA        8.78095 0.010872252 0.5490040 11.059551
+    ## LNC       20.65485 0.001937326 0.1814652  3.021635
+    ## Height    12.36151 0.016775119 0.1248564  3.824376
 
 ``` r
 get_sigma(m)$Smean
 ```
 
     ##              SLA        LNC      Height
-    ## SLA     75.50516 17.2239580 -13.4631402
-    ## LNC     17.22396  9.0167120   0.8089354
-    ## Height -13.46314  0.8089354  97.2255179
+    ## SLA     75.81373 17.3085241 -14.5933684
+    ## LNC     17.30852  9.1407323   0.6651481
+    ## Height -14.59337  0.6651481  95.4718023
 
 Trait-environment relationships
 
@@ -122,8 +122,8 @@ in a high altitude site.
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ```
 
-    ##        1 
-    ## 0.104072
+    ##         1 
+    ## 0.1077798
 
 Then, we compute this probability along the GDD gradient
 
@@ -131,4 +131,6 @@ Then, we compute this probability along the GDD gradient
 joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 ```
 
-And plot it ![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+And plot it
+
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->

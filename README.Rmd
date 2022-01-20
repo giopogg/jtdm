@@ -84,6 +84,8 @@ Then, we compute this probability along the GDD gradient
 joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 ```
 And plot it
+
+
 ```{r,echo=FALSE}
 table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
                                    q02 = joint$GradProbsq025,
