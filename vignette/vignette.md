@@ -43,8 +43,11 @@ library(devtools)
 install_github("giopogg/jtdm")
 ```
 
-    ## Skipping install of 'jtdm' from a github remote, the SHA1 (2d97b3e5) has not changed since last install.
-    ##   Use `force = TRUE` to force installation
+    ## Downloading GitHub repo giopogg/jtdm@HEAD
+
+    ## Installing 1 packages: cli
+
+    ## installation du package source 'cli'
 
 ``` r
 library(jtdm)
@@ -115,7 +118,7 @@ higher number of iterations.
 
 ``` r
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100, n.chains = 2)
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),  adapt = 10, burnin = 100, sample = 100, n.chains = 2)
 ```
 
 Once the model has ran, we should check for the convergence of the MCMC
@@ -174,14 +177,14 @@ predictions$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.4857956 0.2813487 0.4745638
+    ## 0.5846196 0.3494882 0.5201757
 
 ``` r
 predictions$RMSE
 ```
 
     ##      SLA      LNC   Height 
-    ## 8.487992 2.948744 9.577230
+    ## 7.637141 2.809050 9.140805
 
 We can evaluate the performances of the model using a K-fold
 cross-validation using the function `jtdmCV`
@@ -195,13 +198,13 @@ predictionsCV$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.5613550 0.2598376 0.5018175
+    ## 0.5101005 0.2333333 0.4774889
 
 ``` r
 predictionsCV$RMSE
 ```
 
-    ## [1] 8.078553 3.065515 9.537835
+    ## [1]  8.218728  3.063258 10.105508
 
 We can now analyse the inferred trait-environment relationships using
 the function `partial_response`, that computes and plots the partial
@@ -296,8 +299,8 @@ a high altitude site.
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ```
 
-    ##         1 
-    ## 0.1107953
+    ##          1 
+    ## 0.09052488
 
 Unsurprisingly, the probability is low. Then, we compute how this
 probability vary along the GDD gradient using the function

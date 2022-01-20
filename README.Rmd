@@ -96,4 +96,6 @@ ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position =
 ```
 
 
+
+
 As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.

@@ -61,7 +61,7 @@ JTDMs infer a linear regression for each CWM trait as a function of the environm
 
 ``` {r,results='hide',warning=FALSE, message=FALSE}
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100, n.chains = 2)
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),  adapt = 10, burnin = 100, sample = 100, n.chains = 2)
 ```
 
 Once the model has ran, we should check for the convergence of the MCMC chains.

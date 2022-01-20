@@ -62,36 +62,11 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 
     ## module dic loaded
 
-    ## Compiling rjags model...
-    ## Calling the simulation using the rjags method...
-    ## Note: the model did not require adaptation
-    ## Burning in the model for 100 iterations...
-    ## Running the model for 100 iterations...
-    ## Extending 100 iterations for pD/DIC estimates...
-    ## Simulation complete
-    ## Calculating summary statistics...
-    ## Calculating the Gelman-Rubin statistic for 21 variables....
-    ## Note: Unable to calculate the multivariate psrf
-    ## Finished running the simulation
-
 ``` r
 # Inferred parameters
 getB(m)$Bmean
-```
-
-    ##        (Intercept)         GDD       FDD    forest
-    ## SLA       8.008574 0.010900906 0.4912318 10.621769
-    ## LNC      20.383691 0.001789419 0.1440694  2.889193
-    ## Height   10.369534 0.018586089 0.1465588  2.981464
-
-``` r
 get_sigma(m)$Smean
 ```
-
-    ##              SLA       LNC    Height
-    ## SLA     77.05206 17.760589 -12.61709
-    ## LNC     17.76059  9.261374   1.04773
-    ## Height -12.61709  1.047730  94.63345
 
 Trait-environment relationships
 
@@ -112,24 +87,25 @@ ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 Computes joint probabilities of both SLA and LNC to be greater than 20
 in a high altitude site. This measures the relative suitability of
 communities where both SLA and LNC are higher than 20 in a high altitude
-site
+site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ```
 
     ##         1 
-    ## 0.1057429
+    ## 0.1568279
 
-Unsurprisingly, the probability is low. Then, we compute this
-probability along the GDD gradient
+Unsurprisingly, the probability is low. Then, we compute how this
+probability varies along the GDD gradient.
 
 ``` r
 joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD", bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 ```
 
-And plot it
+And we plot it.
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> As climatic
-conditions become more favourable (i.e. GDD increases), the probability
-of having high values of both traits increases.
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+As climatic conditions become more favourable (i.e. GDD increases), the
+probability of having high values of both traits increases.
