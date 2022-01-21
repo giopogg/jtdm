@@ -51,7 +51,7 @@ library(tidyr)
 
 Load the dataset and run the model
 
-```{r, warning=FALSE,include=FALSE}
+```{r, warning=FALSE,message=FALSE,results='hide'}
 data(X) #env variables
 data(Y) #site x CWM traits matrix
 
@@ -143,7 +143,7 @@ ggplot(data = tableB_stand,
 ```
 
 
-Compute and plot the residual covariance matrix
+Compute and plot the residual covariance matrix (Figure A4).
 ``` {r}
 Sigma = get_sigma(m = m)
 
@@ -157,7 +157,8 @@ corrplot::corrplot(Sigma_plot,method="color" ,type="upper", order="hclust",
 ```
 
 
-Plot trait environmental relationships.
+
+Plot trait environmental relationships (Figure A5).
 
 ```{r}
 grid.length=200 #length of the gradient of the focal environmental variable
@@ -234,7 +235,8 @@ p
 
 ```
 
-Plot the partial response curves of the most suitable CLS and of envelope of CLSs for each pair of traits and each environmental variable (Figure 4a,5a, A5)
+
+Plot the partial response curves of the most suitable CLS and of envelope of CLSs for each pair of traits and each environmental variable (Figure 4a,5a, A5).
 
 ```{r}
 for(t in 1:(ncol(X)-1)){ #for each env covariate
@@ -391,6 +393,9 @@ for(s in 1:(ncol(X)-1)){
 
 
 ```
+
+
+
 We now load the environmental rasters in the French Alps in order to predict the joint distribution of traits.
 
 ```{r}
@@ -422,7 +427,8 @@ X.df=apply(X.df,MARGIN=c(1,2),FUN=as.numeric)
 
 ```
 
-Predict the marginal value of each trait
+
+Predict the marginal value of each trait.
 ```{r}
 # We only take the posterior mean
 AlpPred=as.data.frame(jtdm_predict(m=m, Xnew=X.df, Ynew = NULL, validation = F, FullPost=F)$PredMean)
@@ -445,6 +451,8 @@ p3=ggplot(AlpPredXY, aes(x=x,y=y)) +
 grid.arrange(p1,p2,p3,nrow=2,ncol=2)
 ```
 
+
+
 Plot the predictions of the three traits in the RGB space (Figure A7)
 ``` {r, warnings=FALSE, message=FALSE}
 AlpPredXY.col=data.frame(AlpPredXY,col=colors3d(AlpPredXY[,c("SLA","LNC","Height")]))
@@ -455,6 +463,8 @@ ggplot(AlpPredXY.col, aes(x=x,y=y)) + theme_classic()+
       eval(parse(text=paste0("scale_fill_manual(values=c(",paste(paste0('"',unique(AlpPredXY.col$col),'"',"=",'"',unique(AlpPredXY.col$col),'"'),collapse = ","),"))")))
 
 ```
+
+
 
 Then compute and plot the joint probabilities (Figure 6, A8). This can take ~15minutes.
 ```{r,warnings=FALSE}
