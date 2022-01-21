@@ -3,6 +3,9 @@ title: "Vignette"
 output: github_document
 ---
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
 ```{r global_options,include=FALSE}
  knitr::opts_chunk$set(fig.path='README_files/figure-gfm/')
 ```
@@ -37,7 +40,7 @@ https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/
 
 Once JAGS has been installed, the following code should run:
 
-```{r,warning=FALSE,results='hide'}
+```{r,warning=FALSE,results='hide',message=FALSE}
 library(devtools)
 install_github("giopogg/jtdm")
 library(jtdm)

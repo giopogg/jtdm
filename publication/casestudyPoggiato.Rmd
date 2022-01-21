@@ -1,0 +1,533 @@
+---
+title: "casestudyPoggiatoInPrep"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r global_options,include=FALSE}
+ knitr::opts_chunk$set(fig.path='README_files/figure-gfm/')
+```
+
+# Case study Poggiato et al. In prep.
+
+In this R markdown we reproduce the case study of the publication Poggiato et al. In prep.  "Joint models and predictions of community traits". For the presentation of the R package \code{jtdm} and its details see https://github.com/giopogg/jtdm/tree/main/vignette .
+
+# Installing the R package
+
+### R-package
+The package implements JTDMs using the Markov Chain Monte Carlo (MCMC) Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:
+
+
+##### Ubutntu
+sudo apt-get install jags
+
+
+##### Windows
+https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/
+
+
+##### Mac
+https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/
+
+Once JAGS has been installed, the following code should run:
+
+```{r,warning=FALSE,message=FALSE,results='hide',eval=TRUE}
+library(devtools)
+install_github("giopogg/jtdm")
+library(jtdm)
+library(ggplot2)
+library(coda)
+library(gridExtra)
+library(ggpubr)
+library(parallel) #if this doesn't work, set the parameter parallel = FALSE when calling joint_trait_prob
+library(raster)
+install_github("matthewkling/colormap")
+library(colormap)
+library(tidyr)
+```
+
+Load the dataset and run the model
+
+```{r, warning=FALSE,include=FALSE}
+data(X) #env variables
+data(Y) #site x CWM traits matrix
+
+formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest")
+
+
+# Run the model. If you want this vignette to run fast (buth with unreliable results), you should diminish the parameter 'sample'. To obtain the results of the publications, we set adapt = 5000, burnin = 10000, sample = 10000.
+m = jtdm_fit(Y=Y, X=X, 
+               formula=formula,
+               adapt = 5000,
+               burnin = 10000,
+               sample = 10000,
+               n.chains=2,
+               monitor = c('B','Sigma','deviance'))
+```
+
+
+Check for convergence of the MCMC chain (Figure A2 in the publication)
+
+```{r, warning=FALSE}
+table=data.frame(x=gelman.diag(m$model$mcmc,multivariate = FALSE)$psrf[,1])
+
+ggplot(data = table, aes(x=x)) + geom_histogram(color="darkblue", fill="lightblue",bins = 20) +
+  ggtitle("Potential scale reduction factor") + xlab("") + ylab("nESS") + theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Obtain $R2$ of the predictions both in-sample and in cross validation (values of Table A1 in the publication)
+
+``` {r}
+prediction = jtdm_predict(m=m, Xnew=X, Ynew= Y, validation = T, FullPost = F)
+
+#R2 of in-sample predictions
+prediction$R2
+```
+
+```{r, include=FALSE}
+CV = jtdmCV(m,K=5, adapt = 5000,burnin = 10000, sample = 10000)
+```
+
+```{r}
+#R2 of 5-fold cross validation
+CV$R2
+```
+
+
+Compute the regression coefficients and plot effect sizes (Figure A3)
+``` {r}
+# get the regression coefficient matrix
+B = getB(m  = m)
+
+# compute standardised effect sizez
+B_stand = B
+for(i in 1:nrow(B$Bsamples)){
+  for(j in 2:ncol(B$Bsamples))
+    B_stand$Bsamples[i,j,] = sd(m$X[,j])*B$Bsamples[i,j,]/sd(m$Y[,i])
+}
+B_stand$Bsamples=B_stand$Bsamples[,-1,]
+B_stand$Bmean = apply( B_stand$Bsamples, mean, MARGIN=c(1,2))
+B_stand$Bq975 = apply( B_stand$Bsamples, quantile, MARGIN=c(1,2),0.975)
+B_stand$Bq025 = apply( B_stand$Bsamples, quantile, MARGIN=c(1,2),0.025)
+
+# build the table for ggplot
+tableB_stand = data.frame(B= as.vector(B_stand$Bmean),
+                          B97=as.vector(B_stand$Bq975), 
+                          B02 = as.vector(B_stand$Bq025),
+                          trait = rep(colnames(Y),ncol(m$X)-1),
+                          predictor = rep(c("GDD","GDD","FDD","FDD","GDD","GDD","FDD","FDD"),
+                                          each=ncol(Y)),
+                          type= rep(c(1,2,1,2,3,4,3,4),each=ncol(Y)),
+                          interaction_with_forest=rep(c("no","no","no","no","yes",
+                                                      "yes","yes","yes"),
+                                                      each=ncol(Y))
+)
+
+#check if significant or not
+tableB_stand[,"significant"] = ifelse(sign(tableB_stand$B97)==sign((tableB_stand$B02)),"yes","no")
+
+
+#plot
+ggplot(data = tableB_stand, 
+       aes(x = B, y = type, color = significant)) +
+  geom_point(aes(shape=interaction_with_forest),size=2) +
+  geom_errorbarh(aes(xmax = B97, xmin = B02, height = 0)) +
+  geom_vline(xintercept=0,linetype="dashed") +
+  facet_grid(trait ~ predictor) +
+  ylim(c(0,4)) + theme_minimal()+ 
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+
+Compute and plot the residual covariance matrix
+``` {r}
+Sigma = get_sigma(m = m)
+
+Sigma_sign = ifelse(sign(Sigma$Sq025)==sign(Sigma$Sq975),1,0)
+Sigma_plot = cov2cor(Sigma$Smean) * Sigma_sign
+colnames(Sigma_plot) = rownames(Sigma_plot) = colnames(Y)
+
+corrplot::corrplot(Sigma_plot,method="color" ,type="upper", order="hclust",
+                   addCoef.col = "black", # Ajout du coefficient de corrélation
+                    tl.col="black",tl.cex=2, diag=FALSE)
+```
+
+
+Plot trait environmental relationships.
+
+```{r}
+grid.length=200 #length of the gradient of the focal environmental variable
+Xnameplot = c("GDD","FDD")
+k=0 #counter
+
+for(i in 1:(ncol(X)-1)){#for each environmental variable
+  indexGradient=i
+
+  ###### Build the XGradient_new matrices (a dataset with the gradient of the focal variable
+  #     and all other ones set to their respective mean), one for open habitat and one for forests.
+
+  
+  # First build the gradient of the vocal variable
+  XGradientFocal_open=  seq(from=min(X[,indexGradient]),
+                            to=max(X[,indexGradient]),
+                            length.out=grid.length)
+  XGradientFocal_for=  seq(from=min(X[which(X[,"forest"]==1),indexGradient]),
+                           to=max(X[,indexGradient]),
+                           length.out=grid.length) 
+
+  # Fill the XGradient_new matrices
+  XGradient_new_open = matrix(nrow=grid.length,ncol=ncol(X))
+  XGradient_new_for = matrix(nrow=grid.length,ncol=ncol(X))
+
+  for(j in 1:ncol(X)){
+
+    if(j == indexGradient){
+
+      XGradient_new_open[,j] = XGradientFocal_open
+      XGradient_new_for[,j] = XGradientFocal_for
+
+    }else{
+      #in open habitat, forest=0
+      XGradient_new_open[,j] = mean(X[which(X[,"forest"]==0),j])
+      #in forest, forest=1
+      XGradient_new_for[,j] = mean(X[which(X[,"forest"]==1),j]) 
+    }
+
+  }
+
+  colnames(XGradient_new_open) =  colnames(XGradient_new_for) = colnames(X)
+
+  # Predict the value of traits when evaluated in XGradient_new matrices
+  PartialPredictions_for = jtdm_predict(m=m,Xnew=XGradient_new_for, FullPost="mean")
+  PartialPredictions_open = jtdm_predict(m=m,Xnew=XGradient_new_open, FullPost="mean")
+
+  # Build a plot for each trait-environment combination
+  for(j in 1:ncol(Y)){
+    k=k+1
+    assign(paste0("table_",k),
+           data.frame(x = c(XGradientFocal_for,XGradientFocal_open), 
+                      Predmean = c(PartialPredictions_for$PredMean[,j], 
+                                   PartialPredictions_open$PredMean[,j]),
+                      Pred975 = c(PartialPredictions_for$Predq975[,j],PartialPredictions_open$Predq975[,j]),
+                      Pred025=c(PartialPredictions_for$Predq025[,j],PartialPredictions_open$Predq025[,j]),
+                      type = c(rep("forest",times=grid.length),rep("open",times=grid.length))))
+
+    assign(paste0("p_",k), 
+           ggplot() + 
+             geom_line(data=get(paste0("table_",k)), aes(x=x, y=Predmean,col=type)) +
+             geom_ribbon(data=get(paste0("table_",k)),
+                         aes(x=x,y=Predmean,ymin=Pred025,ymax=Pred975,col=type),linetype=2,alpha=0.3)+
+             geom_rug(data=data.frame(x=X[,indexGradient]),aes(x=x),sides="b") +
+             xlab(Xnameplot[indexGradient]) + ylab(colnames(Y)[j]) + theme_minimal() #+  theme(legend.position="none")
+    )
+  }
+
+}
+
+# Put all the plots together
+eval(parse(text=paste0("p=as_ggplot(arrangeGrob(",paste(paste0("p_",c(1,4,2,5,3,6)),collapse=","),",nrow=3,ncol=2))")))
+p
+
+```
+
+Plot the partial response curves of the most suitable CLS and of envelope of CLSs for each pair of traits and each environmental variable (Figure 4a,5a, A5)
+
+```{r}
+for(t in 1:(ncol(X)-1)){ #for each env covariate
+  for(i in 1:(ncol(Y)-1)){
+    for(j in (i+1):ncol(Y)){ #for each pairwise combination of traits
+
+    # plot the curve
+    print(ellipse_plot(m,indexGradient=colnames(m$X_raw)[t],
+                 indexTrait = colnames(m$Y)[c(i,j)],FullPost=F,
+                 FixX=list(GDD=NULL,FDD=NULL,forest=0)))
+
+    }
+  }
+}
+
+```
+
+Build partial response plots for joint probabilities along all gradients, for all pairwise probabilities and for each of the four regions (joint-high, joint-low, disjoint). This corresponds to figures 4b, 5b, A6.
+
+```{r, warnings=FALSE}
+
+# This loop is quite long, it might take more than 1h depending on how long are the MCMC chains and whether you set parallel=T or not. In order for this to run faster, you can specify a lower number of mcmc.samples using the parameter mcmc.samples in the function joint_trait_prob_gradient.
+
+# For each environmental variable (except habitat that is a dummy variable)
+for(s in 1:(ncol(X)-1)){
+
+# i and j are all pairwise trait combinations
+ for(i in 1:(ncol(Y)-1)){
+
+   for(j in (i+1):ncol(Y)){
+
+     # k and l determine the region. k is for the first trait (i), l for the second one (j). P is when the         # given trait is above its mean, N when it is below  e.g. k="P" and l="P" is the joint high region.
+     # The exact bounds of the regions are defined below.
+     
+     # prepare dataset for plotting
+      JointCo_occGrad =as.data.frame(matrix(NA,ncol=1,nrow=100))
+
+     
+     EmpiricalCoOccPlot = data.frame(Coocc=NA, 
+                                     X=rep(X[,s],times=4),
+                                     id=rep("Observed points"),
+                                     region=c(rep("PP", times=length(X[,s])),
+                                              rep("PN", times=length(X[,s])),
+                                              rep("NP", times=length(X[,s])),
+                                              rep("NN", times=length(X[,s])))
+                                     )
+
+     for(k in c("P","N")){
+       for(l in c("P","N")){
+         #print(c(i,j,k,l)) #uncomment if you want to see the code updating
+
+         # Define bounds of the region
+         if(k=="P"){b1=c(mean(Y[,i]) , Inf)}else{b1=c(-Inf,mean(Y[,i]))}
+         if(l=="P"){b2=c(mean(Y[,j]) , Inf)}else{b2=c(-Inf,mean(Y[,j]))}
+         bounds=list(b1,b2) #bounds define the region in the community-trait space
+
+         #run the function
+         JointCo_occG = joint_trait_prob_gradient(m, indexTrait=colnames(m$Y)[c(i,j)],
+                                                     indexGradient=colnames(m$X_raw)[s], 
+                                                     bounds=bounds, grid.length=100,
+                                                     FixX = list(GDD=NULL,FDD=NULL,forest=0),
+                                                     FullPost=T,parallel = TRUE)
+          
+         JointCo_occGrad[,c(paste0(k,l,".mean"),
+                            paste0(k,l,".975"),
+                            paste0(k,l,".025"))] = cbind(JointCo_occG$GradProbsmean,
+                                                         JointCo_occG$GradProbsq975,
+                                                         JointCo_occG$GradProbsq025)
+
+
+         tableGrad = data.frame(x=JointCo_occGrad$gradient, 
+                                mean= JointCo_occGrad$GradProbsmean,
+                                   q02 = JointCo_occGrad$GradProbsq025,
+                                   q97 = JointCo_occGrad$GradProbsq975)
+
+
+          # Create the 0/1 dataset (1 if both traits are >0, 0 otherwise), 
+          # to change depending on the bounds
+
+          for(r in 1:nrow(Y)){
+              if(k=="P" & l=="P"){
+              if(Y[r,i]>mean(Y[,i]) & Y[r,j]>mean(Y[,j])){
+                EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="PP"),"Coocc"][r]=1
+                }else{EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="PP"),"Coocc"][r]=0}
+              }
+              if(k=="P" & l=="N"){
+                if(Y[r,i]>mean(Y[,i]) & Y[r,j]<mean(Y[,j])){
+                  EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="PN"),"Coocc"][r]=1
+                }else{EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="PN"),"Coocc"][r]=0
+                  }
+              }
+              if(k=="N" & l=="P"){
+                if(Y[r,i]>mean(Y[,i]) & Y[r,j]<mean(Y[,j])){
+                  EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="NP"),"Coocc"][r]=1
+                }else{EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="NP"),"Coocc"][r]=0
+                  }
+              }
+              if(k=="N" & l=="N"){
+                
+                if(Y[r,i]<mean(Y[,i]) & Y[r,j]<mean(Y[,j])) {
+                  EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="NN"),"Coocc"][r]=1
+                  }else{EmpiricalCoOccPlot[which(EmpiricalCoOccPlot$region=="NN"),"Coocc"][r]=0}
+              }
+
+              }
+
+       }
+     }
+     
+     # Formatting the table to plot
+     JointCo_occGrad = JointCo_occGrad[,-1]
+     JointCo_occGrad[,"X"] =  JointCo_occG$gradient # the gradient is the same
+      
+     
+     tableGrad = tidyr::gather(JointCo_occGrad,type,
+                               Probability, colnames(JointCo_occGrad)[-which(colnames(JointCo_occGrad)=="X")])
+     
+     tableGrad[,"region"]=gsub("\\..*", "",tableGrad$type) #removes everything after point
+
+     tableGrad[,"type"]=gsub("^.*\\.","",tableGrad$type)
+     
+     tableGrad = tidyr::spread(tableGrad, key="type", value = "Probability")
+     colnames(tableGrad)[c(3,4)]=c("q025","q975")
+     
+     tableGrad$region=as.factor(tableGrad$region)
+     levels(tableGrad$region)=c("NP","PP","NN","PN")
+     
+     EmpiricalCoOccPlot$region=as.factor(EmpiricalCoOccPlot$region)
+     levels(EmpiricalCoOccPlot$region)=c("NP","PP","NN","PN")
+
+     print(ggplot(data=tableGrad) + 
+              geom_ribbon(mapping=aes(x=X, ymin=q025, ymax=q975),
+                          position = position_dodge(0.3), size=1,alpha=0.2) +
+              geom_line(mapping=aes(x=X, y=mean), size=1,
+                        position=position_dodge(width=0.3),
+                        col="#F8766D")+
+              geom_point(data=EmpiricalCoOccPlot,
+                         mapping=aes(x=X, y=Coocc), 
+                         alpha=0.2,col="#00BFC4")+
+              ggtitle(paste0("Joint probabilities of ",
+                             colnames(Y)[i]," and ",colnames(Y)[j] ,
+                             " as a function of ",colnames(X)[s])) +
+              xlab("") + ylab("") + theme(plot.title = element_text(hjust = 0.5),
+                                          plot.background = element_rect(fill = "white",
+                                                                         colour = NA),
+                                          panel.background = element_rect(fill = "white",
+                                                                          colour = NA),
+                                          panel.grid.major = element_line(colour="grey",
+                                                                          size=0.5)) +
+              facet_wrap(.~region) )
+   }
+ }
+}
+
+
+```
+We now load the environmental rasters in the French Alps in order to predict the joint distribution of traits.
+
+```{r}
+load(file="env_alp_stack.Rdata")
+
+# plot
+plot(env_alp_stack)
+
+# Some data formatting
+env_alp_stack.df=as.data.frame(env_alp_stack,xy=T)
+
+# add Id column
+env_alp_stack.df[,"Id"]=1:nrow(env_alp_stack.df)
+# add isna column (pixels to be removed)
+env_alp_stack.df[,"isna"] = apply(env_alp_stack.df,MARGIN=1,FUN=function(x) ifelse(length(which(is.na(x)))>0,TRUE,FALSE))
+
+# remove na pixels
+X.df.xy = env_alp_stack.df[which(!env_alp_stack.df$isna),]
+X.df = X.df.xy
+
+#change rownames
+rownames(X.df) = X.df$Id
+#take only covariates to predict
+X.df=subset(X.df,select=-c(Id,isna))
+# reorder according to the original X
+X.df=X.df[,colnames(X)]
+# transform to numeric
+X.df=apply(X.df,MARGIN=c(1,2),FUN=as.numeric)
+
+```
+
+Predict the marginal value of each trait
+```{r}
+# We only take the posterior mean
+AlpPred=as.data.frame(jtdm_predict(m=m, Xnew=X.df, Ynew = NULL, validation = F, FullPost=F)$PredMean)
+head(AlpPred)
+
+AlpPred[,"Id"]=rownames(AlpPred)
+#merge
+AlpPredXY=merge(X.df.xy,AlpPred,by="Id")
+
+p1=ggplot(AlpPredXY, aes(x=x,y=y)) +
+  geom_raster(aes(fill=SLA)) +ggtitle("SLA")+theme_classic()
+#Height
+p2=ggplot(AlpPredXY, aes(x=x,y=y)) +
+  geom_raster(aes(fill=Height)) +ggtitle("Height") +theme_classic()
+
+#LNC
+p3=ggplot(AlpPredXY, aes(x=x,y=y)) +
+  geom_raster(aes(fill=LNC)) +ggtitle("LNC")+theme_classic()
+
+grid.arrange(p1,p2,p3,nrow=2,ncol=2)
+```
+
+Plot the predictions of the three traits in the RGB space (Figure A7)
+``` {r, warnings=FALSE, message=FALSE}
+AlpPredXY.col=data.frame(AlpPredXY,col=colors3d(AlpPredXY[,c("SLA","LNC","Height")]))
+
+ggplot(AlpPredXY.col, aes(x=x,y=y)) + theme_classic()+
+      geom_raster(aes(fill=as.factor(col))) +
+      theme(legend.position="none")  +
+      eval(parse(text=paste0("scale_fill_manual(values=c(",paste(paste0('"',unique(AlpPredXY.col$col),'"',"=",'"',unique(AlpPredXY.col$col),'"'),collapse = ","),"))")))
+
+```
+
+Then compute and plot the joint probabilities (Figure 6, A8). This can take ~15minutes.
+```{r,warnings=FALSE}
+env_alp_stack_pred.df=merge(env_alp_stack.df,subset(AlpPredXY.col,select=-c(x,y,forest,GDD,FDD,isna)),by="Id",all.x=T)
+
+Xnew=X.df
+
+JointCo_occProb=as.data.frame(matrix(NA,ncol=1,nrow=nrow(Xnew)))
+rownames(JointCo_occProb)=rownames(Xnew)
+for(i in 1:(ncol(Y)-1)){
+  for(j in (i+1):ncol(Y)){
+
+    for(k in c("P","N")){
+      for(l in c("P","N")){
+
+        #print(paste0(i,j,k,l)) # uncomment to see the code updating
+
+        # Define bounds of the region
+        if(k=="P"){b1=c(mean(Y[,i]) , Inf)}else{b1=c(-Inf,mean(Y[,i]))}
+        if(l=="P"){b2=c(mean(Y[,j]) , Inf)}else{b2=c(-Inf,mean(Y[,j]))}
+        bounds=list(b1,b2) #bounds define the region in the community-trait space
+
+        JointCo_occProb[,paste0("JointProb_",
+                                colnames(Y)[i],
+                                "_",colnames(Y)[j],
+                                "_",k,l)] = joint_trait_prob(m,
+                                                             indexTrait=colnames(m$Y)[c(i,j)],
+                                                             Xnew=Xnew, 
+                                                             bounds=bounds,
+                                                             FullPost = F)$PROBmean
+
+      }
+    }
+  }
+}
+
+JointCo_occProb=JointCo_occProb[,-1]
+JointCo_occProb[,"Id"]=rownames(JointCo_occProb)
+
+env_alp_stack_pred.df=merge(env_alp_stack_pred.df,JointCo_occProb,by="Id",all.x=T)
+
+for(i in 1:(ncol(Y)-1)){
+  for(j in (i+1):ncol(Y)){
+
+
+    t =  env_alp_stack_pred.df[,c("x","y",
+                                  paste0("JointProb_",
+                                         colnames(Y)[i],"_",
+                                         colnames(Y)[j],"_PP"),
+                                  paste0("JointProb_",
+                                         colnames(Y)[i],"_",
+                                         colnames(Y)[j],"_PN"),
+                                  paste0("JointProb_",
+                                         colnames(Y)[i],"_",
+                                         colnames(Y)[j],"_NP"),
+                                  paste0("JointProb_",
+                                         colnames(Y)[i],"_",
+                                         colnames(Y)[j],"_NN"))]
+    
+    colnames(t)[3:ncol(t)]=c("2.PP","4.PN","1.NP","3.NN")
+    
+    t=tidyr::gather(t,type,Probability,c("2.PP","4.PN","1.NP","3.NN"))
+
+
+    print(ggplot(t, aes(x=x,y=y)) + theme_classic()+
+            geom_raster(aes(fill=Probability)) +
+            scale_fill_viridis_c(na.value = "white")+ facet_wrap(.~type) +
+            ggtitle(paste0("Joint Probabilities of ",
+                           colnames(Y)[i], " and ", 
+                           colnames(Y)[j])) +
+            theme_classic() )
+
+  }
+}
+
+```

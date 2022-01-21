@@ -1,6 +1,8 @@
 Vignette
 ================
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # Fitting and evaluating a join trait distribution model
 
 In this vignette we explain how to fit, evaluate and interpret a joint
@@ -35,21 +37,7 @@ Once JAGS has been installed, the following code should run:
 
 ``` r
 library(devtools)
-```
-
-    ## Le chargement a nécessité le package : usethis
-
-``` r
 install_github("giopogg/jtdm")
-```
-
-    ## Downloading GitHub repo giopogg/jtdm@HEAD
-
-    ## Installing 1 packages: cli
-
-    ## installation du package source 'cli'
-
-``` r
 library(jtdm)
 library(ggplot2)
 library(coda)
@@ -177,14 +165,14 @@ predictions$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.5846196 0.3494882 0.5201757
+    ## 0.5863105 0.3509591 0.5210779
 
 ``` r
 predictions$RMSE
 ```
 
     ##      SLA      LNC   Height 
-    ## 7.637141 2.809050 9.140805
+    ## 7.613014 2.802277 9.133450
 
 We can evaluate the performances of the model using a K-fold
 cross-validation using the function `jtdmCV`
@@ -198,13 +186,13 @@ predictionsCV$R2
 ```
 
     ##       SLA       LNC    Height 
-    ## 0.5101005 0.2333333 0.4774889
+    ## 0.5125966 0.2019361 0.4643928
 
 ``` r
 predictionsCV$RMSE
 ```
 
-    ## [1]  8.218728  3.063258 10.105508
+    ## [1] 8.107387 3.188259 9.826536
 
 We can now analyse the inferred trait-environment relationships using
 the function `partial_response`, that computes and plots the partial
@@ -299,8 +287,8 @@ a high altitude site.
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ```
 
-    ##          1 
-    ## 0.09052488
+    ##         1 
+    ## 0.1095728
 
 Unsurprisingly, the probability is low. Then, we compute how this
 probability vary along the GDD gradient using the function
