@@ -11,17 +11,19 @@
 #' @return Plot of the partial response curve of the pairwise most suitable community-level strategy and of the pairwise envelop of possible community-level strategy
 #' @export
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-#'         burnin = 100,  \cr
-#'         sample = 100)  \cr
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
+#'         burnin = 100,  
+#'         sample = 100)  
 #'
 #' # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 #' ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
-#' #  plot the pairwise SLA-LNC partial response curve along the GDD gradient in forest (i.e. when forest=1)
-#' ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",FixX=list(GDD=NULL,FDD=NULL,forest=1))
+#' #  plot the pairwise SLA-LNC partial response curve along the GDD gradient
+#' #  in forest (i.e. when forest=1)
+#' ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",
+#'              FixX=list(GDD=NULL,FDD=NULL,forest=1))
 ellipse_plot = function(m,indexGradient,indexTrait,FullPost=F, grid.length=20, FixX=NULL, confL= 0.95){
 
   indexGradient = which(colnames(m$X_raw) == indexGradient)

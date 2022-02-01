@@ -5,7 +5,7 @@
 \alias{jtdm}
 \title{jtdm.}
 \description{
-A longer description would go here.
+Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. In prep.
 }
 \author{
 Giovanni Poggiato \email{giov.poggiato@gmail.com}

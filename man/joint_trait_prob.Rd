@@ -30,13 +30,7 @@ joint_trait_prob(
 \item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
 \value{
-A list containing:\tabular{ll}{
-   \code{PROBsamples} \tab Samples from the posterior distribution of the joint probability.NULL if FullPost=FALSE. \cr
-   \tab \cr
-   \code{PROBmean} \tab Posterior mean of the joint probability. \cr
-   \tab \cr
-   \code{PROBq975,PROBq025} \tab 97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. \cr
-}
+
 }
 \description{
 Computes the joint probability of CWM traits in regions in the community-trait space specified by bounds and in sites specified in Xnew.
@@ -45,12 +39,13 @@ Computes the joint probability of CWM traits in regions in the community-trait s
 This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
 }
 \examples{
-data(Y)  \cr
-data(X)  \cr
+data(Y)  
+data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-        burnin = 100,  \cr
-        sample = 100)  \cr
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
+        burnin = 100,
+        sample = 100)  
 # Compute probability of SLA and LNC to be joint-high at sites in the studies
-joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"), bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"),
+                         bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 }

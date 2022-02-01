@@ -15,20 +15,10 @@ jtdm_predict(m = m, Xnew = NULL, Ynew = NULL, validation = F, FullPost = T)
 
 \item{validation}{boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.}
 
-\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}). \cr}
+\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).}
 }
 \value{
-A list containing:\tabular{ll}{
-   \code{Pred} \tab Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.\cr
-   \tab \cr
-   \code{PredMean} \tab Posterior mean of posterior predictive distribution \cr
-   \tab \cr
-   \code{Predq975,Predq025} \tab 97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE. \cr
-   \tab \cr
-   \code{R2} \tab R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. \cr
-   \tab \cr
-   \code{RMSE} \tab Root square mean error between  squared of predictions. NULL if validation=FALSE.\cr
-}
+
 }
 \description{
 Obtains predictions from a fitted joint trait distribution model and optionally computes their R squared and root mean square error (RMSE)
@@ -37,8 +27,8 @@ Obtains predictions from a fitted joint trait distribution model and optionally 
 To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
 }
 \examples{
-data(Y)  \cr
-data(X)  \cr
+data(Y)  
+data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
 m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
         burnin = 100,

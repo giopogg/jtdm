@@ -5,23 +5,23 @@
 #' @param Xnew optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used
 #' @param validation  boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.
 #' @param Ynew   Optional. The observed response variables at sites specified in Xnew. It is used to compute goodness of fit metrics when validation= T.
-#' @param FullPost   The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}). \cr
+#' @param FullPost   The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}). 
 #' @details To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
 #' @export
-#' @return A list containing:\tabular{ll}{
-#'    \code{Pred} \tab Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.\cr
-#'    \tab \cr
-#'    \code{PredMean} \tab Posterior mean of posterior predictive distribution \cr
-#'    \tab \cr
-#'    \code{Predq975,Predq025} \tab 97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE. \cr
-#'    \tab \cr
-#'    \code{R2} \tab R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. \cr
-#'    \tab \cr
-#'    \code{RMSE} \tab Root square mean error between  squared of predictions. NULL if validation=FALSE.\cr
+#' @return A list containing:
+#'    \item{Pred}{Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.}
+#'    
+#'    \item{PredMean}{Posterior mean of posterior predictive distribution }
+#'    
+#'    \item{Predq975,Predq025}{97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE. }
+#'    
+#'    \item{R2}{R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. }
+#'    
+#'    \item{RMSE}{Root square mean error between  squared of predictions. NULL if validation=FALSE.}
 #' }
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
 #' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
 #'         burnin = 100,

@@ -10,24 +10,18 @@ get_sigma(m)
 \item{m}{a model fitted with \code{jtdm_fit}}
 }
 \value{
-A list containing:\tabular{ll}{
-   \code{Ssamples} \tab Sample from the posterior distribution of the residual covariance matrix. It is an array where the first two dimensions are the rows and columns of the matrix, and the third dimensions are the samples from the posterion distribution \cr
-   \tab \cr
-   \code{Smean} \tab Posterior mean of the residual covariance matrix. \cr
-   \tab \cr
-   \code{Sq975,Sq025} \tab 97.5\% and 0.25\% posterior quantiles of the residual covariance matrix. \cr
-}
+
 }
 \description{
 Get the samples from the posterior distribution of the residual covariance matrix, together with the posterior mean and quantiles.
 }
 \examples{
-data(Y)  \cr
-data(X)  \cr
+data(Y)  
+data(X) 
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-        burnin = 100,  \cr
-        sample = 100)  \cr
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
+        burnin = 100, 
+        sample = 100) 
 # get the inferred residual covariance
 Sigma =get_sigma(m)
 }

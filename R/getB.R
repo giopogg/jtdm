@@ -3,20 +3,18 @@
 #' Get the samples from the posterior distribution of the regression coefficient matrix B, together with the posterior mean and quantiles. The regression coefficient matrix B is a matrix where the number of rows is defined by the number of traits that are modelled, and the number of columns is the number of columns of the matrix m$X (the number of explanatory variables after transformation via formula)
 #' @param m a model fitted with \code{jtdm_fit}
 #' @export
-#' @return A list containing:\tabular{ll}{
-#'    \code{Bsamples} \tab Sample from the posterior distribution of the regression coefficient matrix. It is an array where the first dimension is the number of traits, the second the number of columns in m$X (the number of variables after transformation via formula) and the third the number of MCMC samples. \cr
-#'    \tab \cr
-#'    \code{Bmean} \tab Posterior mean of the regression coefficient matrix. \cr
-#'    \tab \cr
-#'    \code{Bq975,Bq025} \tab 97.5\% and 0.25\% posterior quantiles of the regression coefficient matrix. \cr
-#' }
+#' @return A list containing:
+#'    \item{Bsamples}{Sample from the posterior distribution of the regression coefficient matrix. It is an array where the first dimension is the number of traits, the second the number of columns in m$X (the number of variables after transformation via formula) and the third the number of MCMC samples.}
+#'    \item{Bmean}{Posterior mean of the regression coefficient matrix.}
+#'    \item{Bq975,Bq025}{97.5\% and 0.25\% posterior quantiles of the regression coefficient matrix.}
+#' 
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-#'         burnin = 100,  \cr
-#'         sample = 100)  \cr
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
+#'         burnin = 100, 
+#'         sample = 100) 
 #' # get the inferred regression coefficients
 #' B=getB(m)
 

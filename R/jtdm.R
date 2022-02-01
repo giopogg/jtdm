@@ -1,6 +1,6 @@
 #' jtdm.
 #'
-#' A longer description would go here.
+#' Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. In prep.
 #'
 #'
 #' @docType package

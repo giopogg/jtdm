@@ -7,24 +7,23 @@
 #' @param adapt,burnin,sample,n.chains,monitor Parameters of the MCMC sampler. See \code{?run.jags} for details
 #' @export
 #' @details A formula has an implied intercept term. To remove this use either y ~ x - 1 or y ~ 0 + x. See formula for more details of allowed formulae.
-#' @return A list containing:\tabular{ll}{
-#'    \code{model} \tab An object of class 'runjags' containing the fitted model \cr
-#'    \tab \cr
-#'    \code{Y} \tab A numeric vector of standard errors on parameters \cr
-#'    \tab \cr
-#'    \code{X_raw} \tab The design matrix specified as input \cr
-#'    \tab \cr
-#'    \code{X} \tab The design matrix transformed as specified in formula \cr
-#'    \tab \cr
-#'    \code{formula} \tab The formula specified as input \cr
+#' @return A list containing:
+#'    \item{model}{ An object of class 'runjags' containing the fitted model.}
+#'    \item{Y}{A numeric vector of standard errors on parameters}
+#'    
+#'    \item{X_raw}{The design matrix specified as input}
+#'    
+#'    \item{X}{The design matrix transformed as specified in formula}
+#'    
+#'    \item{formula}{The formula specified as input}
 #' }
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#'m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-#'         burnin = 100,  \cr
-#'         sample = 100)  \cr
+#'m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
+#'         burnin = 100,  
+#'         sample = 100)  
 
 jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
                 formula,

@@ -9,23 +9,24 @@
 #' @param mcmc.samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
 #' @param parallel Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.
 #' @export
-#' @return A list containing:\tabular{ll}{
-#'    \code{PROBsamples} \tab Samples from the posterior distribution of the joint probability.NULL if FullPost=FALSE. \cr
-#'    \tab \cr
-#'    \code{PROBmean} \tab Posterior mean of the joint probability. \cr
-#'    \tab \cr
-#'    \code{PROBq975,PROBq025} \tab 97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. \cr
+#' @return A list containing:
+#'    \item{PROBsamples}{Samples from the posterior distribution of the joint probability.NULL if FullPost=FALSE. }
+#'    
+#'    \item{PROBmean}{Posterior mean of the joint probability.}
+#'    
+#'    \item{PROBq975,PROBq025}{97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. }
 #' }
 #' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-#'         burnin = 100,  \cr
-#'         sample = 100)  \cr
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
+#'         burnin = 100,
+#'         sample = 100)  
 #' # Compute probability of SLA and LNC to be joint-high at sites in the studies
-#' joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"), bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+#' joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"),
+#'                          bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
 joint_trait_prob = function(m, indexTrait, bounds, Xnew=NULL, FullPost=T, mcmc.samples=NULL, parallel=FALSE){
 
   ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains

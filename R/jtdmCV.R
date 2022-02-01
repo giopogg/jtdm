@@ -7,24 +7,24 @@
 #' @param Ynew Optional. The observed response variables at sites specified in Xnew. It is used to compute goodness of fit metrics when validation= T.
 #' @param adapt,burnin,sample,n.chains  Parameters of the MCMC sampler. See \code{?run.jags} for details
 #' @export
-#' @return A list containing:\tabular{ll}{
-#'    \code{Pred} \tab Sample from the posterior predictive distribution in cross validation. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE. \cr
-#'    \tab \cr
-#'    \code{PredMean} \tab Posterior mean of posterior predictive distribution in cross validation. \cr
-#'    \tab \cr
-#'    \code{Predq975,Predq025} \tab 97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution in cross validation. NULL if FullPost=FALSE. \cr
-#'    \tab \cr
-#'    \code{R2} \tab R squared of predictions in cross validation. \cr
-#'    \tab \cr
-#'    \code{RMSE} Root square mean error between  squared of predictions in cross validation.
-#' }
+#' @return A list containing:
+#'    \item{Pred}{Sample from the posterior predictive distribution in cross validation. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE. }
+#'    
+#'    \item{PredMean}{Posterior mean of posterior predictive distribution in cross validation. }
+#'    
+#'    \item{Predq975,Predq025}{97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution in cross validation. NULL if FullPost=FALSE. }
+#'    
+#'    \item{R2}{R squared of predictions in cross validation. }
+#'    
+#'    \item{RMSE}{Root square mean error between  squared of predictions in cross validation.}
+#'
 #' @examples
-#' data(Y)  \cr
-#' data(X)  \cr
+#' data(Y)  
+#' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-#'         burnin = 100,  \cr
-#'         sample = 100)  \cr
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
+#'         burnin = 100,  
+#'         sample = 100)  
 #' # Run 5-fold cross validation on m
 #' pred = jtdmCV(m, K=5)
 jtdmCV = function(m, K = 5,

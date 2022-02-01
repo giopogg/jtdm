@@ -30,26 +30,25 @@ partial_response(
 \item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term B\%*\%X). Default to "mean", here FullPost cannot be FALSE.}
 }
 \value{
-A list containing:\tabular{ll}{
-   \code{p} \tab A plot of the trait-environment relationship. \cr
-   \tab \cr
-   \code{predictions} \tab A data frame containing the predicted trait-environmental relationships including the gradient of the focal environmental variable, mean trait predictions and quantiles (can be useful to code customized plot). \cr
-}
+A list containing:
+   \item{p}{A plot of the trait-environment relationship.}
+   \item{predictions}{A data frame containing the predicted trait-environmental relationships including the gradient of the focal environmental variable, mean trait predictions and quantiles (can be useful to code customized plot).}
 }
 \description{
 Computes and plots the trait-environment relationship of a given CWM trait and a focal environmental variable. In order to build the response curve, the function builts a dataframe where the focal environmental variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values).
 }
 \examples{
-data(Y)  \cr
-data(X)  \cr
+data(Y)  
+data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  \cr
-        burnin = 100,  \cr
-        sample = 100)  \cr
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
+        burnin = 100,  
+        sample = 100)  
 # SLA-GDD relationship
 plot = partial_response(m,indexGradient="GDD",indexTrait="SLA")
 plot$p
 # SLA-GDD relationship in forest (i.e. when forest=1)
-plot = partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))
+plot = partial_response(m,indexGradient="GDD",indexTrait="SLA",
+                        FixX=list(GDD=NULL,FDD=NULL,forest=1))
 plot$p
 }
