@@ -43,6 +43,7 @@ Once JAGS has been installed, the following code should run:
 library(devtools)
 install_github("giopogg/jtdm")
 ```
+## Running a jtdm
 
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
@@ -109,3 +110,6 @@ And we plot it.
 
 As climatic conditions become more favourable (i.e. GDD increases), the
 probability of having high values of both traits increases.
+
+## Author
+This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS.
