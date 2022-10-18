@@ -1,20 +1,27 @@
 ---
+title: "R package 'jtdm'"
+author: "Giovanni Poggiato"
+date: "17/10/22"
+# output: 
+#   slidy_presentation: 
+#     fig_height: 8
+#     fig_width: 10
 output: github_document
+always_allow_html: true
 ---
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r global_options,include=FALSE}
- knitr::opts_chunk$set(fig.path='README_files/figure-gfm/')
+```{r chunk-name, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.path = "man/figures/"
+)
 ```
- 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
 
 
 # jtdm - Joint trait distribution modeling
@@ -96,6 +103,7 @@ ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position =
 ```
 
 
-
-
 As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.
+
+## Author
+This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS.

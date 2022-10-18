@@ -1,5 +1,7 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+R package ‘jtdm’
+================
+Giovanni Poggiato
+17/10/22
 
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
@@ -43,7 +45,6 @@ Once JAGS has been installed, the following code should run:
 library(devtools)
 install_github("giopogg/jtdm")
 ```
-## Running a jtdm
 
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
@@ -59,11 +60,8 @@ data(Y)
 data(X)
 # Short MCMC to obtain a fast example: results are unreliable !
 m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100)
-```
+## module dic loaded
 
-    ## module dic loaded
-
-``` r
 # Inferred parameters
 getB(m)$Bmean
 get_sigma(m)$Smean
@@ -83,7 +81,7 @@ GDD gradient.
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](man/figures/unnamed-chunk-3-1.png)<!-- -->
 
 Computes joint probabilities of both SLA and LNC to be greater than 20
 in a high altitude site. This measures the relative suitability of
@@ -92,10 +90,9 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
+##         1 
+## 0.1116787
 ```
-
-    ##         1 
-    ## 0.1568279
 
 Unsurprisingly, the probability is low. Then, we compute how this
 probability varies along the GDD gradient.
@@ -106,10 +103,12 @@ joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD"
 
 And we plot it.
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](man/figures/unnamed-chunk-6-1.png)<!-- -->
 
 As climatic conditions become more favourable (i.e. GDD increases), the
 probability of having high values of both traits increases.
 
 ## Author
-This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS.
+
+This package is currently developed by Giovanni Poggiato from
+Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS.
