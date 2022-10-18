@@ -1,0 +1,10 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  Alpine_grasslands: Alpine_grasslands.html
+last_built: 2022-10-18T12:55Z
+urls:
+  reference: https://giopogg.github.io/jtdm/reference
+  article: https://giopogg.github.io/jtdm/articles
+
