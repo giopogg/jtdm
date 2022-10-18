@@ -91,7 +91,7 @@ site.
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ##         1 
-## 0.1116787
+## 0.1230291
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
@@ -111,4 +111,8 @@ probability of having high values of both traits increases.
 ## Author
 
 This package is currently developed by Giovanni Poggiato from
-Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS.
+Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The
+framework implemented in this package is described in: Joint modeling
+and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre,
+Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle,
+Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.

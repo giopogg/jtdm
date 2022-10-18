@@ -2,13 +2,14 @@ Package: jtdm
 Type: Package
 Title: Joint modelling of function traits
 Version: 0.1.0
-Author: Giovanni Poggiato
-Maintainer: Giovanni Poggiato <giov.poggiato@gmail.com>
 Description: Joint modelling of functional traits.
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: arm, rjags, runjags, mvtnorm, mcmcplots, ggplot2, ggforce, coda, MASS, parallel
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
+Authors@R: 
+    person("Giovanni", "Poggiato", , "giov.poggiato@gmai.com", role = c("aut","cre","man"),
+           comment = c(ORCID = "0000-0003-1957-9764"))

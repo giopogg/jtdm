@@ -1,30 +1,28 @@
 ---
-title: "Vignette"
+title: "Alpine_grasslands"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{Alpine_grasslands}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+fig_width: 10
+fig_height: 5 
 ---
 
-
 ```{r global_options,include=FALSE}
- knitr::opts_chunk$set(fig.path='figures/')
-```
- 
-```{r setup,include=FALSE}
+knitr::opts_chunk$set(fig.path='figures/')
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-
 
 # Fitting and evaluating a join trait distribution model
 
 In this vignette we explain how to fit, evaluate and interpret a joint trait distribution model (JTDM). We refer to Poggiato et al., in prep. "Joint models and predictions of community traits" for the full description of JTDMs, and we rather focus here on presenting the R package \code{jtdm} by applying it to the dataset of the case study presented in the publication.
 
+## Installing the R package
 
-# Installing the R package
-
-### R-package
 The package implements JTDMs using the Markov Chain Monte Carlo (MCMC) Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:
 
 
@@ -49,6 +47,8 @@ library(ggplot2)
 library(coda)
 ```
 
+# Fit a jtdm to data
+
 JTDMs relate a vector of average community traits (e.g. community weighted mean, CWM) to a vector of environmental covariates. The matrix Y contains the CWM traits of specific leaf area (SLA), leaf nitrogen content (LNC) and plant height of 116 plant community sites situated along 21 elevational gradients (www.orchamp.osug.fr) in the French Alps. 
 ```{r Y}
 data(Y)
@@ -67,6 +67,7 @@ JTDMs infer a linear regression for each CWM trait as a function of the environm
 # Short MCMC to obtain a fast example: results are unreliable !
 m = jtdm_fit(Y=Y, X=X, formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),  adapt = 10, burnin = 100, sample = 100, n.chains = 2)
 ```
+## Convergence checks
 
 Once the model has ran, we should check for the convergence of the MCMC chains.
 ``` {r,warning=FALSE}
@@ -82,6 +83,7 @@ ggplot(data = table, aes(x=x)) + geom_histogram(color="darkblue", fill="lightblu
   ggtitle("Effective sample size") + xlab("") + ylab("nESS") + theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
 ```
 
+## Get parameters
 
 Since we ran the JTDM with very short chains, the MCMC has not converged. You can try to run the model with longer chains and check its convergence.
 
@@ -94,6 +96,9 @@ B=getB(m)
 ```{r}
 Sigma=get_sigma(m)$Smean
 ```
+
+## Predict and evaluate model fit
+
 We can predict CWM traits on a (new) set of sites using `jtdm_predict`. Here, we predict on the training dataset and compute goodness of fit measures of these predictions like $R^2$ and RMSE, by setting `validation=TRUE`. We can choose whether to obtain the full posterior predictive distribution (`FullPost=TRUE` which is more time consuming) or just its posterior mean (`FullPost=FALSE`, which we advice if the aim is to only compute goodness of fit measures).
 ```{r}
 predictions = jtdm_predict(m,Xnew=X,Ynew=Y,validation=T, FullPost=F)
@@ -108,6 +113,9 @@ predictionsCV = jtdmCV(m,K=5)
 predictionsCV$R2
 predictionsCV$RMSE
 ```
+
+## Trait-environment relationships
+
 We can now analyse the inferred trait-environment relationships using the function `partial_response`, that computes and plots the partial response curve of a focal trait along a focal environmental gradient. This function takes as input the model `m`, the focal environmental variable `indexGradient` and the focal trait `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a dataset of environmental variables by building the gradient of the focal environmental variable and keeping all other variables fixed to their mean. Then, it predicts the marginal distribution of the focal trait for the so-built environmental dataset. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost="mean"`, which we advice here), or just the posterior mean (`FullPost="mean"`). The function outputs are the plot of the inferred trait-environment relationship and the predictions of the model (used to produce the plot). For example, we can plot the partial response curve relationship between SLA and GDD
 ```{r}
 partial_response(m,indexGradient="GDD",indexTrait="SLA")$p
@@ -118,7 +126,7 @@ The user can eventually provide a given gradient for the focal environmental var
 ```{r}
 partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
 ```
-
+## Multivariate confidence intervals
 
 We can then compute the partial response curves of pairwise CWM trait combinations together with their $95\%$ credible region, what we define in the publication as the most suitable CLS and envelop of possible CLSs. This is done by the function `ellipse_plot`, that takes as input the model `m`, the focal environmental variable `indexGradient` and the two focal traits `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a gradient of the focal environmental variable while keeping all other variables fixed to their mean, and then predict and plots the joint distribution of the focal traits. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost=F`, which we advice here to obtain smoother curves).
 
@@ -133,6 +141,8 @@ The user can also choose to fix the non-focal environmental variables to another
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",FixX=list(GDD=NULL,FDD=NULL,forest=1))
 ```
+
+## Joint predictions
 
 The `jtdm` package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function `joint_trait_prob`. To define a given region in the community-trait space, the user has to define the focal traits `indexTrait` (any number of traits is accepted) and trait-specific tresholds through the parameter `bounds`. `bounds` is a list of the length of `indexTrait`, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), `bounds=list(c(20,Inf),c(20,Inf))` corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
 
@@ -153,13 +163,15 @@ We can then plot such predictions.
 table = data.frame(x=joint$gradient, mean= joint$GradProbsmean,
                                    q02 = joint$GradProbsq025,
                                    q97 = joint$GradProbsq975)
-ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +              ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
+ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position = position_dodge(0.3), size=1,alpha=0.2) + geom_line(mapping=aes(x=x, y=mean), size=1, position=position_dodge(width=0.3),col="#F8766D") + xlab("GDD")  + theme_classic() +
+  ggtitle("Joint probability of SLA and LNC to be both greater than 10 as a function of GDD")
 ```
 
 
 As climatic conditions become more favorable (i.e. GDD increases), the probability of having high values of both traits increases.
 
-
+# Author
+This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: Joint modeling and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre, Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle, Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.
 
 
 

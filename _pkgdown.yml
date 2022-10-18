@@ -10,7 +10,7 @@ navbar:
       text: "Vignettes"
       menu:
       - text: "Alpine grasslands"
-        href: articles/vignette.html
+        href: articles/Alpine_grasslands.html
 reference:
 - title: Run jtdm
   desc: |
