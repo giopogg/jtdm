@@ -20,8 +20,6 @@ publications in this repo.
 
 ## Installing the R package
 
-### R-package
-
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
 the installation of JAGS. Its installation is easy and depends on your
@@ -46,6 +44,8 @@ library(devtools)
 install_github("giopogg/jtdm")
 ```
 
+## Fit a jtdm to data
+
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian
 modeling software JAGS via the R package runjags. Therefore, it requires
 the installation of both JAGS and runjags.
@@ -67,11 +67,17 @@ getB(m)$Bmean
 get_sigma(m)$Smean
 ```
 
-Trait-environment relationships
+###Trait-environment relationships
+
+Single-trait trait-environment relationships
 
 ``` r
- partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
+partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
 ```
+
+![](man/figures/unnamed-chunk-3-1.png)<!-- -->
+
+### Joint trait-environment relationships
 
 Partial response curve of the most suitable community-level strategy and
 envelop of possible community-level strategies of SLA and LNC along the
@@ -81,7 +87,9 @@ GDD gradient.
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-![](man/figures/unnamed-chunk-3-1.png)<!-- -->
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
+
+### Joint probabilities
 
 Computes joint probabilities of both SLA and LNC to be greater than 20
 in a high altitude site. This measures the relative suitability of
@@ -90,8 +98,8 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-##         1 
-## 0.1230291
+##          1 
+## 0.07278849
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
@@ -103,7 +111,7 @@ joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD"
 
 And we plot it.
 
-![](man/figures/unnamed-chunk-6-1.png)<!-- -->
+![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
 As climatic conditions become more favourable (i.e. GDD increases), the
 probability of having high values of both traits increases.

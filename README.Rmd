@@ -34,7 +34,6 @@ The package jtdm implements the method described in Poggiato et al., in prep. Jo
 
 ## Installing the R package
 
-### R-package
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:
 
 
@@ -56,6 +55,8 @@ library(devtools)
 install_github("giopogg/jtdm")
 ```
 
+## Fit a jtdm to data
+
 The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of both JAGS and runjags. 
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
@@ -72,17 +73,25 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 getB(m)$Bmean
 get_sigma(m)$Smean
 ```
-Trait-environment relationships
-``` r
- partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
- ```
+###Trait-environment relationships
+
+Single-trait trait-environment relationships
+``` {r}
+partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
+```
+
+### Joint trait-environment relationships
+ 
  
 Partial response curve of the most suitable community-level strategy and envelop of possible community-level strategies of SLA and LNC along the GDD gradient.
+
 ```{r}
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
+### Joint probabilities
 Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
+
 ```{r}
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 
