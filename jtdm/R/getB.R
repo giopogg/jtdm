@@ -7,7 +7,6 @@
 #'    \item{Bsamples}{Sample from the posterior distribution of the regression coefficient matrix. It is an array where the first dimension is the number of traits, the second the number of columns in m$X (the number of variables after transformation via formula) and the third the number of MCMC samples.}
 #'    \item{Bmean}{Posterior mean of the regression coefficient matrix.}
 #'    \item{Bq975,Bq025}{97.5\% and 0.25\% posterior quantiles of the regression coefficient matrix.}
-#' 
 #' @examples
 #' data(Y)  
 #' data(X)
@@ -17,9 +16,8 @@
 #'         sample = 100) 
 #' # get the inferred regression coefficients
 #' B=getB(m)
-
-
-
+#' @importFrom stats quantile
+#' @importFrom coda as.mcmc
 
 getB=function(m){
 

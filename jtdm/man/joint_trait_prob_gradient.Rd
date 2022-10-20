@@ -73,5 +73,5 @@ joint = joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"),
                                   indexGradient="GDD",
                                   bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
                                   FixX=list(GDD=NULL,FDD=NULL,forest=1))
-                                  
+                     
 }

@@ -15,7 +15,6 @@
 #'    \item{PROBmean}{Posterior mean of the joint probability.}
 #'    
 #'    \item{PROBq975,PROBq025}{97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. }
-#' }
 #' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
 #' @examples
 #' data(Y)  
@@ -27,6 +26,9 @@
 #' # Compute probability of SLA and LNC to be joint-high at sites in the studies
 #' joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"),
 #'                          bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+#' @importFrom parallel mclapply detectCores
+#' @importFrom mvtnorm pmvnorm
+#' @importFrom stats quantile
 joint_trait_prob = function(m, indexTrait, bounds, Xnew=NULL, FullPost=T, mcmc.samples=NULL, parallel=FALSE){
 
   ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains

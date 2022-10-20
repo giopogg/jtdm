@@ -30,7 +30,12 @@ joint_trait_prob(
 \item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
 \value{
-
+A list containing:
+   \item{PROBsamples}{Samples from the posterior distribution of the joint probability.NULL if FullPost=FALSE. }
+   
+   \item{PROBmean}{Posterior mean of the joint probability.}
+   
+   \item{PROBq975,PROBq025}{97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. }
 }
 \description{
 Computes the joint probability of CWM traits in regions in the community-trait space specified by bounds and in sites specified in Xnew.

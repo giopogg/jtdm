@@ -27,6 +27,8 @@
 #'         sample = 100)  
 #' # Run 5-fold cross validation on m
 #' pred = jtdmCV(m, K=5)
+#' @importFrom stats quantile
+
 jtdmCV = function(m, K = 5,
                   adapt = 200,
                   burnin = 500,

@@ -25,7 +25,15 @@ jtdm_fit(
 \item{adapt, burnin, sample, n.chains, monitor}{Parameters of the MCMC sampler. See \code{?run.jags} for details}
 }
 \value{
-
+A list containing:
+   \item{model}{ An object of class 'runjags' containing the fitted model.}
+   \item{Y}{A numeric vector of standard errors on parameters}
+   
+   \item{X_raw}{The design matrix specified as input}
+   
+   \item{X}{The design matrix transformed as specified in formula}
+   
+   \item{formula}{The formula specified as input}
 }
 \description{
 jtdm_fit is used to fit a Joint trait distribution model. Requires the response variable Y (the sites x traits matrix) and the explanatory variables X.

@@ -9,7 +9,7 @@
 #'    \item{Smean}{ Posterior mean of the residual covariance matrix.}
 #'   
 #'    \item{Sq975,Sq025}{ 97.5\% and 0.25\% posterior quantiles of the residual covariance matrix.}
-#' }
+#'
 #' @examples
 #' data(Y)  
 #' data(X) 
@@ -19,7 +19,8 @@
 #'         sample = 100) 
 #' # get the inferred residual covariance
 #' Sigma =get_sigma(m)
-
+#' @importFrom stats quantile
+#' @importFrom coda as.mcmc
 
 get_sigma=function(m){
 

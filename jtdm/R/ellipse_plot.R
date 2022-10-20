@@ -24,6 +24,9 @@
 #' #  in forest (i.e. when forest=1)
 #' ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD",
 #'              FixX=list(GDD=NULL,FDD=NULL,forest=1))
+#' @importFrom stats qchisq
+#' @import ggplot2
+#' @importFrom ggforce geom_ellipse
 ellipse_plot = function(m,indexGradient,indexTrait,FullPost=F, grid.length=20, FixX=NULL, confL= 0.95){
 
   indexGradient = which(colnames(m$X_raw) == indexGradient)

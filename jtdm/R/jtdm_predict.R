@@ -18,7 +18,6 @@
 #'    \item{R2}{R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. }
 #'    
 #'    \item{RMSE}{Root square mean error between  squared of predictions. NULL if validation=FALSE.}
-#' }
 #' @examples
 #' data(Y)  
 #' data(X)  
@@ -28,7 +27,9 @@
 #'         sample = 100)
 #' # marginal predictions of traits in the sites of X
 #' pred = jtdm_predict(m)
-
+#' @importFrom stats model.frame model.matrix quantile cor 
+#' @importFrom coda as.mcmc
+#' @importFrom MASS mvrnorm
 jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = F, FullPost=T){
 
   data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)),  X_raw = m$X_raw)

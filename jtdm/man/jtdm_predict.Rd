@@ -18,7 +18,16 @@ jtdm_predict(m = m, Xnew = NULL, Ynew = NULL, validation = F, FullPost = T)
 \item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).}
 }
 \value{
-
+A list containing:
+   \item{Pred}{Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.}
+   
+   \item{PredMean}{Posterior mean of posterior predictive distribution }
+   
+   \item{Predq975,Predq025}{97.5\% and 0.25\% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE. }
+   
+   \item{R2}{R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE. }
+   
+   \item{RMSE}{Root square mean error between  squared of predictions. NULL if validation=FALSE.}
 }
 \description{
 Obtains predictions from a fitted joint trait distribution model and optionally computes their R squared and root mean square error (RMSE)

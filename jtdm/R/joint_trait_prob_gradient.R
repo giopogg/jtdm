@@ -42,7 +42,10 @@
 #'                                   indexGradient="GDD",
 #'                                   bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
 #'                                   FixX=list(GDD=NULL,FDD=NULL,forest=1))
-#'                                   
+#'                      
+#' @importFrom stats quantile 
+#' @importFrom parallel mclapply detectCores
+            
 joint_trait_prob_gradient = function(m, indexTrait, indexGradient,bounds, grid.length=200, XFocal=NULL, FixX=NULL, FullPost=T,mcmc.samples=NULL,parallel=FALSE){
 
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
@@ -83,13 +86,16 @@ joint_trait_prob_gradient = function(m, indexTrait, indexGradient,bounds, grid.l
   GradProbs = matrix(nrow=grid.length,ncol=ntot)
   # Loop on every row of X
   if(FullPost){
-    GradProbs = joint_trait_prob(m, indexTrait=colnames(m$Y)[indexTrait],  Xnew=XGradient, bounds=bounds, FullPost=T,mcmc.samples=mcmc.samples,parallel=parallel)$PROBsamples
+    GradProbs = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
+                                 Xnew=XGradient, bounds=bounds, FullPost=T, 
+                                 mcmc.samples = mcmc.samples, parallel = parallel)$PROBsamples
     GradProbs_hat =  apply(GradProbs,mean,MARGIN=1)
     GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
     GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
 
   }else{
-    GradProbs_hat = joint_trait_prob(m, indexTrait=colnames(m$Y)[indexTrait],  Xnew=XGradient, bounds=bounds, FullPost=F)$PROBmean
+    GradProbs_hat = joint_trait_prob(m, indexTrait=colnames(m$Y)[indexTrait],
+                                     Xnew=XGradient, bounds=bounds, FullPost=F)$PROBmean
     GradProbs_975 = GradProbs_025 = NULL
   }
 
@@ -97,6 +103,7 @@ joint_trait_prob_gradient = function(m, indexTrait, indexGradient,bounds, grid.l
   GradProbs_hat =  apply(GradProbs,mean,MARGIN=1)
   GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
   GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
-  list(GradProbssamples = GradProbs, GradProbsmean=GradProbs_hat, GradProbsq025=GradProbs_025,GradProbsq975=GradProbs_975,gradient=XGradientFocal)
+  list(GradProbssamples = GradProbs, GradProbsmean=GradProbs_hat,
+       GradProbsq025=GradProbs_025,GradProbsq975=GradProbs_975,gradient=XGradientFocal)
 
 }

@@ -10,7 +10,12 @@ get_sigma(m)
 \item{m}{a model fitted with \code{jtdm_fit}}
 }
 \value{
-
+A list containing:
+   \item{Ssamples}{ Sample from the posterior distribution of the residual covariance matrix. It is an array where the first two dimensions are the rows and columns of the matrix, and the third dimensions are the samples from the posterion distribution}
+  
+   \item{Smean}{ Posterior mean of the residual covariance matrix.}
+  
+   \item{Sq975,Sq025}{ 97.5\% and 0.25\% posterior quantiles of the residual covariance matrix.}
 }
 \description{
 Get the samples from the posterior distribution of the residual covariance matrix, together with the posterior mean and quantiles.

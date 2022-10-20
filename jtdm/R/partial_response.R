@@ -27,8 +27,12 @@
 #' plot = partial_response(m,indexGradient="GDD",indexTrait="SLA",
 #'                         FixX=list(GDD=NULL,FDD=NULL,forest=1))
 #' plot$p
+#' @import ggplot2
+#' @importFrom stats quantile
+#' @importFrom utils globalVariables
 partial_response = function(m, indexGradient, indexTrait, XFocal = NULL, grid.length=200,FixX=NULL, FullPost="mean"){
 
+  utils::globalVariables(c("x", "Predmean", "Pred975", "Predmean025"))
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = which(colnames(m$Y) == indexTrait)
 

@@ -16,15 +16,17 @@
 #'    \item{X}{The design matrix transformed as specified in formula}
 #'    
 #'    \item{formula}{The formula specified as input}
-#' }
+#' 
 #' @examples
 #' data(Y)  
 #' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#'m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
 #'         burnin = 100,  
 #'         sample = 100)  
-
+#' @importFrom stats model.frame model.matrix rWishart coef
+#' @importFrom runjags run.jags
+#' @importFrom arm bayesglm
 jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
                 formula,
                 adapt = 200,

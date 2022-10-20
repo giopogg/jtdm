@@ -5,10 +5,8 @@
 #'
 #' @docType package
 #'
-#' @author Giovanni Poggiato \email{giov.poggiato@gmail.com}
 #'
 #' @name jtdm
-#' @import arm rjags runjags mvtnorm mcmcplots ggforce coda MASS ggplot2 parallel
 NULL
 
 #' Site x environmental covariates dateset
