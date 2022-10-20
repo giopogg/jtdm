@@ -4,7 +4,6 @@
 #' @param m a model fitted with \code{jtdm_fit}
 #' @param K  The number of folds of the K-fold cross validation
 #' @param partition A partition of the dataset specified by the user. It is a vector (whose length are the number of sites), where each element specifies the fold index of the site.
-#' @param Ynew Optional. The observed response variables at sites specified in Xnew. It is used to compute goodness of fit metrics when validation= T.
 #' @param adapt,burnin,sample,n.chains  Parameters of the MCMC sampler. See \code{?run.jags} for details
 #' @export
 #' @return A list containing:
@@ -22,11 +21,11 @@
 #' data(Y)  
 #' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-#'         burnin = 100,  
-#'         sample = 100)  
-#' # Run 5-fold cross validation on m
-#' pred = jtdmCV(m, K=5)
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,  
+#'         burnin = 10,  
+#'         sample = 10)  
+#' # Run 3-fold cross validation on m
+#' pred = jtdmCV(m, K=3)
 #' @importFrom stats quantile
 
 jtdmCV = function(m, K = 5,

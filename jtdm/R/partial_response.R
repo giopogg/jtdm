@@ -32,7 +32,7 @@
 #' @importFrom utils globalVariables
 partial_response = function(m, indexGradient, indexTrait, XFocal = NULL, grid.length=200,FixX=NULL, FullPost="mean"){
 
-  utils::globalVariables(c("x", "Predmean", "Pred975", "Predmean025"))
+  #utils::globalVariables(c("x", "Predmean", "Pred975", "Predmean025"), add = F)
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = which(colnames(m$Y) == indexTrait)
 

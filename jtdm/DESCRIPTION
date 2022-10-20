@@ -6,7 +6,7 @@ Description: Joint modelling of functional traits.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: runjags, mvtnorm, ggplot2, coda, MASS, parallel, utils, arm, ggforce
+Imports: runjags, mvtnorm, ggplot2, coda, MASS, parallel, utils, arm, ggforce, devtools
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
@@ -14,3 +14,7 @@ Authors@R:
     person("Giovanni", "Poggiato", , "giov.poggiato@gmai.com", role = c("aut","cre"),
            comment = c(ORCID = "0000-0003-1957-9764"))
 URL: https://github.com/giopogg/jtdm
+VignetteBuilder: knitr
+Suggests: 
+    knitr,
+    rmarkdown

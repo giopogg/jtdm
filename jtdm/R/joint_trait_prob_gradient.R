@@ -26,9 +26,9 @@
 #' data(Y)  
 #' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-#'         burnin = 100,  
-#'         sample = 100)  
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,  
+#'         burnin = 10,  
+#'         sample = 10)  
 #' # Compute probability of SLA and LNC to be joint-high at sites in the studies
 #'
 #' # Compute the joint probability of SLA and LNC 

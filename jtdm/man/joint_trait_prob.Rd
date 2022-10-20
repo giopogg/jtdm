@@ -47,9 +47,9 @@ This function is time consuming when \code{FullPost=T}. Consider setting \code{p
 data(Y)  
 data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
-        burnin = 100,
-        sample = 100)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,
+        burnin = 10,
+        sample = 10)  
 # Compute probability of SLA and LNC to be joint-high at sites in the studies
 joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"),
                          bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))

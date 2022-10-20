@@ -1,20 +1,19 @@
 ---
 title: "Alpine_grasslands"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 4
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Alpine_grasslands}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-fig_width: 10
-fig_height: 5 
 ---
 
-```{r global_options,include=FALSE}
+
+```{r, include = FALSE}
 knitr::opts_chunk$set(fig.path='figures/')
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
 
 # Fitting and evaluating a join trait distribution model
