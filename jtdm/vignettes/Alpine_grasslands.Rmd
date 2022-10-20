@@ -40,7 +40,7 @@ Once JAGS has been installed, the following code should run:
 
 ```{r,warning=FALSE,results='hide',message=FALSE}
 library(devtools)
-install_github("giopogg/jtdm")
+install_github("giopogg/Jtdm/jtdm")
 library(jtdm)
 library(ggplot2)
 library(coda)
