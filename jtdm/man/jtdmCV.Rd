@@ -46,5 +46,5 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,
         burnin = 10,  
         sample = 10)  
 # Run 3-fold cross validation on m
-pred = jtdmCV(m, K=3)
+pred = jtdmCV(m, K=5, adapt = 1, burnin = 10, sample = 10)
 }
