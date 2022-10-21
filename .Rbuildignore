@@ -5,3 +5,6 @@
 ^docs
 ^_pkgdown.yml
 ^README.Rmd
+^publication
+^publication/
+^jtdm_o.1.0_manual\.pdf$
