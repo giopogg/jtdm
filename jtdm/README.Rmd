@@ -52,7 +52,7 @@ Once JAGS has been installed, the following code should run:
 
 ```{r,eval=FALSE}
 library(devtools)
-install_github("giopogg/jtdm")
+install_github("giopogg/Jtdm/jtdm")
 ```
 
 ## Fit a jtdm to data
@@ -71,7 +71,7 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 
 # Inferred parameters
 getB(m)$Bmean
-get_sigma(m)$Smean
+get_sigma(m)$Smean 
 ```
 ###Trait-environment relationships
 

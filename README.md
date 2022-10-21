@@ -43,7 +43,7 @@ Once JAGS has been installed, the following code should run:
 
 ``` r
 library(devtools)
-install_github("giopogg/jtdm")
+install_github("giopogg/Jtdm/jtdm")
 ```
 
 ## Fit a jtdm to data
@@ -102,7 +102,7 @@ site.
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ##         1 
-## 0.1170528
+## 0.1087269
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
