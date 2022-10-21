@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">jtdm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
@@ -44,13 +44,13 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Vignettes
+    Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Alpine_grasslands.html">Alpine grasslands</a>
+      <a href="../articles/Alpine_grasslands.html">Alpine_grasslands</a>
     </li>
   </ul>
 </li>
@@ -78,7 +78,7 @@
       <h1 data-toc-skip>Alpine_grasslands</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/giopogg/Jtdm/blob/HEAD/vignettes/Alpine_grasslands.Rmd" class="external-link"><code>vignettes/Alpine_grasslands.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/giopogg/Jtdm/blob/HEAD/../vignettes/Alpine_grasslands.Rmd" class="external-link"><code>../vignettes/Alpine_grasslands.Rmd</code></a></small>
       <div class="hidden name"><code>Alpine_grasslands.Rmd</code></div>
 
     </div>
@@ -185,19 +185,19 @@
 <code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdm_predict.html">jtdm_predict</a></span><span class="op">(</span><span class="va">m</span>,Xnew<span class="op">=</span><span class="va">X</span>,Ynew<span class="op">=</span><span class="va">Y</span>,validation<span class="op">=</span><span class="cn">T</span>, FullPost<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
 <span><span class="va">predictions</span><span class="op">$</span><span class="va">R2</span></span>
 <span><span class="co">#&gt;       SLA       LNC    Height </span></span>
-<span><span class="co">#&gt; 0.5806251 0.3443389 0.5205672</span></span>
+<span><span class="co">#&gt; 0.5858589 0.3509015 0.5204969</span></span>
 <span><span class="va">predictions</span><span class="op">$</span><span class="va">RMSE</span></span>
 <span><span class="co">#&gt;      SLA      LNC   Height </span></span>
-<span><span class="co">#&gt; 7.670742 2.819203 9.136419</span></span></code></pre></div>
+<span><span class="co">#&gt; 7.618523 2.802271 9.137117</span></span></code></pre></div>
 <p>We can evaluate the performances of the model using a K-fold cross-validation using the function <code>jtdmCV</code></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictionsCV</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdmCV.html">jtdmCV</a></span><span class="op">(</span><span class="va">m</span>,K<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">R2</span></span>
 <span><span class="co">#&gt;       SLA       LNC    Height </span></span>
-<span><span class="co">#&gt; 0.5210303 0.2208646 0.4275789</span></span>
+<span><span class="co">#&gt; 0.5140720 0.2543601 0.4243783</span></span>
 <span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">RMSE</span></span>
-<span><span class="co">#&gt; [1] 9.289222 3.390048 9.851340</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 9.661767 3.245595 9.959975</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="trait-environment-relationships">Trait-environment relationships<a class="anchor" aria-label="anchor" href="#trait-environment-relationships"></a>
@@ -227,8 +227,8 @@
 <p>The <code>jtdm</code> package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function <code>joint_trait_prob</code>. To define a given region in the community-trait space, the user has to define the focal traits <code>indexTrait</code> (any number of traits is accepted) and trait-specific tresholds through the parameter <code>bounds</code>. <code>bounds</code> is a list of the length of <code>indexTrait</code>, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), <code>bounds=list(c(20,Inf),c(20,Inf))</code> corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/joint_trait_prob.html">joint_trait_prob</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, Xnew<span class="op">=</span><span class="va">X</span><span class="op">[</span><span class="st">"VCHA_2940"</span>,<span class="op">]</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">PROBmean</span></span>
-<span><span class="co">#&gt;         1 </span></span>
-<span><span class="co">#&gt; 0.0861943</span></span></code></pre></div>
+<span><span class="co">#&gt;          1 </span></span>
+<span><span class="co">#&gt; 0.08399317</span></span></code></pre></div>
 <p>Unsurprisingly, the probability is low. Then, we compute how this probability vary along the GDD gradient using the function <code>joint_trait_prob_gradient</code>. The function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values) and predict the joint probabilities along the gradient.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">joint</span><span class="op">=</span><span class="fu"><a href="../reference/joint_trait_prob_gradient.html">joint_trait_prob_gradient</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, indexGradient<span class="op">=</span><span class="st">"GDD"</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
