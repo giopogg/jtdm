@@ -3,7 +3,7 @@ R package ‘jtdm’
 Giovanni Poggiato
 17/10/22
 
-# <img src="jtdm/man/figures/logo_jtdm.png" align="right" width="300px"/>
+# <img src="man/figures/logo_jtdm.png" align="right" width="300px"/>
 
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
@@ -67,7 +67,7 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burni
 
 # Inferred parameters
 getB(m)$Bmean
-get_sigma(m)$Smean
+get_sigma(m)$Smean 
 ```
 
 ###Trait-environment relationships
@@ -78,7 +78,7 @@ Single-trait trait-environment relationships
 partial_response(m,indexGradient="GDD",indexTrait="SLA",FixX=list(GDD=NULL,FDD=NULL,forest=1))$p
 ```
 
-![](jtdm/man/figures/unnamed-chunk-3-1.png)<!-- -->
+![](man/figures/unnamed-chunk-3-1.png)<!-- -->
 
 ### Joint trait-environment relationships
 
@@ -90,7 +90,7 @@ GDD gradient.
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
 ```
 
-![](jtdm/man/figures/unnamed-chunk-4-1.png)<!-- -->
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
 
 ### Joint probabilities
 
@@ -102,7 +102,7 @@ site.
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
 ##         1 
-## 0.1087269
+## 0.1477185
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
@@ -114,7 +114,7 @@ joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD"
 
 And we plot it.
 
-![](jtdm/man/figures/unnamed-chunk-7-1.png)<!-- -->
+![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
 As climatic conditions become more favourable (i.e. GDD increases), the
 probability of having high values of both traits increases.
