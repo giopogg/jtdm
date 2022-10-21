@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -94,8 +94,26 @@
     <h2>Value</h2>
     
 
+<p>A list containing:</p>
+<dl><dt>model</dt>
+<dd><p>An object of class 'runjags' containing the fitted model.</p></dd>
 
-    </div>
+   <dt>Y</dt>
+<dd><p>A numeric vector of standard errors on parameters</p></dd>
+
+   
+   <dt>X_raw</dt>
+<dd><p>The design matrix specified as input</p></dd>
+
+   
+   <dt>X</dt>
+<dd><p>The design matrix transformed as specified in formula</p></dd>
+
+   
+   <dt>formula</dt>
+<dd><p>The formula specified as input</p></dd>
+
+</dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>A formula has an implied intercept term. To remove this use either y ~ x - 1 or y ~ 0 + x. See formula for more details of allowed formulae.</p>

@@ -14,10 +14,10 @@ always_allow_html: true
 ```{r chunk-name, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.path = "man/figures/"
+  fig.path = "jtdm/man/figures/"
 )
 ```
-
+# <img src="jtdm/man/figures/logo_jtdm.png" align="right" width="300px"/>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```

@@ -42,5 +42,9 @@ reference:
   desc: ~
   contents:
   - "jtdm"
+- title: Various
+  desc: ~
+  contents:
+  - "global"
 development:
   mode: auto

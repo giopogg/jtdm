@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -73,8 +73,19 @@
     <h2>Value</h2>
     
 
+<p>A list containing:</p>
+<dl><dt>Ssamples</dt>
+<dd><p>Sample from the posterior distribution of the residual covariance matrix. It is an array where the first two dimensions are the rows and columns of the matrix, and the third dimensions are the samples from the posterion distribution</p></dd>
 
-    </div>
+  
+   <dt>Smean</dt>
+<dd><p>Posterior mean of the residual covariance matrix.</p></dd>
+
+  
+   <dt>Sq975,Sq025</dt>
+<dd><p>97.5% and 0.25% posterior quantiles of the residual covariance matrix.</p></dd>
+
+</dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>

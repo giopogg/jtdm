@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -89,8 +89,27 @@
     <h2>Value</h2>
     
 
+<p>A list containing:</p>
+<dl><dt>Pred</dt>
+<dd><p>Sample from the posterior distribution of the posterior predictive distribution. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE.</p></dd>
 
-    </div>
+   
+   <dt>PredMean</dt>
+<dd><p>Posterior mean of posterior predictive distribution</p></dd>
+
+   
+   <dt>Predq975,Predq025</dt>
+<dd><p>97.5% and 0.25% posterior quantiles of the posterior predictive distribution. NULL if FullPost=FALSE.</p></dd>
+
+   
+   <dt>R2</dt>
+<dd><p>R squared of predictions (squared Pearson correlation between Ynew and the predictions). NULL if validation=FALSE.</p></dd>
+
+   
+   <dt>RMSE</dt>
+<dd><p>Root square mean error between  squared of predictions. NULL if validation=FALSE.</p></dd>
+
+</dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.</p>

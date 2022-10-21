@@ -43,7 +43,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -110,7 +110,7 @@
 <p>Once JAGS has been installed, the following code should run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giopogg/jtdm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giopogg/Jtdm/jtdm"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/jtdm" class="external-link">jtdm</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">coda</span><span class="op">)</span></span></code></pre></div>
@@ -123,118 +123,117 @@
 <p>JTDMs relate a vector of average community traits (e.g. community weighted mean, CWM) to a vector of environmental covariates. The matrix Y contains the CWM traits of specific leaf area (SLA), leaf nitrogen content (LNC) and plant height of 116 plant community sites situated along 21 elevational gradients (www.orchamp.osug.fr) in the French Alps.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##       SLA              LNC            Height     </span></span>
-<span><span class="co">##  Min.   : 3.857   Min.   :14.86   Min.   :10.80  </span></span>
-<span><span class="co">##  1st Qu.:13.225   1st Qu.:19.71   1st Qu.:23.49  </span></span>
-<span><span class="co">##  Median :16.349   Median :21.42   Median :35.39  </span></span>
-<span><span class="co">##  Mean   :20.500   Mean   :22.06   Mean   :34.87  </span></span>
-<span><span class="co">##  3rd Qu.:21.923   3rd Qu.:23.88   3rd Qu.:44.17  </span></span>
-<span><span class="co">##  Max.   :66.664   Max.   :34.30   Max.   :76.38</span></span></code></pre>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       SLA              LNC            Height     </span></span>
+<span><span class="co">#&gt;  Min.   : 3.857   Min.   :14.86   Min.   :10.80  </span></span>
+<span><span class="co">#&gt;  1st Qu.:13.225   1st Qu.:19.71   1st Qu.:23.49  </span></span>
+<span><span class="co">#&gt;  Median :16.349   Median :21.42   Median :35.39  </span></span>
+<span><span class="co">#&gt;  Mean   :20.500   Mean   :22.06   Mean   :34.87  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:21.923   3rd Qu.:23.88   3rd Qu.:44.17  </span></span>
+<span><span class="co">#&gt;  Max.   :66.664   Max.   :34.30   Max.   :76.38</span></span></code></pre></div>
 <p>We consider two environmental covariates: Growing Degree Days (GDD, the sum of temperature of days with positive temperature in the growing season) to represent the average length and intensity of the growing season and intensity of freezing events (Freezing Degree Days, the sum of temperature of days with negative temperature in the growing season, FDD). To account for habitat type, we included a variable that was set to 1 when the site was in a forest, 0 otherwise (hereafter habitat). These data are stored in the matrix X.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##       GDD              FDD              forest      </span></span>
-<span><span class="co">##  Min.   : 467.4   Min.   :-36.838   Min.   :0.0000  </span></span>
-<span><span class="co">##  1st Qu.:1037.3   1st Qu.:-14.768   1st Qu.:0.0000  </span></span>
-<span><span class="co">##  Median :1320.7   Median :-11.520   Median :0.0000  </span></span>
-<span><span class="co">##  Mean   :1357.6   Mean   :-12.758   Mean   :0.3621  </span></span>
-<span><span class="co">##  3rd Qu.:1684.9   3rd Qu.: -9.461   3rd Qu.:1.0000  </span></span>
-<span><span class="co">##  Max.   :2861.5   Max.   : -2.522   Max.   :1.0000</span></span></code></pre>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       GDD              FDD              forest      </span></span>
+<span><span class="co">#&gt;  Min.   : 467.4   Min.   :-36.838   Min.   :0.0000  </span></span>
+<span><span class="co">#&gt;  1st Qu.:1037.3   1st Qu.:-14.768   1st Qu.:0.0000  </span></span>
+<span><span class="co">#&gt;  Median :1320.7   Median :-11.520   Median :0.0000  </span></span>
+<span><span class="co">#&gt;  Mean   :1357.6   Mean   :-12.758   Mean   :0.3621  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:1684.9   3rd Qu.: -9.461   3rd Qu.:1.0000  </span></span>
+<span><span class="co">#&gt;  Max.   :2861.5   Max.   : -2.522   Max.   :1.0000</span></span></code></pre></div>
 <p>JTDMs infer a linear regression for each CWM trait as a function of the environmental covariates, together with an inter-traits residual covariance matrix. Therefore, the parameters of a JTDM are the regression coefficients <span class="math inline">\(B\)</span> and the residual covariance <span class="math inline">\(\Sigma\)</span>. Notice that inferring a generalized linear model is possible, even thus not yet implemented in our package. The inference of JTDM is implemented in the Bayesian framework (using JAGS) by the function <code>jtdm_fit</code>. The syntax of the function is similar to the popular function <code>lm</code>. This function requires the response matrix Y, the predictor matrix X and a (right-hand only) formula to specify how CWM traits depends on environmental variables. MCMC parameters are custom, details are described in <code>?rjags</code>. We choose here to include in the model linear and quadratic terms (using orthogonal polynomials) of GDD and FDD in interaction with habitat to enable non linear trait-environment relationships and to allow for different trait-environment relationships in forest and open habitats. The  is relatively fast, however, to ensure that the whole vignette runs fast, we only run short MCMC chains here, for the sake of the example. To obtain reliable results, the MCMC should be ran for a higher number of iterations.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Short MCMC to obtain a fast example: results are unreliable !</span></span>
 <span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"</span><span class="op">)</span>,  adapt <span class="op">=</span> <span class="fl">10</span>, burnin <span class="op">=</span> <span class="fl">100</span>, sample <span class="op">=</span> <span class="fl">100</span>, n.chains <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="convergence-checks">Convergence checks<a class="anchor" aria-label="anchor" href="#convergence-checks"></a>
 </h3>
 <p>Once the model has ran, we should check for the convergence of the MCMC chains.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Potential scale reduction factor</span></span>
 <span><span class="va">table</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/coda/man/gelman.diag.html" class="external-link">gelman.diag</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">mcmc</span>,multivariate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">psrf</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">table</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"darkblue"</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>,bins <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Potential scale reduction factor"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"nESS"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-3-1.png" width="700"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># nESS</span></span>
+<p><img src="figures/unnamed-chunk-4-1.png" width="700"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># nESS</span></span>
 <span><span class="va">table</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/coda/man/effectiveSize.html" class="external-link">effectiveSize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/coda/man/mcmc.html" class="external-link">mcmc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/coda/man/mcmc.html" class="external-link">as.mcmc</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">table</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"darkblue"</span>, fill<span class="op">=</span><span class="st">"lightblue"</span>,bins <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Effective sample size"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"nESS"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-3-2.png" width="700"></p>
+<p><img src="figures/unnamed-chunk-4-2.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="get-parameters">Get parameters<a class="anchor" aria-label="anchor" href="#get-parameters"></a>
 </h3>
 <p>Since we ran the JTDM with very short chains, the MCMC has not converged. You can try to run the model with longer chains and check its convergence.</p>
 <p>We can now look at the inferred the regression coefficients. The <code>getB</code> function provides the MCMC samples of the regression coefficients matrix <span class="math inline">\(B\)</span>, together with its mean, and <span class="math inline">\(95\%\)</span> credible interval.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inferred parameters</span></span>
 <span><span class="va">B</span><span class="op">=</span><span class="fu"><a href="../reference/getB.html">getB</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
 <p><code>get_sigma</code> provides instead the MCMC samples of the residual covariance matrix <span class="math inline">\(\Sigma\)</span> together with its mean and <span class="math inline">\(95\%\)</span> credible interval.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sigma</span><span class="op">=</span><span class="fu"><a href="../reference/get_sigma.html">get_sigma</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">Smean</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="predict-and-evaluate-model-fit">Predict and evaluate model fit<a class="anchor" aria-label="anchor" href="#predict-and-evaluate-model-fit"></a>
 </h3>
 <p>We can predict CWM traits on a (new) set of sites using <code>jtdm_predict</code>. Here, we predict on the training dataset and compute goodness of fit measures of these predictions like <span class="math inline">\(R^2\)</span> and RMSE, by setting <code>validation=TRUE</code>. We can choose whether to obtain the full posterior predictive distribution (<code>FullPost=TRUE</code> which is more time consuming) or just its posterior mean (<code>FullPost=FALSE</code>, which we advice if the aim is to only compute goodness of fit measures).</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdm_predict.html">jtdm_predict</a></span><span class="op">(</span><span class="va">m</span>,Xnew<span class="op">=</span><span class="va">X</span>,Ynew<span class="op">=</span><span class="va">Y</span>,validation<span class="op">=</span><span class="cn">T</span>, FullPost<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
-<span><span class="va">predictions</span><span class="op">$</span><span class="va">R2</span></span></code></pre></div>
-<pre><code><span><span class="co">##       SLA       LNC    Height </span></span>
-<span><span class="co">## 0.5852556 0.3491228 0.5201694</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">predictions</span><span class="op">$</span><span class="va">RMSE</span></span></code></pre></div>
-<pre><code><span><span class="co">##      SLA      LNC   Height </span></span>
-<span><span class="co">## 7.626910 2.807625 9.139582</span></span></code></pre>
+<span><span class="va">predictions</span><span class="op">$</span><span class="va">R2</span></span>
+<span><span class="co">#&gt;       SLA       LNC    Height </span></span>
+<span><span class="co">#&gt; 0.5878770 0.3519925 0.5193118</span></span>
+<span><span class="va">predictions</span><span class="op">$</span><span class="va">RMSE</span></span>
+<span><span class="co">#&gt;      SLA      LNC   Height </span></span>
+<span><span class="co">#&gt; 7.599230 2.799953 9.148249</span></span></code></pre></div>
 <p>We can evaluate the performances of the model using a K-fold cross-validation using the function <code>jtdmCV</code></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictionsCV</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdmCV.html">jtdmCV</a></span><span class="op">(</span><span class="va">m</span>,K<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">R2</span></span></code></pre></div>
-<pre><code><span><span class="co">##       SLA       LNC    Height </span></span>
-<span><span class="co">## 0.4927656 0.2315166 0.4619513</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">RMSE</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1]  8.473379  3.322575 10.244287</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">R2</span></span>
+<span><span class="co">#&gt;       SLA       LNC    Height </span></span>
+<span><span class="co">#&gt; 0.5429452 0.2196046 0.4208812</span></span>
+<span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">RMSE</span></span>
+<span><span class="co">#&gt; [1]  8.380052  3.287528 10.625260</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="trait-environment-relationships">Trait-environment relationships<a class="anchor" aria-label="anchor" href="#trait-environment-relationships"></a>
 </h3>
 <p>We can now analyse the inferred trait-environment relationships using the function <code>partial_response</code>, that computes and plots the partial response curve of a focal trait along a focal environmental gradient. This function takes as input the model <code>m</code>, the focal environmental variable <code>indexGradient</code> and the focal trait <code>indexTrait</code>, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a dataset of environmental variables by building the gradient of the focal environmental variable and keeping all other variables fixed to their mean. Then, it predicts the marginal distribution of the focal trait for the so-built environmental dataset. The user can choose whether to obtain the full predictive distribution (<code>FullPost=TRUE</code>), or the predictive distribution of the mean term (<code>FullPost="mean"</code>, which we advice here), or just the posterior mean (<code>FullPost="mean"</code>). The function outputs are the plot of the inferred trait-environment relationship and the predictions of the model (used to produce the plot). For example, we can plot the partial response curve relationship between SLA and GDD</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/partial_response.html">partial_response</a></span><span class="op">(</span><span class="va">m</span>,indexGradient<span class="op">=</span><span class="st">"GDD"</span>,indexTrait<span class="op">=</span><span class="st">"SLA"</span><span class="op">)</span><span class="op">$</span><span class="va">p</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-9-1.png" width="700"></p>
+<p><img src="figures/unnamed-chunk-10-1.png" width="700"></p>
 <p>The user can eventually provide a given gradient for the focal environmental variable <code>XFocal</code> (which is otherwise built on regual grid with length given by <code>grid.length</code>). The user can also choose to fix the non focal environmental variables to another value. For example, we can obtain the partial response curve of SLA and GDD in forest</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/partial_response.html">partial_response</a></span><span class="op">(</span><span class="va">m</span>,indexGradient<span class="op">=</span><span class="st">"GDD"</span>,indexTrait<span class="op">=</span><span class="st">"SLA"</span>,FixX<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>GDD<span class="op">=</span><span class="cn">NULL</span>,FDD<span class="op">=</span><span class="cn">NULL</span>,forest<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">p</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-10-1.png" width="700"> ## Multivariate confidence intervals</p>
+<p><img src="figures/unnamed-chunk-11-1.png" width="700"> ## Multivariate confidence intervals</p>
 <p>We can then compute the partial response curves of pairwise CWM trait combinations together with their <span class="math inline">\(95\%\)</span> credible region, what we define in the publication as the most suitable CLS and envelop of possible CLSs. This is done by the function <code>ellipse_plot</code>, that takes as input the model <code>m</code>, the focal environmental variable <code>indexGradient</code> and the two focal traits <code>indexTrait</code>, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a gradient of the focal environmental variable while keeping all other variables fixed to their mean, and then predict and plots the joint distribution of the focal traits. The user can choose whether to obtain the full predictive distribution (<code>FullPost=TRUE</code>), or the predictive distribution of the mean term (<code>FullPost=F</code>, which we advice here to obtain smoother curves).</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot the pairwise SLA-LNC partial response curve along the GDD gradient</span></span>
 <span><span class="fu"><a href="../reference/ellipse_plot.html">ellipse_plot</a></span><span class="op">(</span><span class="va">m</span>,indexTrait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>,indexGradient<span class="op">=</span><span class="st">"GDD"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="figures/unnamed-chunk-12-1.png" width="700"></p>
 <p>The user can also choose to fix the non-focal environmental variables to another value. For example, we can obtain the partial response curves of the most suitable CLS and envelop of possible CLSs of SLA and GDD in forest.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot the pairwise SLA-LNC partial response curve along the GDD gradient</span></span>
 <span><span class="fu"><a href="../reference/ellipse_plot.html">ellipse_plot</a></span><span class="op">(</span><span class="va">m</span>,indexTrait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>,indexGradient<span class="op">=</span><span class="st">"GDD"</span>,FixX<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>GDD<span class="op">=</span><span class="cn">NULL</span>,FDD<span class="op">=</span><span class="cn">NULL</span>,forest<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/unnamed-chunk-12-1.png" width="700"></p>
+<p><img src="figures/unnamed-chunk-13-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="joint-predictions">Joint predictions<a class="anchor" aria-label="anchor" href="#joint-predictions"></a>
 </h3>
 <p>The <code>jtdm</code> package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function <code>joint_trait_prob</code>. To define a given region in the community-trait space, the user has to define the focal traits <code>indexTrait</code> (any number of traits is accepted) and trait-specific tresholds through the parameter <code>bounds</code>. <code>bounds</code> is a list of the length of <code>indexTrait</code>, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), <code>bounds=list(c(20,Inf),c(20,Inf))</code> corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/joint_trait_prob.html">joint_trait_prob</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, Xnew<span class="op">=</span><span class="va">X</span><span class="op">[</span><span class="st">"VCHA_2940"</span>,<span class="op">]</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">PROBmean</span></span></code></pre></div>
-<pre><code><span><span class="co">##         1 </span></span>
-<span><span class="co">## 0.1091164</span></span></code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/joint_trait_prob.html">joint_trait_prob</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, Xnew<span class="op">=</span><span class="va">X</span><span class="op">[</span><span class="st">"VCHA_2940"</span>,<span class="op">]</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">PROBmean</span></span>
+<span><span class="co">#&gt;         1 </span></span>
+<span><span class="co">#&gt; 0.1126662</span></span></code></pre></div>
 <p>Unsurprisingly, the probability is low. Then, we compute how this probability vary along the GDD gradient using the function <code>joint_trait_prob_gradient</code>. The function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values) and predict the joint probabilities along the gradient.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">joint</span><span class="op">=</span><span class="fu"><a href="../reference/joint_trait_prob_gradient.html">joint_trait_prob_gradient</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, indexGradient<span class="op">=</span><span class="st">"GDD"</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We can then plot such predictions.</p>
-<p><img src="figures/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="figures/unnamed-chunk-16-1.png" width="700"></p>
 <p>As climatic conditions become more favorable (i.e. GDD increases), the probability of having high values of both traits increases.</p>
 </div>
 </div>
