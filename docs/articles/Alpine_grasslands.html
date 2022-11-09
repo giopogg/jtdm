@@ -185,19 +185,19 @@
 <code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdm_predict.html">jtdm_predict</a></span><span class="op">(</span><span class="va">m</span>,Xnew<span class="op">=</span><span class="va">X</span>,Ynew<span class="op">=</span><span class="va">Y</span>,validation<span class="op">=</span><span class="cn">T</span>, FullPost<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
 <span><span class="va">predictions</span><span class="op">$</span><span class="va">R2</span></span>
 <span><span class="co">#&gt;       SLA       LNC    Height </span></span>
-<span><span class="co">#&gt; 0.5868935 0.3494770 0.5186424</span></span>
+<span><span class="co">#&gt; 0.5854760 0.3494610 0.5208431</span></span>
 <span><span class="va">predictions</span><span class="op">$</span><span class="va">RMSE</span></span>
 <span><span class="co">#&gt;      SLA      LNC   Height </span></span>
-<span><span class="co">#&gt; 7.608061 2.805556 9.154316</span></span></code></pre></div>
+<span><span class="co">#&gt; 7.624547 2.806618 9.134148</span></span></code></pre></div>
 <p>We can evaluate the performances of the model using a K-fold cross-validation using the function <code>jtdmCV</code></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictionsCV</span> <span class="op">=</span> <span class="fu"><a href="../reference/jtdmCV.html">jtdmCV</a></span><span class="op">(</span><span class="va">m</span>,K<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">R2</span></span>
 <span><span class="co">#&gt;       SLA       LNC    Height </span></span>
-<span><span class="co">#&gt; 0.5417024 0.2980940 0.4866509</span></span>
+<span><span class="co">#&gt; 0.5699810 0.2504453 0.4072024</span></span>
 <span><span class="va">predictionsCV</span><span class="op">$</span><span class="va">RMSE</span></span>
-<span><span class="co">#&gt; [1]  8.507129  3.255049 10.033386</span></span></code></pre></div>
+<span><span class="co">#&gt; [1]  8.788108  3.401217 10.534979</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="trait-environment-relationships">Trait-environment relationships<a class="anchor" aria-label="anchor" href="#trait-environment-relationships"></a>
@@ -227,12 +227,14 @@
 <p>The <code>jtdm</code> package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function <code>joint_trait_prob</code>. To define a given region in the community-trait space, the user has to define the focal traits <code>indexTrait</code> (any number of traits is accepted) and trait-specific tresholds through the parameter <code>bounds</code>. <code>bounds</code> is a list of the length of <code>indexTrait</code>, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), <code>bounds=list(c(20,Inf),c(20,Inf))</code> corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/joint_trait_prob.html">joint_trait_prob</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, Xnew<span class="op">=</span><span class="va">X</span><span class="op">[</span><span class="st">"VCHA_2940"</span>,<span class="op">]</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">PROBmean</span></span>
-<span><span class="co">#&gt;         1 </span></span>
-<span><span class="co">#&gt; 0.1125977</span></span></code></pre></div>
+<span><span class="co">#&gt;        1 </span></span>
+<span><span class="co">#&gt; 0.108378</span></span></code></pre></div>
 <p>Unsurprisingly, the probability is low. Then, we compute how this probability vary along the GDD gradient using the function <code>joint_trait_prob_gradient</code>. The function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values) and predict the joint probabilities along the gradient.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">joint</span><span class="op">=</span><span class="fu"><a href="../reference/joint_trait_prob_gradient.html">joint_trait_prob_gradient</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, indexGradient<span class="op">=</span><span class="st">"GDD"</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We can then plot such predictions.</p>
+<pre><code><span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span></code></pre>
 <p><img src="figures/unnamed-chunk-16-1.png" width="700"></p>
 <p>As climatic conditions become more favorable (i.e. GDD increases), the probability of having high values of both traits increases.</p>
 </div>

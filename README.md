@@ -43,7 +43,7 @@ Once JAGS has been installed, the following code should run:
 
 ``` r
 library(devtools)
-install_github("giopogg/Jtdm/jtdm")
+install_github("giopogg/jtdm")
 ```
 
 ## Fit a jtdm to data
@@ -101,8 +101,8 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-##         1 
-## 0.1477185
+##          1 
+## 0.09466854
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
@@ -113,6 +113,9 @@ joint=joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), indexGradient="GDD"
 ```
 
 And we plot it.
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
 
 ![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
