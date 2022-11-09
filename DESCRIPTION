@@ -13,7 +13,7 @@ Depends:
 Authors@R: 
     person("Giovanni", "Poggiato", , "giov.poggiato@gmai.com", role = c("aut","cre"),
            comment = c(ORCID = "0000-0003-1957-9764"))
-URL: https://github.com/giopogg/jtdm
+URL: https://github.com/giopogg/jtdm https://giopogg.github.io/webSDM/
 VignetteBuilder: knitr
 Suggests: 
     knitr,

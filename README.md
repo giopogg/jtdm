@@ -5,12 +5,6 @@ Giovanni Poggiato
 
 # <img src="man/figures/logo_jtdm.png" align="right" width="300px"/>
 
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![License: GPL
-v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
 # jtdm - Joint trait distribution modeling
 
 ## About the method
@@ -101,8 +95,8 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-##          1 
-## 0.09466854
+##         1 
+## 0.1126816
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
