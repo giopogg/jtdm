@@ -93,11 +93,11 @@ p4 = ggplot(as.data.frame(CWM)) + geom_point(aes(x=t1,y=t2), colour = "red", alp
 cor(CWM[,1], CWM[,2])
 
 # Final plot
-plot_grid(NULL, p1, NULL, p2, p3, p4, ncol = 3,
-          labels = c(NA,'a) Traits of the species pool', NA,'   b) CWM traits under Neutral assembly',
+plot_grid(p1, p2, p3, p4, ncol = 2,
+          labels = c('a) Traits of the species pool','   b) CWM traits under Neutral assembly',
                      'c) CMW traits under environmental filtering', '   d) CWM traits under limiting similarity'),
           hjust = 0, label_x = 0.1, label_size = 13)
 
-ggsave("SimulatedCWM.pdf")
+ggsave("SimulatedCWM.pdf", height = 10, width = 10)
 
 

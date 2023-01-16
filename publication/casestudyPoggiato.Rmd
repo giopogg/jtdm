@@ -5,10 +5,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r global_options,include=FALSE}
- knitr::opts_chunk$set(fig.path='README_files/figure-gfm/')
+knitr::opts_chunk$set(fig.path='Fig/')
 ```
 
 # Case study Poggiato et al. In prep.
