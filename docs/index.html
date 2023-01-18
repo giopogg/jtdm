@@ -94,31 +94,14 @@
 <div class="section level2">
 <h2 id="installing-the-r-package">Installing the R package<a class="anchor" aria-label="anchor" href="#installing-the-r-package"></a>
 </h2>
-<p>The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:</p>
-<div class="section level5">
-<h5 id="ubutntu">Ubutntu<a class="anchor" aria-label="anchor" href="#ubutntu"></a>
-</h5>
-<p>sudo apt-get install jags</p>
-</div>
-<div class="section level5">
-<h5 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a>
-</h5>
-<p><a href="https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/" class="external-link uri">https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/</a></p>
-</div>
-<div class="section level5">
-<h5 id="mac">Mac<a class="anchor" aria-label="anchor" href="#mac"></a>
-</h5>
-<p><a href="https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/" class="external-link uri">https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/</a></p>
-<p>Once JAGS has been installed, the following code should run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"giopogg/jtdm"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
 <div class="section level2">
 <h2 id="fit-a-jtdm-to-data">Fit a jtdm to data<a class="anchor" aria-label="anchor" href="#fit-a-jtdm-to-data"></a>
 </h2>
-<p>The package implements jtdm using the Markov Chain Monte Carlo Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of both JAGS and runjags.</p>
+<p>The package implements jtdm by sampling from the posterior distribution of the parameters, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks.</p>
 <p>Fitting a JTDM the case study dataset of Poggiato et al. In prep.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/giopogg/jtdm" class="external-link">jtdm</a></span><span class="op">)</span></span>
@@ -127,9 +110,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
 <span><span class="co"># Short MCMC to obtain a fast example: results are unreliable !</span></span>
-<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="reference/jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>,  adapt <span class="op">=</span> <span class="fl">10</span>, burnin <span class="op">=</span> <span class="fl">100</span>, sample <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="co">## Le chargement a nécessité le package : rjags</span></span>
-<span><span class="co">## module dic loaded</span></span>
+<span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="reference/jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Inferred parameters</span></span>
 <span><span class="fu"><a href="reference/getB.html">getB</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">Bmean</span></span>
@@ -153,8 +134,8 @@
 <p>Computes joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/joint_trait_prob.html">joint_trait_prob</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, Xnew<span class="op">=</span><span class="va">X</span><span class="op">[</span><span class="st">"VCHA_2940"</span>,<span class="op">]</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">PROBmean</span></span>
-<span><span class="co">##         1 </span></span>
-<span><span class="co">## 0.1126816</span></span></code></pre></div>
+<span><span class="co">##        1 </span></span>
+<span><span class="co">## 0.115965</span></span></code></pre></div>
 <p>Unsurprisingly, the probability is low. Then, we compute how this probability varies along the GDD gradient.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">joint</span><span class="op">=</span><span class="fu"><a href="reference/joint_trait_prob_gradient.html">joint_trait_prob_gradient</a></span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, indexGradient<span class="op">=</span><span class="st">"GDD"</span>, bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>

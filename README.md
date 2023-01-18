@@ -16,25 +16,6 @@ publications in this repo.
 
 ## Installing the R package
 
-The package implements jtdm using the Markov Chain Monte Carlo Bayesian
-modeling software JAGS via the R package runjags. Therefore, it requires
-the installation of JAGS. Its installation is easy and depends on your
-operating system:
-
-##### Ubutntu
-
-sudo apt-get install jags
-
-##### Windows
-
-<https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/>
-
-##### Mac
-
-<https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/>
-
-Once JAGS has been installed, the following code should run:
-
 ``` r
 library(devtools)
 install_github("giopogg/jtdm")
@@ -42,9 +23,9 @@ install_github("giopogg/jtdm")
 
 ## Fit a jtdm to data
 
-The package implements jtdm using the Markov Chain Monte Carlo Bayesian
-modeling software JAGS via the R package runjags. Therefore, it requires
-the installation of both JAGS and runjags.
+The package implements jtdm by sampling from the posterior distribution
+of the parameters, which has been analytically determined. Therefore,
+there is no need for classical MCMC convergence checks.
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
 
@@ -55,9 +36,7 @@ set.seed(1712)
 data(Y)
 data(X)
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, burnin = 100, sample = 100)
-## Le chargement a nécessité le package : rjags
-## module dic loaded
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 
 # Inferred parameters
 getB(m)$Bmean
@@ -95,8 +74,8 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-##         1 
-## 0.1126816
+##        1 
+## 0.115965
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this

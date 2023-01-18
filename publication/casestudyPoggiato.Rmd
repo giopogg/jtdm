@@ -97,7 +97,7 @@ CV$R2
 Compute the regression coefficients and plot effect sizes (Figure A3)
 ``` {r}
 # get the regression coefficient matrix
-B = getB(m  = m)
+B = getB(m  =  m)
 
 # compute standardised effect sizez
 B_stand = B

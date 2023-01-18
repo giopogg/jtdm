@@ -48,7 +48,7 @@ This functions samples from the posterior distribution, which has been analytica
 ``` {r,results='hide',warning=FALSE, message=FALSE}
 # Short MCMC to obtain a fast example: results are unreliable !
 m = jtdm_fit(Y = Y, X = X, formula = as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),
-             sample = 100)
+             sample = 1000)
 ```
 
 ## Get parameters
@@ -75,7 +75,7 @@ predictions$RMSE
 ```
 We can evaluate the performances of the model using a K-fold cross-validation using the function `jtdmCV`
 ```{r,results = 'hide',message=FALSE,warning=FALSE}
-predictionsCV = jtdmCV(m, K = 5)
+predictionsCV = jtdmCV(m, K = 5, sample = 100)
 
 predictionsCV$R2
 predictionsCV$RMSE

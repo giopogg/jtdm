@@ -44,8 +44,8 @@ jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
   q = data$K
   p = nu = data$df
   B_0 = matrix(0, nrow = p, ncol = q)
-  D = matrix(0, nrow = q, ncol = q) + diag(rep(10^4, q))
-  Q = diag(ncol(Y))*10^4 # Probably needs to play
+  D = diag(q)*10^4
+  Q = diag(ncol(Y)) # Probably needs to play
    
   #########################################################################################################
   ### Sample from the conjugate posterior (see Rowe 2002)
