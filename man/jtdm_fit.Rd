@@ -4,16 +4,7 @@
 \alias{jtdm_fit}
 \title{Fitting joint trait distribution models}
 \usage{
-jtdm_fit(
-  Y,
-  X,
-  formula,
-  adapt = 200,
-  burnin = 5000,
-  sample = 5000,
-  n.chains = 2,
-  monitor = c("B", "Sigma", "pd")
-)
+jtdm_fit(Y, X, formula, sample = 5000)
 }
 \arguments{
 \item{Y}{The sites x traits matrix containing community (weighted) means of each trait at each site.}
@@ -22,11 +13,11 @@ jtdm_fit(
 
 \item{formula}{An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under ‘Details’}
 
-\item{adapt, burnin, sample, n.chains, monitor}{Parameters of the MCMC sampler. See \code{?run.jags} for details}
+\item{sample}{Number of samples from the posterior distribution. Since we sample from the exact posterior distribution, the number of samples is relative lower than MCMC samplers. As a rule of thumb, 1000 samples should provide correct inference.}
 }
 \value{
 A list containing:
-   \item{model}{ An object of class 'runjags' containing the fitted model.}
+   \item{model}{ An object of class "jtdm_fit", containing the samples from the posterior distribution of the regression coefficients (B) and residual covariance matrix (Sigma), together with the likelihood of the model.}
    \item{Y}{A numeric vector of standard errors on parameters}
    
    \item{X_raw}{The design matrix specified as input}
@@ -36,7 +27,7 @@ A list containing:
    \item{formula}{The formula specified as input}
 }
 \description{
-jtdm_fit is used to fit a Joint trait distribution model. Requires the response variable Y (the sites x traits matrix) and the explanatory variables X.
+jtdm_fit is used to fit a Joint trait distribution model. Requires the response variable Y (the sites x traits matrix) and the explanatory variables X.This function samples from the posterior distribution of the parameters, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks.
 }
 \details{
 A formula has an implied intercept term. To remove this use either y ~ x - 1 or y ~ 0 + x. See formula for more details of allowed formulae.
@@ -44,8 +35,5 @@ A formula has an implied intercept term. To remove this use either y ~ x - 1 or 
 \examples{
 data(Y)  
 data(X)  
-# Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
-        burnin = 100,  
-        sample = 100)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
 }

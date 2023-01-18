@@ -4,7 +4,7 @@
 #' @param m a model fitted with \code{jtdm_fit}
 #' @param K  The number of folds of the K-fold cross validation
 #' @param partition A partition of the dataset specified by the user. It is a vector (whose length are the number of sites), where each element specifies the fold index of the site.
-#' @param adapt,burnin,sample,n.chains  Parameters of the MCMC sampler. See \code{?run.jags} for details
+#' @param sample Number of samples from the posterior distribution. Since we sample from the exact posterior distribution, the number of samples is relative lower than MCMC samplers. As a rule of thumb, 1000 samples should provide correct inference.
 #' @export
 #' @return A list containing:
 #'    \item{Pred}{Sample from the posterior predictive distribution in cross validation. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE. }
@@ -20,20 +20,16 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,  
-#'         burnin = 10,  
-#'         sample = 10)  
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 1000)  
 #' # Run 3-fold cross validation on m
-#' pred = jtdmCV(m, K=5, adapt = 1, burnin = 10, sample = 10)
+#' pred = jtdmCV(m, K=5, sample = 1000)
 #' @importFrom stats quantile
 
 jtdmCV = function(m, K = 5,
-                  adapt = 200,
-                  burnin = 500,
-                  sample = 500,
-                  n.chains=2, partition=NULL){
+                  sample = 1000, partition=NULL){
 
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  
   data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)),  X_raw = m$X_raw)
 
   # Create partition (if needed)
@@ -41,7 +37,7 @@ jtdmCV = function(m, K = 5,
   }else{index <- sample(1:K,size=data$n,replace=TRUE,prob=rep(data$n/K,K))}
 
 
-  ntot = sample*n.chains
+  ntot = dim(m$model$B)[3]
   preds = array(dim=c(data$n,data$J,ntot))
   RMSE = R2 = matrix(nrow=K,ncol=data$J)
 
@@ -54,13 +50,11 @@ jtdmCV = function(m, K = 5,
 
     m = jtdm_fit(Y=Y, X=X_raw,
              formula=m$formula,
-             adapt = adapt,
-             burnin = burnin,
-             sample = sample,
-             n.chains = n.chains,
-             monitor = c('B','Sigma'))
+             sample = sample)
 
-    prediction = jtdm_predict(m=m,Xnew=data$X_raw[test,],Ynew=data$Y[test,],validation = T,FullPost = T)
+    prediction = jtdm_predict(m = m, Xnew = data$X_raw[test,],
+                              Ynew = data$Y[test,], validation = T,FullPost = T)
+    
     preds[test,,] = prediction$Pred
 
     RMSE[i,] = prediction$RMSE
@@ -80,6 +74,7 @@ jtdmCV = function(m, K = 5,
   RMSE.cv = apply(RMSE,mean,MARGIN = 2)
   names(RMSE.cv) = colnames(data$Y)
 
-  list(Pred = preds, PredMean = meanPred, Predq025 = Pred025, Predq975 = Pred975, R2 = R2.cv, RMSE = apply(RMSE,mean,MARGIN = 2), partition = index)
+  list(Pred = preds, PredMean = meanPred, Predq025 = Pred025, Predq975 = Pred975,
+       R2 = R2.cv, RMSE = apply(RMSE,mean,MARGIN = 2), partition = index)
 
 }

@@ -4,15 +4,14 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(fig.path='Fig/')
+knitr::opts_chunk$set(echo = TRUE, fig.path='Fig/')
 ```
 
 # Case study Poggiato et al. In prep.
 
-In this R markdown we reproduce the case study of the publication Poggiato et al. In prep.  "Joint models and predictions of community traits". For the presentation of the R package \code{jtdm} and its details see https://github.com/giopogg/jtdm/tree/main/vignette .
+In this R markdown we reproduce the case study of the publication Poggiato et al., In preparation,  "Joint models and predictions of community traits". In this code we use a previous version of the R package \code{jtdm}, whose functions have been coded in the R script 'JTDM_functions.R'. See https://giopogg.github.io/jtdm/ for a full description of the R package. In this previous version we relied on JAGS to sample from the posterior distribution
 
-# Installing the R package
+# Installing JAGS
 
 ### R-package
 The package implements JTDMs using the Markov Chain Monte Carlo (MCMC) Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:
@@ -31,49 +30,50 @@ https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/
 
 Once JAGS has been installed, the following code should run:
 
+
 ```{r,warning=FALSE,message=FALSE,results='hide',eval=TRUE}
 library(devtools)
-install_github("giopogg/jtdm")
-library(jtdm)
 library(ggplot2)
 library(coda)
 library(gridExtra)
 library(ggpubr)
-library(parallel) #if this doesn't work, set the parameter parallel = FALSE when calling joint_trait_prob
 library(raster)
 install_github("matthewkling/colormap")
 library(colormap)
 library(tidyr)
+library(runjags)
+library(mvtnorm)
+library(ggplot2)
+library(MASS)
+library(parallel)
+library(arm)
+library(ggforce)
+
+
+# Source JTDM functions
+source("JTDM_functions.R")
 ```
 
 Load the dataset and run the model
 
 ```{r, warning=FALSE,message=FALSE,results='hide'}
-data(X) #env variables
-data(Y) #site x CWM traits matrix
+load("X.rda") #env variables
+load("Y.rda") #site x CWM traits matrix
 
 formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest")
 
 
-# Run the model. If you want this vignette to run fast (buth with unreliable results), you should diminish the parameter 'sample'. To obtain the results of the publications, we set adapt = 5000, burnin = 10000, sample = 10000.
+# Run the model. We reduced the number of samples to ensure a fast compilation of the vignette. To obtain the results of the publication, we set adapt = 5000, burnin = 10000, sample = 10000.
 m = jtdm_fit(Y=Y, X=X, 
                formula=formula,
-               adapt = 5000,
-               burnin = 10000,
-               sample = 10000,
-               n.chains=2,
-               monitor = c('B','Sigma','deviance'))
+               adapt = 500, burnin = 1000, sample = 1000)
 ```
-
-
 Check for convergence of the MCMC chain (Figure A2 in the publication)
 
 ```{r, warning=FALSE}
 table=data.frame(x=gelman.diag(m$model$mcmc,multivariate = FALSE)$psrf[,1])
-
 ggplot(data = table, aes(x=x)) + geom_histogram(color="darkblue", fill="lightblue",bins = 20) +
   ggtitle("Potential scale reduction factor") + xlab("") + ylab("nESS") + theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
-
 ```
 
 Obtain $R2$ of the predictions both in-sample and in cross validation (values of Table A1 in the publication)
@@ -86,10 +86,9 @@ prediction$R2
 ```
 
 ```{r, include=FALSE}
-CV = jtdmCV(m,K=5, adapt = 5000,burnin = 10000, sample = 10000)
-```
+# We reduced the number of samples to ensure a fast compilation of the vignette. To obtain the results of the publication, we set adapt = 5000, burnin = 10000, sample = 10000.
+CV = jtdmCV(m, K=5, adapt = 500, burnin = 1000, sample = 1000)
 
-```{r}
 #R2 of 5-fold cross validation
 CV$R2
 ```

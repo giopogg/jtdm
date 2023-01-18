@@ -4,22 +4,14 @@
 \alias{jtdmCV}
 \title{K-fold cross validation predictions and goodness of fit metrics}
 \usage{
-jtdmCV(
-  m,
-  K = 5,
-  adapt = 200,
-  burnin = 500,
-  sample = 500,
-  n.chains = 2,
-  partition = NULL
-)
+jtdmCV(m, K = 5, sample = 1000, partition = NULL)
 }
 \arguments{
 \item{m}{a model fitted with \code{jtdm_fit}}
 
 \item{K}{The number of folds of the K-fold cross validation}
 
-\item{adapt, burnin, sample, n.chains}{Parameters of the MCMC sampler. See \code{?run.jags} for details}
+\item{sample}{Number of samples from the posterior distribution. Since we sample from the exact posterior distribution, the number of samples is relative lower than MCMC samplers. As a rule of thumb, 1000 samples should provide correct inference.}
 
 \item{partition}{A partition of the dataset specified by the user. It is a vector (whose length are the number of sites), where each element specifies the fold index of the site.}
 }
@@ -41,10 +33,7 @@ Run K-fold cross validation predictions of the model m on a specified dataset.
 \examples{
 data(Y)  
 data(X)  
-# Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,  
-        burnin = 10,  
-        sample = 10)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 1000)  
 # Run 3-fold cross validation on m
-pred = jtdmCV(m, K=5, adapt = 1, burnin = 10, sample = 10)
+pred = jtdmCV(m, K=5, sample = 1000)
 }

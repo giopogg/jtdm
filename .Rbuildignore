@@ -8,3 +8,4 @@
 ^publication
 ^publication/
 ^jtdm_0.1.0_manual\.pdf$
+^cran-comments\.md$

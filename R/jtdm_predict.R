@@ -21,17 +21,15 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
-#'         burnin = 100,
-#'         sample = 100)
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 #' # marginal predictions of traits in the sites of X
 #' pred = jtdm_predict(m)
 #' @importFrom stats model.frame model.matrix quantile cor 
-#' @importFrom coda as.mcmc
-#' @importFrom MASS mvrnorm
+#' @importFrom mniw rmNorm
 jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = F, FullPost=T){
 
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  
   data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)),  X_raw = m$X_raw)
 
   if(is.null(Xnew)) Xnew=m$X_raw
@@ -52,21 +50,23 @@ jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = F, FullPost=T)
 
   ### Compute predictions
   if(FullPost != FALSE){
-    mcmc_param=suppressWarnings(coda::as.mcmc(m$model))
 
-    B=getB(m)$Bsamples
-    Sigma=get_sigma(m)$Ssamples
+    B = m$model$B
+    Sigma = m$model$Sigma
     ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains
 
-    Predictions = array(dim=c(nrow(Xnew),ncol(data$Y),ntot))
-    for(i in 1:ntot){
+    Predictions = array(dim = c(nrow(Xnew), ncol(data$Y), dim(B)[3]))
+    
+    for(i in 1: dim(B)[3]){
       if(FullPost==T){
-        Predictions[,,i] = t(apply(Xnew, FUN=function(x) {mvrnorm(n=1, mu=B[,,i]%*%x , Sigma=Sigma[,,i])},MARGIN = 1))
+        temp_pred = rmNorm(nrow(Xnew), Xnew %*% t(B[,,1]), Sigma[,,i])
+        rownames(temp_pred) = rownames(Xnew)
+        Predictions[,,i] = temp_pred
       }else{
-        Predictions[,,i] = t(apply(Xnew, FUN=function(x) {B[,,i]%*%x},MARGIN = 1))
+        Predictions[,,i] = Xnew %*% t(B[,,i])
       }
     }
-
+    
     meanPred = apply(Predictions,mean,MARGIN = c(1,2))
     Pred975 = apply(Predictions, quantile, MARGIN=c(1,2),0.975)
     Pred025 = apply(Predictions, quantile, MARGIN=c(1,2),0.025)
@@ -74,6 +74,7 @@ jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = F, FullPost=T)
     if(!is.null(rownames(Xnew))) rownames(meanPred)=rownames(Pred975)=rownames(Pred025)=rownames(Xnew)
 
   }else{ #If we only want to compoute the mean
+    
     meanPred = as.matrix(Xnew) %*% t(as.matrix(getB(m)$Bmean))
 
     colnames(meanPred)=colnames(data$Y)

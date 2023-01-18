@@ -10,31 +10,22 @@
 #' @examples
 #' data(Y)  
 #' data(X)
-#' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
-#'         burnin = 100, 
-#'         sample = 100) 
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000) 
 #' # get the inferred regression coefficients
 #' B=getB(m)
 #' @importFrom stats quantile
-#' @importFrom coda as.mcmc
 
 getB=function(m){
 
-  data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)))
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  data=list(Y = m$Y, X = m$X, K = ncol(m$X), J = ncol(m$Y), n = nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)))
 
-  mcmc_param=suppressWarnings(coda::as.mcmc(m$model))
-  ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains
+  B = m$model$B
 
-  B= array(dim=c(data$J,data$K,ntot))
-  for(i in 1:ntot){
-    B[,,i]=matrix(mcmc_param[i,grep("B",colnames(mcmc_param))],ncol=data$K)
-  }
-
-  B_hat = apply( B, mean, MARGIN=c(1,2))
-  B_975 = apply( B, quantile, MARGIN=c(1,2),0.975)
-  B_025 = apply( B, quantile, MARGIN=c(1,2),0.025)
-  colnames(B_hat)=colnames(B_975)=colnames(B_025)=colnames(m$X)
-  rownames(B_hat)=rownames(B_975)=rownames(B_025)=colnames(m$Y)
+  B_hat = apply( B, mean, MARGIN = c(1,2))
+  B_975 = apply( B, quantile, MARGIN = c(1,2), 0.975)
+  B_025 = apply( B, quantile, MARGIN = c(1,2), 0.025)
+  colnames(B_hat) = colnames(B_975) = colnames(B_025) = colnames(m$X)
+  rownames(B_hat) = rownames(B_975) = rownames(B_025) = colnames(m$Y)
   list(Bsamples = B, Bmean=B_hat, Bq025=B_025,Bq975=B_975)
 }

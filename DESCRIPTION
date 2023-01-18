@@ -1,20 +1,21 @@
 Package: jtdm
 Type: Package
-Title: Joint modelling of function traits
-Version: 0.1.0
-Description: Joint modelling of functional traits.
+Title: Joint Modelling of Functional Traits
+Version: 0.1-0
+Description: A collection of tools to fit and analyse a Joint Trait Distribution Model (JTDM). In particular, the package computes joint probabilities and multivariate confidence intervals and their partial response curves as a function of a selected environmental covariate. The tools implemented by the package are described in Poggiato, Gaüzere,  Martinez-Almoyna, Deschamps, Renaud, Violle, Münkemüller and Thuiller (In preparation).
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: runjags, mvtnorm, ggplot2, coda, MASS, parallel, utils, arm, ggforce, devtools
-RoxygenNote: 7.2.1
+Imports: ggforce, mniw, mvtnorm, parallel, stats, utils, ggplot2
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
 Authors@R: 
-    person("Giovanni", "Poggiato", , "giov.poggiato@gmai.com", role = c("aut","cre"),
+        person("Giovanni", "Poggiato",, "giov.poggiato@gmail.com", role = c("aut","cre","cph"),
            comment = c(ORCID = "0000-0003-1957-9764"))
 URL: https://github.com/giopogg/jtdm
 VignetteBuilder: knitr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
