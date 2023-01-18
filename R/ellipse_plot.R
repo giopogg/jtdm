@@ -25,7 +25,7 @@
 #' @importFrom stats qchisq
 #' @import ggplot2
 #' @importFrom ggforce geom_ellipse
-ellipse_plot = function(m,indexGradient,indexTrait,FullPost=F, grid.length=20, FixX=NULL, confL= 0.95){
+ellipse_plot = function(m, indexGradient, indexTrait, FullPost=FALSE, grid.length=20, FixX=NULL, confL= 0.95){
 
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
@@ -74,10 +74,10 @@ ellipse_plot = function(m,indexGradient,indexTrait,FullPost=F, grid.length=20, F
   #plot for XGradient_new
   if(FullPost){
     #If we want to extract the posterior distribution
-    prediction = jtdm_predict(m=m, Xnew = XGradient_new, validation = F, FullPost=T)
+    prediction = jtdm_predict(m=m, Xnew = XGradient_new, validation = FALSE, FullPost = TRUE)
     table=data.frame(X = XGradientFocal, prediction$PredMean[,indexTrait])
   }else{
-    prediction =jtdm_predict(m=m, Xnew=XGradient_new, validation = F,FullPost=F)
+    prediction =jtdm_predict(m=m, Xnew=XGradient_new, validation = FALSE,FullPost = FALSE)
     table=data.frame(X = XGradientFocal, prediction$PredMean[,indexTrait])
   }
 

@@ -30,7 +30,7 @@
 #' @importFrom mvtnorm pmvnorm
 #' @importFrom stats quantile
 joint_trait_prob = function(m, indexTrait, bounds, Xnew = NULL,
-                            FullPost = T, samples = NULL, parallel = FALSE){
+                            FullPost = TRUE, samples = NULL, parallel = FALSE){
   
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   

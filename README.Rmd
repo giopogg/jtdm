@@ -15,7 +15,7 @@ always_allow_html: true
 knitr::opts_chunk$set(
   collapse = TRUE,
   fig.path = "man/figures/", echo = TRUE)
-)
+
 ```
 # <img src="man/figures/logo_jtdm.png" align="right" width="300px"/>
 

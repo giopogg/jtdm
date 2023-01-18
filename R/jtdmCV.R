@@ -53,7 +53,7 @@ jtdmCV = function(m, K = 5,
              sample = sample)
 
     prediction = jtdm_predict(m = m, Xnew = data$X_raw[test,],
-                              Ynew = data$Y[test,], validation = T,FullPost = T)
+                              Ynew = data$Y[test,], validation = TRUE, FullPost = TRUE)
     
     preds[test,,] = prediction$Pred
 

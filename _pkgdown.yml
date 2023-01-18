@@ -10,7 +10,7 @@ navbar:
       text: "Vignettes"
       menu:
       - text: "Alpine grasslands"
-        href: articles/Alpine_grasslands.html
+        href: articles/ORCHAMP_dataset.html
 reference:
 - title: Run jtdm
   desc: |

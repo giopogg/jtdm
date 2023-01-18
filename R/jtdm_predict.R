@@ -34,7 +34,7 @@ jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = FALSE, FullPos
 
   if(is.null(Xnew)) Xnew=m$X_raw
   if(is.null(dim(Xnew))){Xnew=t(as.matrix(Xnew))}
-  if(validation == T & is.null(Ynew)) stop(" if validation = T, you need to provide Ynew!")
+  if(validation == TRUE & is.null(Ynew)) stop(" if validation = T, you need to provide Ynew!")
   if(ncol(Xnew) != ncol(data$X_raw)) stop("The number of columns of X and Xnew differ")
   if(!is.null(Ynew)){
     if(nrow(Xnew) != nrow(Ynew)) stop("The number of line of Xnew and Ynew differ")

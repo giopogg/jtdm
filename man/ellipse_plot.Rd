@@ -8,7 +8,7 @@ ellipse_plot(
   m,
   indexGradient,
   indexTrait,
-  FullPost = F,
+  FullPost = FALSE,
   grid.length = 20,
   FixX = NULL,
   confL = 0.95

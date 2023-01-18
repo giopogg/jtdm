@@ -47,8 +47,8 @@
 #' @importFrom parallel mclapply detectCores
 
 joint_trait_prob_gradient = function(m, indexTrait, 
-                                     indexGradient,bounds, grid.length=200, XFocal=NULL,
-                                     FixX=NULL, FullPost=T,samples=NULL,parallel=FALSE){
+                                     indexGradient, bounds, grid.length = 200, XFocal = NULL,
+                                     FixX = NULL, FullPost = T, samples = NULL, parallel = FALSE){
   
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
   indexGradient = which(colnames(m$X_raw) == indexGradient)
@@ -102,7 +102,7 @@ joint_trait_prob_gradient = function(m, indexTrait,
     
   }else{
     GradProbs_hat = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
-                                     Xnew = XGradient, bounds = bounds, FullPost=F)$PROBmean
+                                     Xnew = XGradient, bounds = bounds, FullPost = FALSE)$PROBmean
     GradProbs_975 = GradProbs_025 = NULL
   }
   

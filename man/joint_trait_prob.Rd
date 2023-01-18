@@ -9,7 +9,7 @@ joint_trait_prob(
   indexTrait,
   bounds,
   Xnew = NULL,
-  FullPost = T,
+  FullPost = TRUE,
   samples = NULL,
   parallel = FALSE
 )

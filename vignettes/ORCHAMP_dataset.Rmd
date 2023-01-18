@@ -1,8 +1,8 @@
 ---
-title: "Alpine_grasslands"
+title: "ORCHAMP_dataset"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Alpine_grasslands}
+  %\VignetteIndexEntry{ORCHAMP_dataset}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,7 +11,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(fig.path='figures/',
                       collapse = TRUE,
-                      comment = "#>"
+                      comment = "#>",
+                      fig.width = 8, fig.height = 7
 )
 ```
 
@@ -47,7 +48,8 @@ This functions samples from the posterior distribution, which has been analytica
 
 ``` {r,results='hide',warning=FALSE, message=FALSE}
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y = Y, X = X, formula = as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),
+m = jtdm_fit(Y = Y, X = X,
+             formula = as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),
              sample = 100)
 
 summary(m)

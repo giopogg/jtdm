@@ -6,7 +6,8 @@ This is a first submission
 
 * This is a new release.
 Possibly misspelled words in DESCRIPTION:
-  JTDM (5:89)
-  Poggiato (5:331)
-  covariate (5:266)
-These words correspond to researcher surnames or are correctly spelled.
+  Poggiato (5:466)
+  al (5:478)
+  et (5:475)
+  
+These words are correctly spelled.
