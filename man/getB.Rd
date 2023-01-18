@@ -16,7 +16,7 @@ A list containing:
    \item{Bq975,Bq025}{97.5\% and 0.25\% posterior quantiles of the regression coefficient matrix.}
 }
 \description{
-Get the samples from the posterior distribution of the regression coefficient matrix B, together with the posterior mean and quantiles. The regression coefficient matrix B is a matrix where the number of rows is defined by the number of traits that are modelled, and the number of columns is the number of columns of the matrix m$X (the number of explanatory variables after transformation via formula)
+Get the samples from the posterior distribution of the regression coefficient matrix B, together with the posterior mean and quantiles. The regression coefficient matrix B is a matrix where the number of rows is defined by the number of traits that are modeled, and the number of columns is the number of columns of the matrix m$X (the number of explanatory variables after transformation via formula)
 }
 \examples{
 data(Y)  

@@ -6,7 +6,7 @@
 #' @param bounds The parameter to specify a region in the community-trait space where the function computes the joint probabilities of traits. It is a list of the length of "indexTrait", each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits, bounds=list(c(10,Inf),c(10,Inf)) corresponds to the region in the community-trait space where both traits both take values greater than 10.
 #' @param Xnew Optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used.
 #' @param FullPost If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.
-#' @param mcmc.samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
+#' @param samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of posterior samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
 #' @param parallel Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.
 #' @export
 #' @return A list containing:
@@ -15,7 +15,7 @@
 #'    \item{PROBmean}{Posterior mean of the joint probability.}
 #'    
 #'    \item{PROBq975,PROBq025}{97.5\% and 0.25\% posterior quantiles of the joint probability. NULL if FullPost=FALSE. }
-#' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+#' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
 #' @examples
 #' data(Y)  
 #' data(X)  
@@ -30,16 +30,16 @@
 #' @importFrom mvtnorm pmvnorm
 #' @importFrom stats quantile
 joint_trait_prob = function(m, indexTrait, bounds, Xnew = NULL,
-                            FullPost = T, mcmc.samples = NULL, parallel = FALSE){
+                            FullPost = T, samples = NULL, parallel = FALSE){
   
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
   ntot = dim(m$model$B)[3]
   
-  if(!is.null(mcmc.samples)){
-    if(mcmc.samples>ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")
+  if(!is.null(samples)){
+    if(samples>ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")
     }else{
-      ntot = mcmc.samples
+      ntot = samples
     }
   }
   

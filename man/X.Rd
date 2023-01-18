@@ -3,7 +3,7 @@
 \docType{data}
 \name{X}
 \alias{X}
-\title{Site x environmental covariates dateset}
+\title{Site x environmental covariates dataset}
 \format{
 A matrix
 }

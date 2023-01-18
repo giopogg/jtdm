@@ -1,4 +1,4 @@
-R package ‘jtdm’
+R package jtdm
 ================
 Giovanni Poggiato
 17/10/22
@@ -24,7 +24,7 @@ install_github("giopogg/jtdm")
 ## Fit a jtdm to data
 
 The package implements jtdm by sampling from the posterior distribution
-of the parameters, which has been analytically determined. Therefore,
+of the parameters, which has been faytically determined. Therefore,
 there is no need for classical MCMC convergence checks.
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
@@ -74,8 +74,8 @@ site.
 
 ``` r
 joint_trait_prob(m,indexTrait=c("SLA","LNC"), Xnew=X["VCHA_2940",], bounds=list(c(20,Inf),c(20,Inf)))$PROBmean
-##        1 
-## 0.115965
+##          1 
+## 0.09809922
 ```
 
 Unsurprisingly, the probability is low. Then, we compute how this
@@ -92,7 +92,7 @@ And we plot it.
 
 ![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
-As climatic conditions become more favourable (i.e. GDD increases), the
+As climatic conditions become more favorable (i.e. GDD increases), the
 probability of having high values of both traits increases.
 
 ## Author

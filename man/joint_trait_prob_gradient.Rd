@@ -13,7 +13,7 @@ joint_trait_prob_gradient(
   XFocal = NULL,
   FixX = NULL,
   FullPost = T,
-  mcmc.samples = NULL,
+  samples = NULL,
   parallel = FALSE
 )
 }
@@ -34,13 +34,13 @@ joint_trait_prob_gradient(
 
 \item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
 
-\item{mcmc.samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
+\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
 
 \item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
 \value{
 A list containing:
-   \item{GradProbssamples}{Sample from the posterior distribution of the joint probability along the gradient. It is a vector whose lenght is the number of MCMC samples. NULL if FullPost=FALSE. }
+   \item{GradProbssamples}{Sample from the posterior distribution of the joint probability along the gradient. It is a vector whose length is the number of posterior samples. NULL if FullPost=FALSE. }
    \item{GradProbsmean}{Posterior mean of the joint probability along the gradient. }
    
    \item{GradProbsq975,GradProbsq025}{97.5\% and 0.25\% posterior quantiles of the joint probability along the gradient. NULL if FullPost=FALSE. }
@@ -48,10 +48,10 @@ A list containing:
    \item{gradient}{The gradient of the focal variable built by the function.}
 }
 \description{
-Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
+Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builds a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
 }
 \details{
-This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
 }
 \examples{
 data(Y)  

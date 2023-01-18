@@ -66,7 +66,7 @@
 <span>  <span class="va">bounds</span>,</span>
 <span>  Xnew <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  FullPost <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>  mcmc.samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -93,8 +93,8 @@
 <dd><p>If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.</p></dd>
 
 
-<dt>mcmc.samples</dt>
-<dd><p>Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)</p></dd>
+<dt>samples</dt>
+<dd><p>Optional, default to NULL, only works when FullPost=FALSE. Defines the number of posterior samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)</p></dd>
 
 
 <dt>parallel</dt>
@@ -120,7 +120,7 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function is time consuming when <code>FullPost=T</code>. Consider setting <code>parallel=T</code> and/or to set <code>mcmc.samples</code> to a value smaller than the length of the MCMC chains.</p>
+    <p>This function is time consuming when <code>FullPost=T</code>. Consider setting <code>parallel=T</code> and/or to set <code>samples</code> to a value smaller than the length of the MCMC chains.</p>
     </div>
 
     <div id="ref-examples">

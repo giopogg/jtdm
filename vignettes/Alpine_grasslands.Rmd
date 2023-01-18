@@ -31,7 +31,7 @@ library(ggplot2)
 
 # Fit a jtdm to data
 
-JTDMs relate a vector of average community traits (e.g. community weighted mean, CWM) to a vector of environmental covariates. The matrix Y contains the CWM traits of specific leaf area (SLA), leaf nitrogen content (LNC) and plant height of 116 plant community sites situated along 21 elevational gradients (www.orchamp.osug.fr) in the French Alps. 
+JTDMs relate a vector of average community traits (e.g. community weighted mean, CWM) to a vector of environmental covariates. The matrix Y contains the CWM traits of specific leaf area (SLA), leaf nitrogen content (LNC) and plant height of 116 plant community sites situated along 21 elevation gradients (www.orchamp.osug.fr) in the French Alps. 
 ```{r Y}
 data(Y)
 summary(Y)
@@ -42,7 +42,7 @@ data(X)
 summary(X)
 ```
 
-JTDMs infer a linear regression for each CWM trait as a function of the environmental covariates, together with an inter-traits residual covariance matrix. Therefore, the parameters of a JTDM are the regression coefficients $B$ and the residual covariance $\Sigma$. Notice that inferring a generalized linear model is possible, even thus not yet implemented in our package. The inference of JTDM is implemented in the Bayesian framework witb the function `jtdm_fit`.
+JTDMs infer a linear regression for each CWM trait as a function of the environmental covariates, together with an inter-traits residual covariance matrix. Therefore, the parameters of a JTDM are the regression coefficients $B$ and the residual covariance $\Sigma$. Notice that inferring a generalized linear model is possible, even thus not yet implemented in our package. The inference of JTDM is implemented in the Bayesian framework with the function `jtdm_fit`.
 This functions samples from the posterior distribution, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks. The syntax of the function is similar to the popular function `lm`. This function requires the response matrix Y, the predictor matrix X and a (right-hand only) formula to specify how CWM traits depends on environmental variables. We choose here to include in the model linear and quadratic terms (using orthogonal polynomials) of GDD and FDD in interaction with habitat to enable non linear trait-environment relationships and to allow for different trait-environment relationships in forest and open habitats. The \code{jtdm_fit} is very fast, however, to ensure that the whole vignette runs quickly fast, we only sample a relative low number of samples from the posterior distribution (100 here). To obtain reliable results, the number of samples should be increased (around 1000).
 
 ``` {r,results='hide',warning=FALSE, message=FALSE}
@@ -83,19 +83,19 @@ predictionsCV$RMSE
 
 ## Trait-environment relationships
 
-We can now analyse the inferred trait-environment relationships using the function `partial_response`, that computes and plots the partial response curve of a focal trait along a focal environmental gradient. This function takes as input the model `m`, the focal environmental variable `indexGradient` and the focal trait `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a dataset of environmental variables by building the gradient of the focal environmental variable and keeping all other variables fixed to their mean. Then, it predicts the marginal distribution of the focal trait for the so-built environmental dataset. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost="mean"`, which we advice here), or just the posterior mean (`FullPost="mean"`). The function outputs are the plot of the inferred trait-environment relationship and the predictions of the model (used to produce the plot). For example, we can plot the partial response curve relationship between SLA and GDD
+We can now analyze the inferred trait-environment relationships using the function `partial_response`, that computes and plots the partial response curve of a focal trait along a focal environmental gradient. This function takes as input the model `m`, the focal environmental variable `indexGradient` and the focal trait `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builts a dataset of environmental variables by building the gradient of the focal environmental variable and keeping all other variables fixed to their mean. Then, it predicts the marginal distribution of the focal trait for the so-built environmental dataset. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost="mean"`, which we advice here), or just the posterior mean (`FullPost="mean"`). The function outputs are the plot of the inferred trait-environment relationship and the predictions of the model (used to produce the plot). For example, we can plot the partial response curve relationship between SLA and GDD
 ```{r}
 partial_response(m, indexGradient = "GDD",indexTrait = "SLA")$p
 ```
 
 
-The user can eventually provide a given gradient for the focal environmental variable `XFocal` (which is otherwise built on regual grid with length given by `grid.length`). The user can also choose to fix the non focal environmental variables to another value. For example, we can obtain the partial response curve of SLA and GDD in forest
+The user can eventually provide a given gradient for the focal environmental variable `XFocal` (which is otherwise built on regular grid with length given by `grid.length`). The user can also choose to fix the non focal environmental variables to another value. For example, we can obtain the partial response curve of SLA and GDD in forest
 ```{r}
 partial_response(m, indexGradient = "GDD", indexTrait = "SLA", FixX = list(GDD = NULL, FDD = NULL, forest = 1))$p
 ```
 ## Multivariate confidence intervals
 
-We can then compute the partial response curves of pairwise CWM trait combinations together with their $95\%$ credible region, what we define in the publication as the most suitable CLS and envelop of possible CLSs. This is done by the function `ellipse_plot`, that takes as input the model `m`, the focal environmental variable `indexGradient` and the two focal traits `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a gradient of the focal environmental variable while keeping all other variables fixed to their mean, and then predict and plots the joint distribution of the focal traits. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost=F`, which we advice here to obtain smoother curves).
+We can then compute the partial response curves of pairwise CWM trait combinations together with their $95\%$ credible region, what we define in the publication as the most likely CWM combination and envelop of possible CWM combinations. This is done by the function `ellipse_plot`, that takes as input the model `m`, the focal environmental variable `indexGradient` and the two focal traits `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a gradient of the focal environmental variable while keeping all other variables fixed to their mean, and then predict and plots the joint distribution of the focal traits. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost=F`, which we advice here to obtain smoother curves).
 
 ```{r}
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
@@ -103,7 +103,7 @@ ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient = "GDD")
 ```
 
 
-The user can also choose to fix the non-focal environmental variables to another value. For example, we can obtain the partial response curves of the most suitable CLS and envelop of possible CLSs of SLA and GDD in forest.
+The user can also choose to fix the non-focal environmental variables to another value. For example, we can obtain the partial response curves of the most likely CWM combination and envelop of possible CWM combinations of SLA and GDD in forest.
 ```{r}
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD", FixX = list(GDD = NULL, FDD = NULL, forest = 1))
@@ -111,7 +111,7 @@ ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD", FixX = list(GD
 
 ## Joint predictions
 
-The `jtdm` package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function `joint_trait_prob`. To define a given region in the community-trait space, the user has to define the focal traits `indexTrait` (any number of traits is accepted) and trait-specific tresholds through the parameter `bounds`. `bounds` is a list of the length of `indexTrait`, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), `bounds=list(c(20,Inf),c(20,Inf))` corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
+The `jtdm` package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function `joint_trait_prob`. To define a given region in the community-trait space, the user has to define the focal traits `indexTrait` (any number of traits is accepted) and trait-specific thresholds through the parameter `bounds`. `bounds` is a list of the length of `indexTrait`, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), `bounds=list(c(20,Inf),c(20,Inf))` corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
 
 ```{r}
 joint_trait_prob(m, indexTrait = c("SLA","LNC"), Xnew = X["VCHA_2940",], bounds = list(c(20,Inf),c(20,Inf)))$PROBmean

@@ -1,6 +1,6 @@
 #' Computes partial response curves of joint probabilities
 #'
-#' Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
+#' Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builds a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
 #' @param m A model fitted with \code{jtdm_fit}
 #' @param indexTrait  A vector of the names (as specified in the column names of Y) of the two (or more!) traits we want to compute the joint probabilities of.
 #' @param indexGradient The name (as specified in the column names of X) of the focal variable.
@@ -9,12 +9,12 @@
 #' @param XFocal Optional. A gradient of the focal variable provided by the user. If provided, the function will used this gradient instead of building a regular one. Default to NULL.
 #' @param FixX Optional. A parameter to specify the value to which non-focal variables are fixed. This can be useful for example if we have some categorical variables (e.g. forest vs meadows) and we want to obtain the partial response curve for a given value of the variable. It has to be a list of the length and names of the columns of X. For example, if the columns of X are "MAT","MAP","Habitat" and we want to fix "Habitat" to 1, then FixX=list(MAT=NULL,MAP=NULL,Habitat=1.). Default to NULL.
 #' @param FullPost If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.
-#' @param mcmc.samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
+#' @param samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
 #' @param parallel Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.
-#' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+#' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
 #' @export
 #' @return A list containing:
-#'    \item{GradProbssamples}{Sample from the posterior distribution of the joint probability along the gradient. It is a vector whose lenght is the number of MCMC samples. NULL if FullPost=FALSE. }
+#'    \item{GradProbssamples}{Sample from the posterior distribution of the joint probability along the gradient. It is a vector whose length is the number of posterior samples. NULL if FullPost=FALSE. }
 
 #'    \item{GradProbsmean}{Posterior mean of the joint probability along the gradient. }
 #'    
@@ -48,7 +48,7 @@
 
 joint_trait_prob_gradient = function(m, indexTrait, 
                                      indexGradient,bounds, grid.length=200, XFocal=NULL,
-                                     FixX=NULL, FullPost=T,mcmc.samples=NULL,parallel=FALSE){
+                                     FixX=NULL, FullPost=T,samples=NULL,parallel=FALSE){
   
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
   indexGradient = which(colnames(m$X_raw) == indexGradient)
@@ -56,8 +56,8 @@ joint_trait_prob_gradient = function(m, indexTrait,
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
   ntot = dim(m$model$B)[3] #samples * n.chains
-  if(is.null(mcmc.samples)){ mcmc.samples = ntot }
-  if(mcmc.samples > ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")}
+  if(is.null(samples)){ samples = ntot }
+  if(samples > ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")}
   if(FullPost == "mean"){stop("Fullstop cannot be set to mean here.")}
   if(length(indexTrait) != length(bounds)){stop("index and bounds have different lengths!!")}
   if(length(indexGradient) > 1) {stop("indexGradient has to be a numerical value")}
@@ -95,7 +95,7 @@ joint_trait_prob_gradient = function(m, indexTrait,
   if(FullPost){
     GradProbs = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
                                  Xnew=XGradient, bounds=bounds, FullPost=T, 
-                                 mcmc.samples = mcmc.samples, parallel = parallel)$PROBsamples
+                                 samples = samples, parallel = parallel)$PROBsamples
     GradProbs_hat = apply(GradProbs,mean,MARGIN=1)
     GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
     GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)

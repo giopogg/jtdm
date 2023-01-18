@@ -60,7 +60,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdm_predict</span><span class="op">(</span>m <span class="op">=</span> <span class="va">m</span>, Xnew <span class="op">=</span> <span class="cn">NULL</span>, Ynew <span class="op">=</span> <span class="cn">NULL</span>, validation <span class="op">=</span> <span class="cn">F</span>, FullPost <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdm_predict</span><span class="op">(</span></span>
+<span>  m <span class="op">=</span> <span class="va">m</span>,</span>
+<span>  Xnew <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Ynew <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  validation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  FullPost <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -82,7 +88,7 @@
 
 
 <dt>FullPost</dt>
-<dd><p>The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \(BXnew\)). If FullPost=F, the function only returns the posterior mean of the regression term (\(BmeanXnew\)).</p></dd>
+<dd><p>The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \(BXnew\)). If FullPost=FALSE, the function only returns the posterior mean of the regression term (\(BmeanXnew\)).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -112,7 +118,7 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.</p>
+    <p>To obtain a full assessment of the posterior distribution, the function should be ran with FullPost=TRUE, although this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.</p>
     </div>
 
     <div id="ref-examples">

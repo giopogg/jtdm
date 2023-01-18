@@ -1,6 +1,6 @@
 #' Computes and plots the trait-environment relationship of a given CWM trait and a given environmental variable
 #'
-#' Computes and plots the trait-environment relationship of a given CWM trait and a focal environmental variable. In order to build the response curve, the function builts a dataframe where the focal environmental variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values).
+#' Computes and plots the trait-environment relationship of a given CWM trait and a focal environmental variable. In order to build the response curve, the function builds a dataframe where the focal environmental variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values).
 #' @param m a model fitted with \code{jtdm_fit}
 #' @param indexGradient The name (as specified in the column names of X) of the focal variable.
 #' @param indexTrait  The name (as specified in the column names of Y) of the focal trait.

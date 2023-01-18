@@ -4,7 +4,7 @@
 #' @param m a model fitted with \code{jtdm_fit}
 #' @export
 #' @return A list containing:
-#'    \item{Ssamples}{ Sample from the posterior distribution of the residual covariance matrix. It is an array where the first two dimensions are the rows and columns of the matrix, and the third dimensions are the samples from the posterion distribution}
+#'    \item{Ssamples}{ Sample from the posterior distribution of the residual covariance matrix. It is an array where the first two dimensions are the rows and columns of the matrix, and the third dimensions are the samples from the posterior distribution}
 #'   
 #'    \item{Smean}{ Posterior mean of the residual covariance matrix.}
 #'   

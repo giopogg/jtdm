@@ -10,7 +10,7 @@ joint_trait_prob(
   bounds,
   Xnew = NULL,
   FullPost = T,
-  mcmc.samples = NULL,
+  samples = NULL,
   parallel = FALSE
 )
 }
@@ -25,7 +25,7 @@ joint_trait_prob(
 
 \item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
 
-\item{mcmc.samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
+\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of posterior samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
 
 \item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
@@ -41,7 +41,7 @@ A list containing:
 Computes the joint probability of CWM traits in regions in the community-trait space specified by bounds and in sites specified in Xnew.
 }
 \details{
-This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{mcmc.samples} to a value smaller than the length of the MCMC chains.
+This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
 }
 \examples{
 data(Y)  

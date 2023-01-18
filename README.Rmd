@@ -1,5 +1,5 @@
 ---
-title: "R package 'jtdm'"
+title: "R package jtdm"
 author: "Giovanni Poggiato"
 date: "17/10/22"
 # output: 
@@ -37,7 +37,7 @@ install_github("giopogg/jtdm")
 
 ## Fit a jtdm to data
 
-The package implements jtdm by sampling from the posterior distribution of the parameters, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks. 
+The package implements jtdm by sampling from the posterior distribution of the parameters, which has been faytically determined. Therefore, there is no need for classical MCMC convergence checks. 
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
 ```{r,warning=FALSE,results='hide'}
@@ -94,7 +94,7 @@ ggplot(data=table) + geom_ribbon(mapping=aes(x=x, ymin=q02, ymax=q97),position =
 ```
 
 
-As climatic conditions become more favourable (i.e. GDD increases), the probability of having high values of both traits increases.
+As climatic conditions become more favorable (i.e. GDD increases), the probability of having high values of both traits increases.
 
 ## Author
 This package is currently developed by Giovanni Poggiato from Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The framework implemented in this package is described in: Joint modeling and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre, Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle, Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.

@@ -4,7 +4,13 @@
 \alias{jtdm_predict}
 \title{Predict method for joint trait distribution model}
 \usage{
-jtdm_predict(m = m, Xnew = NULL, Ynew = NULL, validation = F, FullPost = T)
+jtdm_predict(
+  m = m,
+  Xnew = NULL,
+  Ynew = NULL,
+  validation = FALSE,
+  FullPost = TRUE
+)
 }
 \arguments{
 \item{m}{a model fitted with \code{jtdm_fit}}
@@ -15,7 +21,7 @@ jtdm_predict(m = m, Xnew = NULL, Ynew = NULL, validation = F, FullPost = T)
 
 \item{validation}{boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.}
 
-\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=F, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).}
+\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=FALSE, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).}
 }
 \value{
 A list containing:
@@ -33,7 +39,7 @@ A list containing:
 Obtains predictions from a fitted joint trait distribution model and optionally computes their R squared and root mean square error (RMSE)
 }
 \details{
-To obtain a full assesment of the posterior distribution, the function should be ran with FullPost=TRUE, altough this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
+To obtain a full assessment of the posterior distribution, the function should be ran with FullPost=TRUE, although this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
 }
 \examples{
 data(Y)  

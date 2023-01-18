@@ -9,7 +9,7 @@
 #' @name jtdm
 NULL
 
-#' Site x environmental covariates dateset
+#' Site x environmental covariates dataset
 #'
 #' Includes the Growing Degree Days (GDD) during the growing season and Freezing Degree Days (FDD) during the growing season averaged over the period 1989-2019
 #'

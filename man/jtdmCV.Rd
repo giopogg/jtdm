@@ -17,7 +17,7 @@ jtdmCV(m, K = 5, sample = 1000, partition = NULL)
 }
 \value{
 A list containing:
-   \item{Pred}{Sample from the posterior predictive distribution in cross validation. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modelled and the third the number of MCMC samples. NULL if FullPost=FALSE. }
+   \item{Pred}{Sample from the posterior predictive distribution in cross validation. It is an array where the first dimension is the number of sites in Xnew, the second is the number of traits modeled and the third the number of MCMC samples. NULL if FullPost=FALSE. }
    
    \item{PredMean}{Posterior mean of posterior predictive distribution in cross validation. }
    
