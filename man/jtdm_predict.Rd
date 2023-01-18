@@ -38,10 +38,7 @@ To obtain a full assesment of the posterior distribution, the function should be
 \examples{
 data(Y)  
 data(X)  
-# Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,
-        burnin = 100,
-        sample = 100)
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 # marginal predictions of traits in the sites of X
 pred = jtdm_predict(m)
 }

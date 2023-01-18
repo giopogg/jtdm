@@ -25,10 +25,10 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 1,  
-#'         burnin = 10,  
-#'         sample = 10)  
+#' #We sample only few samples from the posterior in order to reduce 
+#' #the computational time of the examples.
+#' #Increase the number of samples to obtain robust results
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 10)  
 #' # Compute probability of SLA and LNC to be joint-high at sites in the studies
 #'
 #' # Compute the joint probability of SLA and LNC 
@@ -45,32 +45,39 @@
 #'                      
 #' @importFrom stats quantile 
 #' @importFrom parallel mclapply detectCores
-            
-joint_trait_prob_gradient = function(m, indexTrait, indexGradient,bounds, grid.length=200, XFocal=NULL, FixX=NULL, FullPost=T,mcmc.samples=NULL,parallel=FALSE){
 
+joint_trait_prob_gradient = function(m, indexTrait, 
+                                     indexGradient,bounds, grid.length=200, XFocal=NULL,
+                                     FixX=NULL, FullPost=T,mcmc.samples=NULL,parallel=FALSE){
+  
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
   indexGradient = which(colnames(m$X_raw) == indexGradient)
-
-  ntot = m$model$sample*length(m$model$mcmc) #samples * n.chains
-  if(is.null(mcmc.samples)){mcmc.samples=ntot}
-  if(mcmc.samples>ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")}
-  if(FullPost=="mean"){stop("Fullstop cannot be set to mean here.")}
+  
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  
+  ntot = dim(m$model$B)[3] #samples * n.chains
+  if(is.null(mcmc.samples)){ mcmc.samples = ntot }
+  if(mcmc.samples > ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")}
+  if(FullPost == "mean"){stop("Fullstop cannot be set to mean here.")}
   if(length(indexTrait) != length(bounds)){stop("index and bounds have different lengths!!")}
-  if(length(indexGradient)>1) {stop("indexGradient has to be a numerical value")}
+  if(length(indexGradient) > 1) {stop("indexGradient has to be a numerical value")}
   if(!is.null(FixX)){if(!identical(names(FixX), colnames(m$X_raw))) {stop("Provide FixX as a list with the same names of X")}}
   if(!is.null(FixX[[names(FixX)[indexGradient]]])) {stop("FixX of the focal environmental variable must be NULL")}
-
-  data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)), X_raw = m$X_raw)
-
-
+  
+  data=list(Y = m$Y, X = m$X, K = ncol(m$X), J = ncol(m$Y), n = nrow(m$Y), df = ncol(m$Y),
+            I = diag(ncol(m$Y)), X_raw = m$X_raw)
+  
+  
   #Build XGradient matrix
   if(is.null(XFocal)){
-    XGradientFocal=  seq(from=min(data$X_raw[,indexGradient]),to=max(data$X_raw[,indexGradient]),length.out=grid.length)
-  }else{XGradientFocal = XFocal
-  grid.length = nrow(XFocal)
+    XGradientFocal = seq(from=  min(data$X_raw[,indexGradient]), to = max(data$X_raw[,indexGradient]), 
+                         length.out = grid.length)
+  }else{
+    XGradientFocal = XFocal
+    grid.length = nrow(XFocal)
   }
-
-  XGradient = matrix(nrow=grid.length,ncol=ncol(data$X_raw))
+  
+  XGradient = matrix(nrow = grid.length, ncol = ncol(data$X_raw))
   for(i in 1:ncol(data$X_raw)){
     if(i == indexGradient){ XGradient[,i] = XGradientFocal
     }else{
@@ -82,28 +89,28 @@ joint_trait_prob_gradient = function(m, indexTrait, indexGradient,bounds, grid.l
     }
   }
   colnames(XGradient) = colnames(data$X_raw)
-
+  
   GradProbs = matrix(nrow=grid.length,ncol=ntot)
   # Loop on every row of X
   if(FullPost){
     GradProbs = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
                                  Xnew=XGradient, bounds=bounds, FullPost=T, 
                                  mcmc.samples = mcmc.samples, parallel = parallel)$PROBsamples
-    GradProbs_hat =  apply(GradProbs,mean,MARGIN=1)
+    GradProbs_hat = apply(GradProbs,mean,MARGIN=1)
     GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
     GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
-
+    
   }else{
-    GradProbs_hat = joint_trait_prob(m, indexTrait=colnames(m$Y)[indexTrait],
-                                     Xnew=XGradient, bounds=bounds, FullPost=F)$PROBmean
+    GradProbs_hat = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
+                                     Xnew = XGradient, bounds = bounds, FullPost=F)$PROBmean
     GradProbs_975 = GradProbs_025 = NULL
   }
-
-
+  
+  
   GradProbs_hat =  apply(GradProbs,mean,MARGIN=1)
   GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
   GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
   list(GradProbssamples = GradProbs, GradProbsmean=GradProbs_hat,
        GradProbsq025=GradProbs_025,GradProbsq975=GradProbs_975,gradient=XGradientFocal)
-
+  
 }

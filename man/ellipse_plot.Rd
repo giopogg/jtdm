@@ -39,9 +39,7 @@ Partial response curve of the pairwise most suitable community-level strategy an
 data(Y)  
 data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-        burnin = 100,  
-        sample = 100)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 1000)  
 
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")

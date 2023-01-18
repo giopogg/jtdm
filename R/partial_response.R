@@ -17,9 +17,7 @@
 #' data(Y)  
 #' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-#'         burnin = 100,  
-#'         sample = 100)  
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
 #' # SLA-GDD relationship
 #' plot = partial_response(m,indexGradient="GDD",indexTrait="SLA")
 #' plot$p
@@ -32,6 +30,8 @@
 #' @importFrom utils globalVariables
 partial_response = function(m, indexGradient, indexTrait, XFocal = NULL, grid.length=200,FixX=NULL, FullPost="mean"){
 
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = which(colnames(m$Y) == indexTrait)
 

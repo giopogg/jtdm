@@ -14,9 +14,7 @@
 #' data(Y)  
 #' data(X)  
 #' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-#'         burnin = 100,  
-#'         sample = 100)  
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 1000)  
 #'
 #' # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 #' ellipse_plot(m,indexTrait = c("SLA","LNC"),indexGradient="GDD")
@@ -29,6 +27,8 @@
 #' @importFrom ggforce geom_ellipse
 ellipse_plot = function(m,indexGradient,indexTrait,FullPost=F, grid.length=20, FixX=NULL, confL= 0.95){
 
+  if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
+  
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
 

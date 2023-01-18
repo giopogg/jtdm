@@ -1,14 +1,14 @@
 #' Fitting joint trait distribution models
 #'
-#' jtdm_fit is used to fit a Joint trait distribution model. Requires the response variable Y (the sites x traits matrix) and the explanatory variables X.
+#' jtdm_fit is used to fit a Joint trait distribution model. Requires the response variable Y (the sites x traits matrix) and the explanatory variables X.This function samples from the posterior distribution of the parameters, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks. 
 #' @param Y The sites x traits matrix containing community (weighted) means of each trait at each site.
 #' @param X The design matrix, i.e. sites x predictor matrix containing the value of each explanatory variable (e.g. the environmental conditions) at each site.
 #' @param formula An object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under ‘Details’
-#' @param adapt,burnin,sample,n.chains,monitor Parameters of the MCMC sampler. See \code{?run.jags} for details
+#' @param sample Number of samples from the posterior distribution. Since we sample from the exact posterior distribution, the number of samples is relative lower than MCMC samplers. As a rule of thumb, 1000 samples should provide correct inference.
 #' @export
 #' @details A formula has an implied intercept term. To remove this use either y ~ x - 1 or y ~ 0 + x. See formula for more details of allowed formulae.
 #' @return A list containing:
-#'    \item{model}{ An object of class 'runjags' containing the fitted model.}
+#'    \item{model}{ An object of class "jtdm_fit", containing the samples from the posterior distribution of the regression coefficients (B) and residual covariance matrix (Sigma), together with the likelihood of the model.}
 #'    \item{Y}{A numeric vector of standard errors on parameters}
 #'    
 #'    \item{X_raw}{The design matrix specified as input}
@@ -20,22 +20,17 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' # Short MCMC to obtain a fast example: results are unreliable !
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
-#'         burnin = 100,  
-#'         sample = 100)  
+#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
 #' @importFrom stats model.frame model.matrix rWishart coef
-#' @importFrom runjags run.jags
-#' @importFrom arm bayesglm
+#' @importFrom mniw rMT riwish
+
 jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
                 formula,
-                adapt = 200,
-                burnin = 5000,
-                sample = 5000,
-                n.chains=2,
-                monitor = c('B','Sigma','pd')){
+                sample = 5000
+                ){
 
-
+  if(nrow(Y) != nrow(X)) stop("The number of lines of X and Y do not coincide")
+  
   X_raw = X
   X=model.frame(formula,as.data.frame(X))
   mt <- attr(X, "terms")
@@ -44,51 +39,47 @@ jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
   # data preparation
   data=list(Y=Y, X=X, K=ncol(X), J=ncol(Y), n=nrow(Y), df= ncol(Y), I=diag(ncol(Y)))
 
-  # define jags model
-  jags.model="model {
-      for (i in 1:n) {
-      Y[i, 1:J] ~ dmnorm(Mu[i, ], Tau)
-      for (j in 1:J) {
-      Mu[i, j] <- inprod(B[j, ], X[i, ])
-      }
-      }
+  # Define prior hyperparameters
+  n = data$n
+  q = data$K
+  p = nu = data$df
+  B_0 = matrix(0, nrow = p, ncol = q)
+  D = matrix(0, nrow = q, ncol = q) + diag(rep(10^4, q))
+  Q = diag(ncol(Y))*10^4 # Probably needs to play
+   
+  #########################################################################################################
+  ### Sample from the conjugate posterior (see Rowe 2002)
+  
+  # Posterior hyperparameters of B
+  df_post = n + nu - p - 1
+  B_bar = ( t(Y) %*% X + B_0%*%solve(D) ) %*% solve( solve(D) + t(X) %*% X)
+  G = Q + t(Y)%*%Y + B_0 %*% solve(D) %*% t(B_0) - (t(Y) %*% X + B_0 %*% solve(D)) %*% solve(solve(D) + t(X) %*% X) %*% t(t(Y) %*% X + B_0 %*% solve(D))
+  
+  # Sample B
+  B = rMT(n = sample,
+      Lambda = B_bar,
+      SigmaC = solve(df_post * (solve(D) + t(X) %*% X)),
+      SigmaR = G,
+      nu = df_post)
+  
+  # Posterior hyperparameters of Sigma
+  nu_post = n + nu
+  Sigma = riwish(sample,
+                nu = n + nu,
+                Psi = G)
+     
+  #########################################################################################################
+  ### Compute the likelihood (using posterior means as estimates of the parameters)
+  
+  Sigma_bar =  G/(n + nu - 2*p -2)
 
-      Tau ~ dwish(I, df)
-      Sigma <- inverse(Tau)
-      for(j in 1:J){
-      for (k in 1:K) {
-      B[j,k] ~ dnorm(0, 1.0E-4)
-      }
-      }
+  log.lik = -(n*p/2)*log(2*pi) - (n/2)*log(det(Sigma_bar)) -1/2*sum(diag((Y-X%*%t(B_bar))%*%solve(Sigma_bar)%*%t((Y-X%*%t(B_bar)))))
 
-  }"
+  fitted_jtdm = list(model= list(B = B, Sigma = Sigma, log.lik = log.lik),
+                     Y=Y, X=X, X_raw = X_raw, formula=formula,mt=mt)
 
-  # set initial values
-  inits <- function(data) {
-    Y <- as.matrix(data$Y)
-    X <- as.matrix(data$X)[, -1]
-    Tau <- rWishart(1, data$df, data$I)[, , 1]
-    B <- sapply(
-      seq_len(data$J),
-      function(x) coef(bayesglm(Y[, x] ~ X, family = "gaussian"))
-    )
-    B <- t(B)
-    list(Tau = Tau, B = B)
-  }
-
-  initsList = rep(list(inits(data)),n.chains)
-  # run model
-  jags.out <- runjags::run.jags(jags.model,
-                                data = data,
-                                inits=initsList,
-                                #inits=inits(data),
-                                adapt = adapt,
-                                burnin = burnin,
-                                sample = sample,
-                                n.chains=n.chains,
-                                monitor = monitor,
-                                summarise = TRUE)
-
-  list(model=jags.out, Y=Y, X=X, X_raw = X_raw, formula=formula,mt=mt)
-
+  class(fitted_jtdm) = "jtdm_fit"
+  
+  fitted_jtdm
+  
 }

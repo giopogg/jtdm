@@ -41,9 +41,7 @@ Computes and plots the trait-environment relationship of a given CWM trait and a
 data(Y)  
 data(X)  
 # Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10,  
-        burnin = 100,  
-        sample = 100)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
 # SLA-GDD relationship
 plot = partial_response(m,indexGradient="GDD",indexTrait="SLA")
 plot$p

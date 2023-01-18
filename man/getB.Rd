@@ -21,10 +21,7 @@ Get the samples from the posterior distribution of the regression coefficient ma
 \examples{
 data(Y)  
 data(X)
-# Short MCMC to obtain a fast example: results are unreliable !
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  adapt = 10, 
-        burnin = 100, 
-        sample = 100) 
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000) 
 # get the inferred regression coefficients
 B=getB(m)
 }
