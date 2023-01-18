@@ -14,13 +14,10 @@ always_allow_html: true
 ```{r chunk-name, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.path = "man/figures/"
+  fig.path = "man/figures/", echo = TRUE)
 )
 ```
 # <img src="man/figures/logo_jtdm.png" align="right" width="300px"/>
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # jtdm - Joint trait distribution modeling
 
@@ -37,9 +34,10 @@ install_github("giopogg/jtdm")
 
 ## Fit a jtdm to data
 
-The package implements jtdm by sampling from the posterior distribution of the parameters, which has been faytically determined. Therefore, there is no need for classical MCMC convergence checks. 
+The package implements jtdm by sampling from the posterior distribution of the parameters, which has been analytically determined. Therefore, there is no need for classical MCMC convergence checks. 
 
 Fitting a JTDM the case study dataset of Poggiato et al. In prep.
+
 ```{r,warning=FALSE,results='hide'}
 library(jtdm)
 library(ggplot2)
@@ -53,6 +51,21 @@ m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 getB(m)$Bmean
 get_sigma(m)$Smean 
 ```
+
+### Show inferred model
+
+We can have a first look to regression coefficients using the `summary` function
+
+```{r,warning=FALSE,results='hide'}
+summary(m)
+
+```
+
+And we can plot the regression coefficients and the residual covariance matrix
+```{r,warning=FALSE,results='hide'}
+plot(m)
+```
+
 ###Trait-environment relationships
 
 Single-trait trait-environment relationships

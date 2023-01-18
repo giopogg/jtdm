@@ -49,7 +49,10 @@ This functions samples from the posterior distribution, which has been analytica
 # Short MCMC to obtain a fast example: results are unreliable !
 m = jtdm_fit(Y = Y, X = X, formula = as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest"),
              sample = 100)
+
+summary(m)
 ```
+
 
 ## Get parameters
 
@@ -60,9 +63,15 @@ We can now look at the inferred the regression coefficients. The `getB` function
 # Inferred parameters
 B = getB(m)
 ```
+
 `get_sigma` provides instead the MCMC samples of the residual covariance matrix $\Sigma$ together with its mean and $95\%$ credible interval. 
 ```{r}
 Sigma = get_sigma(m)$Smean
+```
+
+We can plot these parameters with the function `plot`
+```{r}
+plot(m)
 ```
 
 ## Predict and evaluate model fit
@@ -93,6 +102,7 @@ The user can eventually provide a given gradient for the focal environmental var
 ```{r}
 partial_response(m, indexGradient = "GDD", indexTrait = "SLA", FixX = list(GDD = NULL, FDD = NULL, forest = 1))$p
 ```
+
 ## Multivariate confidence intervals
 
 We can then compute the partial response curves of pairwise CWM trait combinations together with their $95\%$ credible region, what we define in the publication as the most likely CWM combination and envelop of possible CWM combinations. This is done by the function `ellipse_plot`, that takes as input the model `m`, the focal environmental variable `indexGradient` and the two focal traits `indexTrait`, using the names of environmental variables and traits as specified in the column names of X and Y respectively. The function builds a gradient of the focal environmental variable while keeping all other variables fixed to their mean, and then predict and plots the joint distribution of the focal traits. The user can choose whether to obtain the full predictive distribution  (`FullPost=TRUE`), or the predictive distribution of the mean term (`FullPost=F`, which we advice here to obtain smoother curves).
@@ -104,6 +114,7 @@ ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient = "GDD")
 
 
 The user can also choose to fix the non-focal environmental variables to another value. For example, we can obtain the partial response curves of the most likely CWM combination and envelop of possible CWM combinations of SLA and GDD in forest.
+
 ```{r}
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
 ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD", FixX = list(GDD = NULL, FDD = NULL, forest = 1))
@@ -117,6 +128,7 @@ The `jtdm` package allows to define a region in the community-trait space and co
 joint_trait_prob(m, indexTrait = c("SLA","LNC"), Xnew = X["VCHA_2940",], bounds = list(c(20,Inf),c(20,Inf)))$PROBmean
 
 ```
+
 Unsurprisingly, the probability is low. Then, we compute how this probability vary along the GDD gradient using the function `joint_trait_prob_gradient`. The function builts a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values) and predict the joint probabilities along the gradient.
 ``` {r}
 joint = joint_trait_prob_gradient(m, indexTrait = c("SLA","LNC"), 

@@ -14,11 +14,13 @@ navbar:
 reference:
 - title: Run jtdm
   desc: |
-    Set of functions run and get model parameters a joint trait distribution model using conjugate posteriors.
+    Set of functions run, plot and get model parameters a joint trait distribution model using conjugate posteriors.
   contents:
   - "jtdm_fit"
   - "getB"
   - "get_sigma"
+  - "summary.jtdm_fit"
+  - "plot.jtdm_fit"
 - title: Marginal predictions and evaluate model fit
   desc: |
     Set of functions to predict single trait distribution, evaluate model fit and plot partial response curves
