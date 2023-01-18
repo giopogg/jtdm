@@ -22,6 +22,7 @@ In this vignette we explain how to fit, evaluate and interpret a joint trait dis
 ## Installing the R package
 
 ```{r,warning=FALSE,results='hide',message=FALSE}
+rm(list = ls())
 library(devtools)
 install_github("giopogg/jtdm")
 library(jtdm)

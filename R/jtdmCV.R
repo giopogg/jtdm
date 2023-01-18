@@ -37,7 +37,7 @@ jtdmCV = function(m, K = 5,
   }else{index <- sample(1:K,size=data$n,replace=TRUE,prob=rep(data$n/K,K))}
 
 
-  ntot = dim(m$model$B)[3]
+  ntot = sample
   preds = array(dim=c(data$n,data$J,ntot))
   RMSE = R2 = matrix(nrow=K,ncol=data$J)
 

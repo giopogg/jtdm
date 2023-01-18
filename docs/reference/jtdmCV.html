@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">jtdm</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1-0</span>
       </span>
     </div>
 
@@ -60,15 +60,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdmCV</span><span class="op">(</span></span>
-<span>  <span class="va">m</span>,</span>
-<span>  K <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  adapt <span class="op">=</span> <span class="fl">200</span>,</span>
-<span>  burnin <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>  sample <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>  n.chains <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  partition <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdmCV</span><span class="op">(</span><span class="va">m</span>, K <span class="op">=</span> <span class="fl">5</span>, sample <span class="op">=</span> <span class="fl">1000</span>, partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,8 +73,8 @@
 <dd><p>The number of folds of the K-fold cross validation</p></dd>
 
 
-<dt>adapt, burnin, sample, n.chains</dt>
-<dd><p>Parameters of the MCMC sampler. See <code>?run.jags</code> for details</p></dd>
+<dt>sample</dt>
+<dd><p>Number of samples from the posterior distribution. Since we sample from the exact posterior distribution, the number of samples is relative lower than MCMC samplers. As a rule of thumb, 1000 samples should provide correct inference.</p></dd>
 
 
 <dt>partition</dt>
@@ -119,65 +111,13 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span>  </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>  </span></span>
-<span class="r-in"><span><span class="co"># Short MCMC to obtain a fast example: results are unreliable !</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>,  adapt <span class="op">=</span> <span class="fl">1</span>,  </span></span>
-<span class="r-in"><span>        burnin <span class="op">=</span> <span class="fl">10</span>,  </span></span>
-<span class="r-in"><span>        sample <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>  </span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Extending 10 iterations for pD/DIC estimates...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>,  sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>  </span></span>
 <span class="r-in"><span><span class="co"># Run 3-fold cross validation on m</span></span></span>
-<span class="r-in"><span><span class="va">pred</span> <span class="op">=</span> <span class="fu">jtdmCV</span><span class="op">(</span><span class="va">m</span>, K<span class="op">=</span><span class="fl">5</span>, adapt <span class="op">=</span> <span class="fl">1</span>, burnin <span class="op">=</span> <span class="fl">10</span>, sample <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
+<span class="r-in"><span><span class="va">pred</span> <span class="op">=</span> <span class="fu">jtdmCV</span><span class="op">(</span><span class="va">m</span>, K<span class="op">=</span><span class="fl">5</span>, sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fold  1  out of  5 </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fold  2  out of  5 </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fold  3  out of  5 </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fold  4  out of  5 </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Cannot produce meaningful summary statistics with less than 100 samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Compiling rjags model...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calling the simulation using the rjags method...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note: the model did not require adaptation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Burning in the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running the model for 10 iterations...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simulation complete</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finished running the simulation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fold  5  out of  5 </span>
 </code></pre></div>
     </div>
@@ -193,7 +133,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
