@@ -23,9 +23,11 @@ In this vignette we explain how to fit, evaluate and interpret a joint trait dis
 ## Installing the R package
 
 ```{r,warning=FALSE,results='hide',message=FALSE}
-rm(list = ls())
-library(devtools)
-install_github("giopogg/jtdm")
+## CRAN
+#install.packages('jtdm', repos = "http://cran.us.r-project.org")
+## Github
+#library(devtools)
+#install_github("giopogg/jtdm")
 library(jtdm)
 library(ggplot2)
 ```
@@ -80,7 +82,7 @@ plot(m)
 
 We can predict CWM traits on a (new) set of sites using `jtdm_predict`. Here, we predict on the training dataset and compute goodness of fit measures of these predictions like $R^2$ and RMSE, by setting `validation=TRUE`. We can choose whether to obtain the full posterior predictive distribution (`FullPost=TRUE` which is more time consuming) or just its posterior mean (`FullPost=FALSE`, which we advice if the aim is to only compute goodness of fit measures).
 ```{r}
-predictions = jtdm_predict(m, Xnew = X, Ynew = Y,validation = T, FullPost = F)
+predictions = jtdm_predict(m, Xnew = X, Ynew = Y,validation = T)
 predictions$R2
 predictions$RMSE
 ```
@@ -102,7 +104,8 @@ partial_response(m, indexGradient = "GDD",indexTrait = "SLA")$p
 
 The user can eventually provide a given gradient for the focal environmental variable `XFocal` (which is otherwise built on regular grid with length given by `grid.length`). The user can also choose to fix the non focal environmental variables to another value. For example, we can obtain the partial response curve of SLA and GDD in forest
 ```{r}
-partial_response(m, indexGradient = "GDD", indexTrait = "SLA", FixX = list(GDD = NULL, FDD = NULL, forest = 1))$p
+partial_response(m, indexGradient = "GDD", indexTrait = "SLA",
+                 FixX = list(GDD = NULL, FDD = NULL, forest = 1))$p
 ```
 
 ## Multivariate confidence intervals
@@ -119,7 +122,8 @@ The user can also choose to fix the non-focal environmental variables to another
 
 ```{r}
 # plot the pairwise SLA-LNC partial response curve along the GDD gradient
-ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD", FixX = list(GDD = NULL, FDD = NULL, forest = 1))
+ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD",
+             FixX = list(GDD = NULL, FDD = NULL, forest = 1))
 ```
 
 ## Joint predictions
@@ -127,7 +131,9 @@ ellipse_plot(m, indexTrait = c("SLA","LNC"), indexGradient="GDD", FixX = list(GD
 The `jtdm` package allows to define a region in the community-trait space and compute their joint probabilities for a given set of environmental conditions. This is done by the function `joint_trait_prob`. To define a given region in the community-trait space, the user has to define the focal traits `indexTrait` (any number of traits is accepted) and trait-specific thresholds through the parameter `bounds`. `bounds` is a list of the length of `indexTrait`, where each element of the list is a vector of length two. The vector represents the inferior and superior bounds of the region for the specified trait. For example, if we consider two traits (e.g. SLA and LNC), `bounds=list(c(20,Inf),c(20,Inf))` corresponds to the region in the community-trait space where both SLA and LNC both take values greater than 20. We can then define the sites (i.e. the set of environmental conditions) in which to compute joint probabilities. For example we can compute joint probabilities of both SLA and LNC to be greater than 20 in a high altitude site. This measures the relative suitability of communities where both SLA and LNC are higher than 20 in a high altitude site.
 
 ```{r}
-joint_trait_prob(m, indexTrait = c("SLA","LNC"), Xnew = X["VCHA_2940",], bounds = list(c(20,Inf),c(20,Inf)))$PROBmean
+joint_trait_prob(m, indexTrait = c("SLA","LNC"), Xnew = X["VCHA_2940",],
+                 bounds = list(c(20,Inf),c(20,Inf)),
+                 FullPost = TRUE)$PROBmean
 
 ```
 
@@ -135,9 +141,9 @@ Unsurprisingly, the probability is low. Then, we compute how this probability va
 ``` {r}
 joint = joint_trait_prob_gradient(m, indexTrait = c("SLA","LNC"), 
                                   indexGradient = "GDD",
-                                  bounds = list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+                                  bounds = list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
+                                  FullPost = TRUE)
 ```
-
 
 We can then plot such predictions.
 

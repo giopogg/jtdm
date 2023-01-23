@@ -56,7 +56,7 @@ plot.jtdm_fit = function(x, ...){
   # Reproduce code from ggcorrplot
   
   corr = base::round(x = Sigma_plot, digits = 2)
-  corr[which(lower.tri(corr, diag = F) == FALSE)] = NA
+  corr[which(lower.tri(corr, diag = FALSE) == FALSE)] = NA
   corr <- reshape2::melt(corr, na.rm = TRUE)
   colnames(corr) <- c("Var1", "Var2", "value")
   label <- corr[, "value"]

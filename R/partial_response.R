@@ -28,39 +28,43 @@
 #' @import ggplot2
 #' @importFrom stats quantile
 #' @importFrom utils globalVariables
-partial_response = function(m, indexGradient, indexTrait, XFocal = NULL, grid.length=200,FixX=NULL, FullPost="mean"){
-
+partial_response = function(m, indexGradient, indexTrait, XFocal = NULL,
+                            grid.length = 200,FixX = NULL, FullPost = "mean"){
+  
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = which(colnames(m$Y) == indexTrait)
-
+  
   if(FullPost==FALSE){stop("FullPost cannon be set to FALSE in partial_response.")}
   if(!is.null(FixX)){if(!identical(names(FixX), colnames(m$X_raw))) {stop("Provide FixX as a list with the same names of X")}}
   if(!is.null(FixX[[names(FixX)[indexGradient]]])) {stop("FixX of the focal environmental variable must be NULL")}
-
+  
   if( !is.null(indexTrait)){if( indexTrait > ncol(m$Y)){stop("index is not available")}}
   if( indexGradient > ncol(m$X)){stop("index is not available")}
-
+  
   data=list(Y=m$Y, X=m$X, K=ncol(m$X), J=ncol(m$Y), n=nrow(m$Y), df= ncol(m$Y), I=diag(ncol(m$Y)),  X_raw = m$X_raw)
-
+  
   #Build XGradient matrix
   if(is.null(XFocal)){
-    XGradientFocal=  seq(from=min(data$X_raw[,indexGradient]),to=max(data$X_raw[,indexGradient]),length.out=grid.length)
-  }else{XGradientFocal = XFocal
-  grid.length = nrow(XFocal)
+    XGradientFocal = seq(from = min(data$X_raw[,indexGradient]),
+                         to = max(data$X_raw[,indexGradient]),
+                         length.out = grid.length)
+  }else{
+    XGradientFocal = XFocal
+    grid.length = nrow(XFocal)
   }
-
-  XGradient_new = matrix(nrow=grid.length,ncol=ncol(data$X_raw))
-
+  
+  XGradient_new = matrix(nrow = grid.length, ncol = ncol(data$X_raw))
+  
   for(j in 1:ncol(data$X_raw)){
-
+    
     if(j == indexGradient){
-
+      
       XGradient_new[,j] = XGradientFocal
-
+      
     }else{
-
+      
       if(!is.null(FixX[[colnames(data$X_raw)[j]]])){
         XGradient_new[,j] = FixX[[colnames(data$X_raw)[j]]]
       }else{
@@ -68,21 +72,21 @@ partial_response = function(m, indexGradient, indexTrait, XFocal = NULL, grid.le
       }
     }
   }
-
-
+  
+  
   colnames(XGradient_new) = colnames(m$X_raw)
-
+  
   PartialPredictions = jtdm_predict(m=m,Xnew=XGradient_new, FullPost=FullPost)
-
-
+  
+  
   table = data.frame(x = XGradientFocal, Predmean = PartialPredictions$PredMean[,indexTrait],
                      Pred975 = PartialPredictions$Predq975[,indexTrait],
                      Pred025 = PartialPredictions$Predq025[,indexTrait])
-
+  
   p = ggplot() + geom_line(data=table, aes(x=x, y=Predmean),col="#00BFC4") +
     geom_ribbon(data=table, aes(x=x,y=Predmean,ymin=Pred025,ymax=Pred975),alpha=0.3) + geom_rug(data=data.frame(x=data$X_raw[,indexGradient]),aes(x=x),sides="b") +
     ggtitle("Partial response curve ") + xlab(colnames(data$X_raw)[indexGradient]) + ylab(colnames(data$Y)[indexTrait]) + theme_minimal()
-
+  
   return(list(p=p,predictions=table))
-
+  
 }

@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Alpine_grasslands.html">Alpine grasslands</a>
+      <a href="../articles/ORCHAMP_dataset.html">Alpine grasslands</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -60,7 +60,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdm_fit</span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">formula</span>, sample <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">jtdm_fit</span><span class="op">(</span><span class="va">Y</span>, <span class="va">X</span>, <span class="va">formula</span>, sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -114,7 +114,7 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span>  </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>  </span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">jtdm_fit</span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>  </span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu">jtdm_fit</span><span class="op">(</span>Y <span class="op">=</span> <span class="va">Y</span>, X <span class="op">=</span> <span class="va">X</span>, formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>  </span></span>
 </code></pre></div>
     </div>
   </div>

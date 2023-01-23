@@ -32,7 +32,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/Alpine_grasslands.html">Alpine grasslands</a>
+      <a href="../articles/ORCHAMP_dataset.html">Alpine grasslands</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -68,7 +68,7 @@
 <span>  grid.length <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  XFocal <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  FixX <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  FullPost <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  FullPost <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -105,11 +105,11 @@
 
 
 <dt>FullPost</dt>
-<dd><p>If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.</p></dd>
+<dd><p>If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities, thus allowing the computation of credible intervals. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.</p></dd>
 
 
 <dt>samples</dt>
-<dd><p>Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)</p></dd>
+<dd><p>Optional, default to NULL, only works when FullPost=FALSE. Defines the number of samples to compute the posterior distribution of joint probabilities. Needs to be between 1 the total number of samples drawn from the posterior distribution.</p></dd>
 
 
 <dt>parallel</dt>
@@ -138,31 +138,34 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function is time consuming when <code>FullPost=T</code>. Consider setting <code>parallel=T</code> and/or to set <code>samples</code> to a value smaller than the length of the MCMC chains.</p>
+    <p>This function is time consuming when <code>FullPost = TRUE</code>. Consider setting <code>parallel = TRUE</code> and/or to set <code>samples</code> to a value smaller than the total number of posterior samples.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span>  </span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>  </span></span>
-<span class="r-in"><span><span class="co">#We sample only few samples from the posterior in order to reduce </span></span></span>
-<span class="r-in"><span><span class="co">#the computational time of the examples.</span></span></span>
-<span class="r-in"><span><span class="co">#Increase the number of samples to obtain robust results</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y<span class="op">=</span><span class="va">Y</span>, X<span class="op">=</span><span class="va">X</span>, formula<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>,  sample <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>  </span></span>
+<span class="r-in"><span><span class="co"># We sample only few samples from the posterior in order to reduce </span></span></span>
+<span class="r-in"><span><span class="co"># the computational time of the examples.</span></span></span>
+<span class="r-in"><span><span class="co"># Increase the number of samples to obtain robust results</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="jtdm_fit.html">jtdm_fit</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="va">Y</span>, X <span class="op">=</span> <span class="va">X</span>, formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">as.formula</a></span><span class="op">(</span><span class="st">"~GDD+FDD+forest"</span><span class="op">)</span>,  sample <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>  </span></span>
 <span class="r-in"><span><span class="co"># Compute probability of SLA and LNC to be joint-high at sites in the studies</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compute the joint probability of SLA and LNC </span></span></span>
-<span class="r-in"><span>  <span class="co">#to be joint-high along the GDD gradient</span></span></span>
-<span class="r-in"><span><span class="va">joint</span> <span class="op">=</span> <span class="fu">joint_trait_prob_gradient</span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>                                  indexGradient<span class="op">=</span><span class="st">"GDD"</span>,</span></span>
-<span class="r-in"><span>                                  bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># to be joint-high along the GDD gradient</span></span></span>
+<span class="r-in"><span><span class="va">joint</span> <span class="op">=</span> <span class="fu">joint_trait_prob_gradient</span><span class="op">(</span><span class="va">m</span>,indexTrait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                  indexGradient <span class="op">=</span> <span class="st">"GDD"</span>,</span></span>
+<span class="r-in"><span>                                  bounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  FullPost <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                  </span></span>
 <span class="r-in"><span><span class="co"># Compute the joint probability of SLA and LNC to be joint-high along the</span></span></span>
 <span class="r-in"><span><span class="co"># GDD gradient when forest = 1 (i.e. in forests) </span></span></span>
-<span class="r-in"><span><span class="va">joint</span> <span class="op">=</span> <span class="fu">joint_trait_prob_gradient</span><span class="op">(</span><span class="va">m</span>,indexTrait<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                  indexGradient<span class="op">=</span><span class="st">"GDD"</span>,</span></span>
-<span class="r-in"><span>                                  bounds<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                                  FixX<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>GDD<span class="op">=</span><span class="cn">NULL</span>,FDD<span class="op">=</span><span class="cn">NULL</span>,forest<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>                     </span></span>
+<span class="r-in"><span><span class="va">joint</span> <span class="op">=</span> <span class="fu">joint_trait_prob_gradient</span><span class="op">(</span><span class="va">m</span>, indexTrait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SLA"</span>,<span class="st">"LNC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  indexGradient <span class="op">=</span> <span class="st">"GDD"</span>,</span></span>
+<span class="r-in"><span>                                  bounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span>,<span class="st">"SLA"</span><span class="op">]</span><span class="op">)</span>,<span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  FixX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>GDD <span class="op">=</span> <span class="cn">NULL</span>, FDD <span class="op">=</span> <span class="cn">NULL</span>, forest <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  FullPost <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

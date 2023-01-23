@@ -7,6 +7,9 @@
     <loc>https://giopogg.github.io/jtdm/articles/Alpine_grasslands.html</loc>
   </url>
   <url>
+    <loc>https://giopogg.github.io/jtdm/articles/ORCHAMP_dataset.html</loc>
+  </url>
+  <url>
     <loc>https://giopogg.github.io/jtdm/articles/index.html</loc>
   </url>
   <url>
@@ -59,5 +62,11 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/jtdm/reference/partial_response.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/jtdm/reference/plot.jtdm_fit.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/jtdm/reference/summary.jtdm_fit.html</loc>
   </url>
 </urlset>

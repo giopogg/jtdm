@@ -20,13 +20,13 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
+#' m = jtdm_fit(Y = Y, X = X, formula = as.formula("~GDD+FDD+forest"), sample = 1000)  
 #' @importFrom stats model.frame model.matrix rWishart coef
 #' @importFrom mniw rMT riwish
 
-jtdm_fit = function(Y, X, # ! X must not contain the intercept column too !,
+jtdm_fit = function(Y, X,
                 formula,
-                sample = 5000
+                sample = 1000
                 ){
 
   if(nrow(Y) != nrow(X)) stop("The number of lines of X and Y do not coincide")

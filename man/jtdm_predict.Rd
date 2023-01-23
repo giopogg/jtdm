@@ -9,7 +9,7 @@ jtdm_predict(
   Xnew = NULL,
   Ynew = NULL,
   validation = FALSE,
-  FullPost = TRUE
+  FullPost = "mean"
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ jtdm_predict(
 
 \item{validation}{boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.}
 
-\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=FALSE, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}).}
+\item{FullPost}{The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution, the credible intervals are thus the predictive credible interval. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}), i.e., classical credible intervals. If FullPost=FALSE, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}), i.e., no credible intervals.}
 }
 \value{
 A list containing:
@@ -44,7 +44,7 @@ To obtain a full assessment of the posterior distribution, the function should b
 \examples{
 data(Y)  
 data(X)  
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
+m = jtdm_fit(Y = Y, X = X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 # marginal predictions of traits in the sites of X
 pred = jtdm_predict(m)
 }

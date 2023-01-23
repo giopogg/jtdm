@@ -4,7 +4,7 @@
 \alias{jtdm_fit}
 \title{Fitting joint trait distribution models}
 \usage{
-jtdm_fit(Y, X, formula, sample = 5000)
+jtdm_fit(Y, X, formula, sample = 1000)
 }
 \arguments{
 \item{Y}{The sites x traits matrix containing community (weighted) means of each trait at each site.}
@@ -35,5 +35,5 @@ A formula has an implied intercept term. To remove this use either y ~ x - 1 or 
 \examples{
 data(Y)  
 data(X)  
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
+m = jtdm_fit(Y = Y, X = X, formula = as.formula("~GDD+FDD+forest"), sample = 1000)  
 }

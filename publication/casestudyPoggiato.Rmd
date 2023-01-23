@@ -9,27 +9,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.path='Fig/')
 
 # Case study Poggiato et al. In prep.
 
-In this R markdown we reproduce the case study of the publication Poggiato et al., In preparation,  "Joint models and predictions of community traits". In this code we use a previous version of the R package \code{jtdm}, whose functions have been coded in the R script 'JTDM_functions.R'. See https://giopogg.github.io/jtdm/ for a full description of the R package. In this previous version we relied on JAGS to sample from the posterior distribution
-
-# Installing JAGS
-
-### R-package
-The package implements JTDMs using the Markov Chain Monte Carlo (MCMC) Bayesian modeling software JAGS via the R package runjags. Therefore, it requires the installation of JAGS. Its installation is easy and depends on your operating system:
-
-
-##### Ubutntu
-sudo apt-get install jags
-
-
-##### Windows
-https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/
-
-
-##### Mac
-https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Mac%20OS%20X/
-
-Once JAGS has been installed, the following code should run:
-
+In this R markdown we reproduce the case study of the publication Poggiato et al., In preparation,  "Joint models and predictions of community traits". See https://giopogg.github.io/jtdm/ for a full description of the R package.
 
 ```{r,warning=FALSE,message=FALSE,results='hide',eval=TRUE}
 library(devtools)
@@ -38,7 +18,7 @@ library(coda)
 library(gridExtra)
 library(ggpubr)
 library(raster)
-install_github("matthewkling/colormap")
+#install_github("matthewkling/colormap")
 library(colormap)
 library(tidyr)
 library(runjags)
@@ -49,32 +29,29 @@ library(parallel)
 library(arm)
 library(ggforce)
 
-
-# Source JTDM functions
-source("JTDM_functions.R")
+# Install jtdm
+#install_github("giopogg/jtdm")
+library(jtdm)
 ```
+## Model fitting
 
-Load the dataset and run the model
+Load the dataset and run the model.
 
 ```{r, warning=FALSE,message=FALSE,results='hide'}
-load("X.rda") #env variables
-load("Y.rda") #site x CWM traits matrix
+data(X) #env variables
+data(Y) #site x CWM traits matrix
 
 formula=as.formula("~poly(GDD,2)+poly(FDD,2)+poly(GDD,2):forest+poly(FDD,2):forest")
 
 
-# Run the model. We reduced the number of samples to ensure a fast compilation of the vignette. To obtain the results of the publication, we set adapt = 5000, burnin = 10000, sample = 10000.
+# Run the model. We reduced the number of samples to ensure a fast compilation of the vignette. 
 m = jtdm_fit(Y=Y, X=X, 
-               formula=formula,
-               adapt = 500, burnin = 1000, sample = 1000)
+               formula=formula, sample = 1000)
 ```
-Check for convergence of the MCMC chain (Figure A2 in the publication)
 
-```{r, warning=FALSE}
-table=data.frame(x=gelman.diag(m$model$mcmc,multivariate = FALSE)$psrf[,1])
-ggplot(data = table, aes(x=x)) + geom_histogram(color="darkblue", fill="lightblue",bins = 20) +
-  ggtitle("Potential scale reduction factor") + xlab("") + ylab("nESS") + theme_minimal() + theme(plot.title = element_text(hjust = 0.5))
-```
+Since we are drawing $iid$ samples from the posterior distribution, we do not need to do classical MCMC convergence checks.
+
+## Model evaluation
 
 Obtain $R2$ of the predictions both in-sample and in cross validation (values of Table A1 in the publication)
 
@@ -83,11 +60,9 @@ prediction = jtdm_predict(m=m, Xnew=X, Ynew= Y, validation = T, FullPost = F)
 
 #R2 of in-sample predictions
 prediction$R2
-```
 
-```{r, include=FALSE}
 # We reduced the number of samples to ensure a fast compilation of the vignette. To obtain the results of the publication, we set adapt = 5000, burnin = 10000, sample = 10000.
-CV = jtdmCV(m, K=5, adapt = 500, burnin = 1000, sample = 1000)
+CV = jtdmCV(m, K=5, sample = 1000)
 
 #R2 of 5-fold cross validation
 CV$R2
@@ -99,7 +74,7 @@ Compute the regression coefficients and plot effect sizes (Figure A3)
 # get the regression coefficient matrix
 B = getB(m  =  m)
 
-# compute standardised effect sizez
+# compute standardised regression coefficients
 B_stand = B
 for(i in 1:nrow(B$Bsamples)){
   for(j in 2:ncol(B$Bsamples))
@@ -250,11 +225,11 @@ for(t in 1:(ncol(X)-1)){ #for each env covariate
 
 ```
 
-Build partial response plots for joint probabilities along all gradients, for all pairwise probabilities and for each of the four regions (joint-high, joint-low, disjoint). This corresponds to figures 4b, 5b, A6.
+Build partial response plots for joint probabilities along all gradients, for all pairwise probabilities and for each of the four regions (joint-high, joint-low, disjoint). This corresponds to figures 4b, 5b, A6. Set `parallel = TRUE` to reduce computational time.
 
 ```{r, warnings=FALSE}
 
-# This loop is quite long, it might take more than 1h depending on how long are the MCMC chains and whether you set parallel=T or not. In order for this to run faster, you can specify a lower number of mcmc.samples using the parameter mcmc.samples in the function joint_trait_prob_gradient.
+# This loop is quite long, it might take more than 1h depending on how many are the posterior samples and whether you set parallel = TRUE or not. In order for this to run faster, you can specify a lower number of mcmc.samples using the parameter mcmc.samples in the function joint_trait_prob_gradient.
 
 # For each environmental variable (except habitat that is a dummy variable)
 for(s in 1:(ncol(X)-1)){
@@ -294,7 +269,7 @@ for(s in 1:(ncol(X)-1)){
                                                      indexGradient=colnames(m$X_raw)[s], 
                                                      bounds=bounds, grid.length=100,
                                                      FixX = list(GDD=NULL,FDD=NULL,forest=0),
-                                                     FullPost=T,parallel = TRUE)
+                                                     FullPost = TRUE, parallel = TRUE) 
           
          JointCo_occGrad[,c(paste0(k,l,".mean"),
                             paste0(k,l,".975"),
@@ -427,7 +402,7 @@ X.df=apply(X.df,MARGIN=c(1,2),FUN=as.numeric)
 Predict the marginal value of each trait.
 ```{r}
 # We only take the posterior mean
-AlpPred=as.data.frame(jtdm_predict(m=m, Xnew=X.df, Ynew = NULL, validation = F, FullPost=F)$PredMean)
+AlpPred=as.data.frame(jtdm_predict(m=m, Xnew=X.df, Ynew = NULL, validation = FALSE, FullPost = FALSE)$PredMean)
 head(AlpPred)
 
 AlpPred[,"Id"]=rownames(AlpPred)
@@ -456,7 +431,10 @@ AlpPredXY.col=data.frame(AlpPredXY,col=colors3d(AlpPredXY[,c("SLA","LNC","Height
 ggplot(AlpPredXY.col, aes(x=x,y=y)) + theme_classic()+
       geom_raster(aes(fill=as.factor(col))) +
       theme(legend.position="none")  +
-      eval(parse(text=paste0("scale_fill_manual(values=c(",paste(paste0('"',unique(AlpPredXY.col$col),'"',"=",'"',unique(AlpPredXY.col$col),'"'),collapse = ","),"))")))
+      eval(parse(text=paste0("scale_fill_manual(values=c(",
+                             paste(paste0('"', unique(AlpPredXY.col$col), '"',"=",'"',
+                                          unique(AlpPredXY.col$col),'"'),
+                                   collapse = ","),"))")))
 
 ```
 
@@ -479,28 +457,28 @@ for(i in 1:(ncol(Y)-1)){
         #print(paste0(i,j,k,l)) # uncomment to see the code updating
 
         # Define bounds of the region
-        if(k=="P"){b1=c(mean(Y[,i]) , Inf)}else{b1=c(-Inf,mean(Y[,i]))}
-        if(l=="P"){b2=c(mean(Y[,j]) , Inf)}else{b2=c(-Inf,mean(Y[,j]))}
+        if(k=="P"){b1 = c(mean(Y[,i]) , Inf)}else{b1 = c(-Inf,mean(Y[,i]))}
+        if(l=="P"){b2 = c(mean(Y[,j]) , Inf)}else{b2 = c(-Inf,mean(Y[,j]))}
         bounds=list(b1,b2) #bounds define the region in the community-trait space
 
         JointCo_occProb[,paste0("JointProb_",
                                 colnames(Y)[i],
                                 "_",colnames(Y)[j],
                                 "_",k,l)] = joint_trait_prob(m,
-                                                             indexTrait=colnames(m$Y)[c(i,j)],
-                                                             Xnew=Xnew, 
-                                                             bounds=bounds,
-                                                             FullPost = F)$PROBmean
+                                                             indexTrait = colnames(m$Y)[c(i,j)],
+                                                             Xnew = Xnew, 
+                                                             bounds = bounds,
+                                                             FullPost = FALSE)$PROBmean
 
       }
     }
   }
 }
 
-JointCo_occProb=JointCo_occProb[,-1]
-JointCo_occProb[,"Id"]=rownames(JointCo_occProb)
+JointCo_occProb = JointCo_occProb[,-1]
+JointCo_occProb[,"Id"] = rownames(JointCo_occProb)
 
-env_alp_stack_pred.df=merge(env_alp_stack_pred.df,JointCo_occProb,by="Id",all.x=T)
+env_alp_stack_pred.df = merge(env_alp_stack_pred.df, JointCo_occProb, by = "Id", all.x = T)
 
 for(i in 1:(ncol(Y)-1)){
   for(j in (i+1):ncol(Y)){

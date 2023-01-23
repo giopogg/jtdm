@@ -4,7 +4,7 @@
 #' @param m a model fitted with \code{jtdm_fit}
 #' @param indexTrait  A vector of the two names (as specified in the column names of Y) containing the two (or more!) traits we want to compute the community level strategy of.
 #' @param indexGradient The name (as specified in the column names of X) of the focal variable.
-#' @param FullPost   If FullPost = TRUE, the function returns samples from the predictive distribution of joint probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters.
+#' @param FullPost If FullPost = TRUE, the function returns samples from the predictive distribution of joint probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters.
 #' @param grid.length The number of points along the gradient of the focal variable. Default to 20 (which ensures a fair visualization).
 #' @param FixX Optional. A parameter to specify the value to which non-focal variables are fixed. This can be useful for example if we have some categorical variables (e.g. forest vs meadows) and we want to obtain the partial response curve for a given value of the variable. It has to be a list of the length and names of the columns of X. For example, if the columns of X are "MAT","MAP","Habitat" and we want to fix "Habitat" to 1, then FixX=list(MAT=NULL,MAP=NULL,Habitat=1.). Default to NULL.
 #' @param confL The confidence level of the confidence ellipse (i.e. of the envelop of possible community-level strategies). Default is 0.95.
@@ -25,15 +25,17 @@
 #' @importFrom stats qchisq
 #' @import ggplot2
 #' @importFrom ggforce geom_ellipse
-ellipse_plot = function(m, indexGradient, indexTrait, FullPost=FALSE, grid.length=20, FixX=NULL, confL= 0.95){
+ellipse_plot = function(m, indexGradient, indexTrait, FullPost = FALSE, grid.length = 20, FixX = NULL, confL = 0.95){
 
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
   indexGradient = which(colnames(m$X_raw) == indexGradient)
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
 
-  if(!is.null(FixX)){if(!identical(names(FixX), colnames(m$X_raw))) {stop("Provide FixX as a list with the same names of X")}}
-  if(!is.null(FixX[[names(FixX)[indexGradient]]])) {stop("FixX of the focal environmental variable must be NULL")}
+  if(!is.null(FixX)){if(!identical(names(FixX), colnames(m$X_raw))) {
+    stop("Provide FixX as a list with the same names of X")}}
+  if(!is.null(FixX[[names(FixX)[indexGradient]]])) {
+    stop("FixX of the focal environmental variable must be NULL")}
 
 
   if(length(indexGradient)>1) {stop("indexGradient has to be a scalar")}
@@ -45,7 +47,6 @@ ellipse_plot = function(m, indexGradient, indexTrait, FullPost=FALSE, grid.lengt
 
   #create gradient of one variable
   XGradientFocal =  seq(from=min(data$X_raw[,indexGradient]),to=max(data$X_raw[,indexGradient]),length.out=grid.length)
-
 
   XGradient_new = matrix(nrow=grid.length,ncol=ncol(data$X_raw))
 

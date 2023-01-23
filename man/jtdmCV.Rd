@@ -33,7 +33,7 @@ Run K-fold cross validation predictions of the model m on a specified dataset.
 \examples{
 data(Y)  
 data(X)  
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 1000)  
+m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)  
 # Run 3-fold cross validation on m
-pred = jtdmCV(m, K=5, sample = 1000)
+pred = jtdmCV(m, K = 5, sample = 1000)
 }

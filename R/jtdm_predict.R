@@ -5,7 +5,7 @@
 #' @param Xnew optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used
 #' @param validation  boolean parameter to decide whether we want to compute goodness of fit measures. If true, then Ynew is needed.
 #' @param Ynew   Optional. The observed response variables at sites specified in Xnew. It is used to compute goodness of fit metrics when validation= T.
-#' @param FullPost   The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}). If FullPost=FALSE, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}). 
+#' @param FullPost   The type of predictions to be obtain. If FullPost = TRUE, the function returns samples from the predictive distribution, the credible intervals are thus the predictive credible interval. If FullPost="mean", the function computes the posterior distribution of the regression term \eqn{BXnew}), i.e., classical credible intervals. If FullPost=FALSE, the function only returns the posterior mean of the regression term (\eqn{BmeanXnew}), i.e., no credible intervals. 
 #' @details To obtain a full assessment of the posterior distribution, the function should be ran with FullPost=TRUE, although this can be time consuming. FullPost="mean" is used to compute partial response curves, while FullPost=FALSE is used to compute goodness of fit metrics.
 #' @export
 #' @return A list containing:
@@ -21,12 +21,12 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
+#' m = jtdm_fit(Y = Y, X = X, formula=as.formula("~GDD+FDD+forest"), sample = 1000)
 #' # marginal predictions of traits in the sites of X
 #' pred = jtdm_predict(m)
 #' @importFrom stats model.frame model.matrix quantile cor 
 #' @importFrom mniw rmNorm
-jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = FALSE, FullPost = TRUE){
+jtdm_predict = function(m = m, Xnew = NULL, Ynew = NULL, validation = FALSE, FullPost = "mean"){
 
   if(!inherits(m, "jtdm_fit")) stop("m is not an object of class jtdm_fit")
   
@@ -45,8 +45,8 @@ jtdm_predict = function(m=m, Xnew=NULL, Ynew = NULL, validation = FALSE, FullPos
 
   ###### trasform Xnew with formula
   Xnew_raw = Xnew
-  Xnew=model.frame(m$mt,as.data.frame(Xnew))
-  Xnew=model.matrix(m$mt,Xnew)
+  Xnew = model.frame(m$mt,as.data.frame(Xnew))
+  Xnew = model.matrix(m$mt,Xnew)
 
   ### Compute predictions
   if(FullPost != FALSE){

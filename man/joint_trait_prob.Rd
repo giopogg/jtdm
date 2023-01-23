@@ -9,7 +9,7 @@ joint_trait_prob(
   indexTrait,
   bounds,
   Xnew = NULL,
-  FullPost = TRUE,
+  FullPost = FALSE,
   samples = NULL,
   parallel = FALSE
 )
@@ -23,11 +23,11 @@ joint_trait_prob(
 
 \item{Xnew}{Optionally, a data frame in which to look for variables with which to predict. If omitted, the fitted linear predictors are used.}
 
-\item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
+\item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities, thus allowing the computation of credible intervals. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
 
-\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of posterior samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
+\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of posterior samples to compute the posterior distribution of joint probabilities. Needs to be between 1 the total number of samples drawn from the posterior distribution.}
 
-\item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
+\item{parallel}{Optional, only works when \code{FullPost = TRUE}. When \code{parallel = TRUE}, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
 \value{
 A list containing:
@@ -41,7 +41,7 @@ A list containing:
 Computes the joint probability of CWM traits in regions in the community-trait space specified by bounds and in sites specified in Xnew.
 }
 \details{
-This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
+This function is time consuming when \code{FullPost = TRUE}. Consider setting \code{parallel = TRUE} and/or to set \code{samples} to a value smaller than the total number of posterior samples .
 }
 \examples{
 data(Y)  
@@ -49,8 +49,9 @@ data(X)
 #We sample only few samples from the posterior in order to reduce
 # the computational time of the examples.
 #Increase the number of samples to obtain robust results
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"), sample = 10)  
+m = jtdm_fit(Y = Y, X = X, formula = as.formula("~GDD+FDD+forest"), sample = 10)  
 # Compute probability of SLA and LNC to be joint-high at sites in the studies
-joint = joint_trait_prob(m,indexTrait=c("SLA","LNC"),
-                         bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+joint = joint_trait_prob(m, indexTrait = c("SLA","LNC"),
+                         bounds = list(c(mean(Y[,"SLA"]),Inf), c(mean(Y[,"SLA"]),Inf)),
+                         FullPost = TRUE)
 }

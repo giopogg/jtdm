@@ -8,10 +8,10 @@
 #' @param grid.length The number of points along the gradient of the focal variable. Default to 200.
 #' @param XFocal Optional. A gradient of the focal variable provided by the user. If provided, the function will used this gradient instead of building a regular one. Default to NULL.
 #' @param FixX Optional. A parameter to specify the value to which non-focal variables are fixed. This can be useful for example if we have some categorical variables (e.g. forest vs meadows) and we want to obtain the partial response curve for a given value of the variable. It has to be a list of the length and names of the columns of X. For example, if the columns of X are "MAT","MAP","Habitat" and we want to fix "Habitat" to 1, then FixX=list(MAT=NULL,MAP=NULL,Habitat=1.). Default to NULL.
-#' @param FullPost If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.
-#' @param samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)
+#' @param FullPost If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities, thus allowing the computation of credible intervals. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.
+#' @param samples Optional, default to NULL, only works when FullPost=FALSE. Defines the number of samples to compute the posterior distribution of joint probabilities. Needs to be between 1 the total number of samples drawn from the posterior distribution.
 #' @param parallel Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.
-#' @details This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
+#' @details This function is time consuming when \code{FullPost = TRUE}. Consider setting \code{parallel = TRUE} and/or to set \code{samples} to a value smaller than the total number of posterior samples.
 #' @export
 #' @return A list containing:
 #'    \item{GradProbssamples}{Sample from the posterior distribution of the joint probability along the gradient. It is a vector whose length is the number of posterior samples. NULL if FullPost=FALSE. }
@@ -25,30 +25,33 @@
 #' @examples
 #' data(Y)  
 #' data(X)  
-#' #We sample only few samples from the posterior in order to reduce 
-#' #the computational time of the examples.
-#' #Increase the number of samples to obtain robust results
-#' m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 10)  
+#' # We sample only few samples from the posterior in order to reduce 
+#' # the computational time of the examples.
+#' # Increase the number of samples to obtain robust results
+#' m = jtdm_fit(Y = Y, X = X, formula = as.formula("~GDD+FDD+forest"),  sample = 10)  
 #' # Compute probability of SLA and LNC to be joint-high at sites in the studies
 #'
 #' # Compute the joint probability of SLA and LNC 
-#'   #to be joint-high along the GDD gradient
-#' joint = joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), 
-#'                                   indexGradient="GDD",
-#'                                   bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+#' # to be joint-high along the GDD gradient
+#' joint = joint_trait_prob_gradient(m,indexTrait = c("SLA","LNC"), 
+#'                                   indexGradient = "GDD",
+#'                                   bounds = list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
+#'                                   FullPost = TRUE)
+#'                                   
 #' # Compute the joint probability of SLA and LNC to be joint-high along the
 #' # GDD gradient when forest = 1 (i.e. in forests) 
-#' joint = joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"),
-#'                                   indexGradient="GDD",
-#'                                   bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
-#'                                   FixX=list(GDD=NULL,FDD=NULL,forest=1))
-#'                      
+#' joint = joint_trait_prob_gradient(m, indexTrait = c("SLA","LNC"),
+#'                                   indexGradient = "GDD",
+#'                                   bounds = list(c(mean(Y[,"SLA"]),Inf), c(mean(Y[,"SLA"]),Inf)),
+#'                                   FixX = list(GDD = NULL, FDD = NULL, forest = 1),
+#'                                   FullPost = TRUE)
+#'
 #' @importFrom stats quantile 
 #' @importFrom parallel mclapply detectCores
 
 joint_trait_prob_gradient = function(m, indexTrait, 
                                      indexGradient, bounds, grid.length = 200, XFocal = NULL,
-                                     FixX = NULL, FullPost = T, samples = NULL, parallel = FALSE){
+                                     FixX = NULL, FullPost = FALSE, samples = NULL, parallel = FALSE){
   
   indexTrait = sapply(indexTrait,function(x){which(colnames(m$Y) %in% x )})
   indexGradient = which(colnames(m$X_raw) == indexGradient)
@@ -57,7 +60,7 @@ joint_trait_prob_gradient = function(m, indexTrait,
   
   ntot = dim(m$model$B)[3] #samples * n.chains
   if(is.null(samples)){ samples = ntot }
-  if(samples > ntot){stop("You need to provide a number of mcmc samples lower than the length of the chain given by m$model$sample*length(m$model$mcmc)")}
+  if(samples > ntot){stop("You need to provide a number of samples lower than the number of samples of the posterior distribution (parameter `sample` used in `jtdm_fit`")}
   if(FullPost == "mean"){stop("Fullstop cannot be set to mean here.")}
   if(length(indexTrait) != length(bounds)){stop("index and bounds have different lengths!!")}
   if(length(indexGradient) > 1) {stop("indexGradient has to be a numerical value")}
@@ -93,24 +96,23 @@ joint_trait_prob_gradient = function(m, indexTrait,
   GradProbs = matrix(nrow=grid.length,ncol=ntot)
   # Loop on every row of X
   if(FullPost){
+    
     GradProbs = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
-                                 Xnew=XGradient, bounds=bounds, FullPost=T, 
+                                 Xnew = XGradient, bounds = bounds, FullPost = TRUE, 
                                  samples = samples, parallel = parallel)$PROBsamples
-    GradProbs_hat = apply(GradProbs,mean,MARGIN=1)
+    GradProbs_hat = apply(GradProbs, mean, MARGIN=1)
     GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
     GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
     
   }else{
+    
     GradProbs_hat = joint_trait_prob(m, indexTrait = colnames(m$Y)[indexTrait],
                                      Xnew = XGradient, bounds = bounds, FullPost = FALSE)$PROBmean
     GradProbs_975 = GradProbs_025 = NULL
   }
   
-  
-  GradProbs_hat =  apply(GradProbs,mean,MARGIN=1)
-  GradProbs_975 = apply( GradProbs, quantile, MARGIN=1,0.975)
-  GradProbs_025 = apply( GradProbs, quantile, MARGIN=1,0.025)
+
   list(GradProbssamples = GradProbs, GradProbsmean=GradProbs_hat,
-       GradProbsq025=GradProbs_025,GradProbsq975=GradProbs_975,gradient=XGradientFocal)
+       GradProbsq025 = GradProbs_025,GradProbsq975 = GradProbs_975, gradient = XGradientFocal)
   
 }

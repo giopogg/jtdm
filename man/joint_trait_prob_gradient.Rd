@@ -12,7 +12,7 @@ joint_trait_prob_gradient(
   grid.length = 200,
   XFocal = NULL,
   FixX = NULL,
-  FullPost = T,
+  FullPost = FALSE,
   samples = NULL,
   parallel = FALSE
 )
@@ -32,9 +32,9 @@ joint_trait_prob_gradient(
 
 \item{FixX}{Optional. A parameter to specify the value to which non-focal variables are fixed. This can be useful for example if we have some categorical variables (e.g. forest vs meadows) and we want to obtain the partial response curve for a given value of the variable. It has to be a list of the length and names of the columns of X. For example, if the columns of X are "MAT","MAP","Habitat" and we want to fix "Habitat" to 1, then FixX=list(MAT=NULL,MAP=NULL,Habitat=1.). Default to NULL.}
 
-\item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
+\item{FullPost}{If FullPost = TRUE, the function returns samples from the predictive distribution of joint  probabilities, thus allowing the computation of credible intervals. If FullPost= FALSE, joint probabilities are computed only using the posterior mean of the parameters. FullPost cannot be equal to "mean" here.}
 
-\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of MCMC samples to compute the posterior distribution of joint probabilities. Needs to be between 1 and m$model$sample x length(m$model$mcmc)}
+\item{samples}{Optional, default to NULL, only works when FullPost=FALSE. Defines the number of samples to compute the posterior distribution of joint probabilities. Needs to be between 1 the total number of samples drawn from the posterior distribution.}
 
 \item{parallel}{Optional, only works when FullPost = TRUE. When TRUE, the function uses mclapply to parallelise the calculation of the posterior distribution joint probabilities.}
 }
@@ -51,27 +51,30 @@ A list containing:
 Computes the partial responses curves of joint probability of CWM traits as a function of a focal variable. The regions in which joint probabilities are computed are specified by bounds. In order to build the response curve, the function builds a dataframe where the focal variable varies along a gradient and the other (non-focal) variables are fixed to their mean (but see FixX parameter for fixing non-focal variables to user-defined values). Then, uses joint_trait_prob to compute the joint probability in these dataset.
 }
 \details{
-This function is time consuming when \code{FullPost=T}. Consider setting \code{parallel=T} and/or to set \code{samples} to a value smaller than the length of the MCMC chains.
+This function is time consuming when \code{FullPost = TRUE}. Consider setting \code{parallel = TRUE} and/or to set \code{samples} to a value smaller than the total number of posterior samples.
 }
 \examples{
 data(Y)  
 data(X)  
-#We sample only few samples from the posterior in order to reduce 
-#the computational time of the examples.
-#Increase the number of samples to obtain robust results
-m = jtdm_fit(Y=Y, X=X, formula=as.formula("~GDD+FDD+forest"),  sample = 10)  
+# We sample only few samples from the posterior in order to reduce 
+# the computational time of the examples.
+# Increase the number of samples to obtain robust results
+m = jtdm_fit(Y = Y, X = X, formula = as.formula("~GDD+FDD+forest"),  sample = 10)  
 # Compute probability of SLA and LNC to be joint-high at sites in the studies
 
 # Compute the joint probability of SLA and LNC 
-  #to be joint-high along the GDD gradient
-joint = joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"), 
-                                  indexGradient="GDD",
-                                  bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)))
+# to be joint-high along the GDD gradient
+joint = joint_trait_prob_gradient(m,indexTrait = c("SLA","LNC"), 
+                                  indexGradient = "GDD",
+                                  bounds = list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
+                                  FullPost = TRUE)
+                                  
 # Compute the joint probability of SLA and LNC to be joint-high along the
 # GDD gradient when forest = 1 (i.e. in forests) 
-joint = joint_trait_prob_gradient(m,indexTrait=c("SLA","LNC"),
-                                  indexGradient="GDD",
-                                  bounds=list(c(mean(Y[,"SLA"]),Inf),c(mean(Y[,"SLA"]),Inf)),
-                                  FixX=list(GDD=NULL,FDD=NULL,forest=1))
-                     
+joint = joint_trait_prob_gradient(m, indexTrait = c("SLA","LNC"),
+                                  indexGradient = "GDD",
+                                  bounds = list(c(mean(Y[,"SLA"]),Inf), c(mean(Y[,"SLA"]),Inf)),
+                                  FixX = list(GDD = NULL, FDD = NULL, forest = 1),
+                                  FullPost = TRUE)
+
 }
