@@ -9,10 +9,9 @@ Giovanni Poggiato
 
 ## About the method
 
-The package jtdm implements the method described in Poggiato et al., in
-prep. Joint models and predictions of community traits. The code for
-producing the results in this paper is available under the subfolder
-publications in this repo.
+The package jtdm implements the method described in Poggiato et
+al. (2023) <doi:10.1111/geb.13706>. The code for producing the results
+of the paper is available in the subfolder publications in this repo.
 
 ## Installing the R package
 
@@ -64,7 +63,7 @@ plot(m)
 
 ![](man/figures/unnamed-chunk-4-1.png)<!-- -->
 
-###Trait-environment relationships
+\###Trait-environment relationships
 
 Single-trait trait-environment relationships
 
@@ -115,6 +114,9 @@ And we plot it.
 
     ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
     ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](man/figures/unnamed-chunk-9-1.png)<!-- -->
 
@@ -127,5 +129,5 @@ This package is currently developed by Giovanni Poggiato from
 Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The
 framework implemented in this package is described in: Joint modeling
 and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre,
-Martinez Almoyna, Camille, Deschamps, Gabrielle, Renaud, Julien, Violle,
-Cyrille, Münkemüller, Tamara, Thuiller, Wilfried. In preparation.
+Martinez Almoyna Camille, Deschamps Gabrielle, Renaud Julien, Violle
+Cyrille, Münkemüller Tamara, Thuiller Wilfried. In preparation.

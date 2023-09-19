@@ -23,7 +23,10 @@ knitr::opts_chunk$set(
 
 ## About the method
 
-The package jtdm implements the method described in Poggiato et al., in prep. Joint models and predictions of community traits. The code for producing the results in this paper is available under the subfolder publications in this repo.
+
+The package jtdm implements the method described in Poggiato et al. (2023) <doi:10.1111/geb.13706>. The code for
+producing the results of the paper is available in the subfolder
+publications in this repo.
 
 ## Installing the R package
 

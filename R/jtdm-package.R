@@ -1,12 +1,12 @@
 #' jtdm.
 #'
-#' Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. In prep.
+#' Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. 2023 Global ecology and biogeography
 #'
-#'
-#' @docType package
-#'
-#'
-#' @name jtdm
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 NULL
 
 #' Site x environmental covariates dataset
