@@ -1,7 +1,7 @@
 Package: jtdm
 Type: Package
 Title: Joint Modelling of Functional Traits
-Version: 0.1-0
+Version: 0.1-1
 Description: Fitting and analyzing a Joint Trait Distribution Model. The Joint Trait Distribution Model is implemented in the Bayesian framework using conjugate priors and posteriors, thus guaranteeing fast inference. In particular the package computes joint probabilities and multivariate confidence intervals, and enables the investigation of how they depend on the environment through partial response curves. The method implemented by the package is described in Poggiato et al. (2023) <doi:10.1111/geb.13706>.
 License: GPL-3
 Encoding: UTF-8

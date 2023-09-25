@@ -1,4 +1,10 @@
+
+
 ## Resubmission
+This is a resubmission. In this new version I have changed the syntax of the jtdm-package.R file, fixed minor bug and included a reference to the published methodological paper.
+
+## Previous submissions
+
 This is a resubmission. After the manual check by the CRAN's team, I:
 
 * Removed redundant terms in the description of the DECRIPTION file
