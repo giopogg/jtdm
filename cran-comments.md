@@ -3,6 +3,10 @@
 ## Resubmission
 This is a resubmission. In this new version I have changed the syntax of the jtdm-package.R file, fixed minor bug and included a reference to the published methodological paper.
 
+## R CMD check results
+
+0 errors | 0 warnings | 0 note
+
 ## Previous submissions
 
 This is a resubmission. After the manual check by the CRAN's team, I:
