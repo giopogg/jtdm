@@ -7,10 +7,10 @@
     <loc>https://giopogg.github.io/jtdm/articles/Alpine_grasslands.html</loc>
   </url>
   <url>
-    <loc>https://giopogg.github.io/jtdm/articles/ORCHAMP_dataset.html</loc>
+    <loc>https://giopogg.github.io/jtdm/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://giopogg.github.io/jtdm/articles/index.html</loc>
+    <loc>https://giopogg.github.io/jtdm/articles/ORCHAMP_dataset.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/jtdm/authors.html</loc>
@@ -20,12 +20,6 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/jtdm/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/jtdm/reference/X.html</loc>
-  </url>
-  <url>
-    <loc>https://giopogg.github.io/jtdm/reference/Y.html</loc>
   </url>
   <url>
     <loc>https://giopogg.github.io/jtdm/reference/ellipse_plot.html</loc>
@@ -49,6 +43,9 @@
     <loc>https://giopogg.github.io/jtdm/reference/joint_trait_prob_gradient.html</loc>
   </url>
   <url>
+    <loc>https://giopogg.github.io/jtdm/reference/jtdm-package.html</loc>
+  </url>
+  <url>
     <loc>https://giopogg.github.io/jtdm/reference/jtdm.html</loc>
   </url>
   <url>
@@ -68,5 +65,11 @@
   </url>
   <url>
     <loc>https://giopogg.github.io/jtdm/reference/summary.jtdm_fit.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/jtdm/reference/X.html</loc>
+  </url>
+  <url>
+    <loc>https://giopogg.github.io/jtdm/reference/Y.html</loc>
   </url>
 </urlset>

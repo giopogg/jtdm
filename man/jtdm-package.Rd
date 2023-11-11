@@ -6,7 +6,7 @@
 \alias{jtdm-package}
 \title{jtdm.}
 \description{
-Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. In prep.
+Package to fit a Join Trait Distribution Model and to analyse its result to understand and predict the community-level strategy. See Poggiato et al. 2023 Global ecology and biogeography
 }
 \seealso{
 Useful links:

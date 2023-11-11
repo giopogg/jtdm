@@ -30,6 +30,8 @@ jtdm_fit = function(Y, X,
                 ){
 
   if(nrow(Y) != nrow(X)) stop("The number of lines of X and Y do not coincide")
+  if(!all(sapply(X, is.numeric))) stop("X contains non-numerical values")
+  if(!all(sapply(Y, is.numeric))) stop("Y contains non-numerical values")
   
   X_raw = X
   X=model.frame(formula,as.data.frame(X))

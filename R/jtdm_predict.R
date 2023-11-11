@@ -59,7 +59,7 @@ jtdm_predict = function(m = m, Xnew = NULL, Ynew = NULL, validation = FALSE, Ful
     
     for(i in 1: dim(B)[3]){
       if(FullPost == TRUE){
-        temp_pred = rmNorm(nrow(Xnew), Xnew %*% t(B[,,1]), Sigma[,,i])
+        temp_pred = rmNorm(nrow(Xnew), Xnew %*% t(B[,,i]), Sigma[,,i])
         rownames(temp_pred) = rownames(Xnew)
         Predictions[,,i] = temp_pred
       }else{
