@@ -51,7 +51,7 @@ plot.jtdm_fit = function(x, ...){
   
   Sigma_sign = ifelse(sign(Sigma$Sq025)==sign(Sigma$Sq975),1,0)
   Sigma_plot = cov2cor(Sigma$Smean) * Sigma_sign
-  colnames(Sigma_plot) = rownames(Sigma_plot) = colnames(Y)
+  colnames(Sigma_plot) = rownames(Sigma_plot) = colnames(m$Y)
   
   # Reproduce code from ggcorrplot
   
