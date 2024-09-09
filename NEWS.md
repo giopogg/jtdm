@@ -1,4 +1,8 @@
 #  jtdm 0.1-2
+Modified sampling of the regression coefficient matrix B
+
+
+#  jtdm 0.1-2
 Included checks on the input data
 
 

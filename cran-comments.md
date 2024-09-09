@@ -1,8 +1,18 @@
 
+
 ## Resubmission
-This is a resubmission. In this new version I have included additional checks on the input data to prevent errors.
+This is a resubmission. In this new version I modified the parameter definition in the function to sample from 
+the regression coefficient matrix B. 
 
 ## R CMD check results
+
+0 errors | 0 warnings | 0 note
+
+
+### Resubmission
+This is a resubmission. In this new version I have included additional checks on the input data to prevent errors.
+
+### R CMD check results
 
 0 errors | 0 warnings | 0 note
 

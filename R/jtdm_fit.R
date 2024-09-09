@@ -44,9 +44,10 @@ jtdm_fit = function(Y, X,
   # Define prior hyperparameters
   n = data$n
   q = data$K
-  p = nu = data$df
+  p = data$df
+  nu = data$df
   B_0 = matrix(0, nrow = p, ncol = q)
-  D = diag(q)*10^4
+  D = diag(q)*10^(4)
   Q = diag(ncol(Y)) # Probably needs to play
    
   #########################################################################################################
@@ -58,12 +59,19 @@ jtdm_fit = function(Y, X,
   G = Q + t(Y)%*%Y + B_0 %*% solve(D) %*% t(B_0) - (t(Y) %*% X + B_0 %*% solve(D)) %*% solve(solve(D) + t(X) %*% X) %*% t(t(Y) %*% X + B_0 %*% solve(D))
   
   # Sample B
-  B = rMT(n = sample,
-      Lambda = B_bar,
-      SigmaC = solve(df_post * (solve(D) + t(X) %*% X)),
-      SigmaR = G,
-      nu = df_post)
+  # Careful Here! The matrix-t distribution implemented in mniw is not parametrised as the one
+  # Described in Rowe 2002. In particular:
+  # The degrees of freedom nu = nu_Rowe + n -1
+  # The between column matrix (Phi in Rowe) : SigmaC = (vu_Rowe)*Phi_Rowe = (vu - n + 1)*Phi_Rowe
+  # Where n = number of rows of B
   
+  B = rMT(n = sample,
+          Lambda = B_bar,
+          SigmaC = solve((solve(D) + t(X) %*% X)),
+          SigmaR = G,
+          nu = df_post - p + 1)
+  
+
   # Posterior hyperparameters of Sigma
   nu_post = n + nu
   Sigma = riwish(sample,
