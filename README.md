@@ -127,7 +127,6 @@ probability of having high values of both traits increases.
 
 This package is currently developed by Giovanni Poggiato from
 Laboratoire d’Ecologie Alpine. It is supported by the ANR GAMBAS. The
-framework implemented in this package is described in: Joint modeling
-and predictions of community traits. Poggiato Giovanni, Gaüzere Pierre,
-Martinez Almoyna Camille, Deschamps Gabrielle, Renaud Julien, Violle
-Cyrille, Münkemüller Tamara, Thuiller Wilfried. In preparation.
+framework implemented in this package is described in: Predicting
+combinations of community mean traits using joint modelling, Poggiato et
+al. (2023) <doi:10.1111/geb.13706>
