@@ -71,7 +71,7 @@ And we can plot the regression coefficients and the residual covariance matrix
 plot(m)
 ```
 
-###Trait-environment relationships
+### Trait-environment relationships
 
 Single-trait trait-environment relationships
 ``` {r}
@@ -80,7 +80,6 @@ partial_response(m, indexGradient="GDD", indexTrait="SLA",
 ```
 
 ### Joint trait-environment relationships
- 
  
 Partial response curve of the most suitable community-level strategy and envelop of possible community-level strategies of SLA and LNC along the GDD gradient.
 

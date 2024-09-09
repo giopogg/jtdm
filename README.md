@@ -63,7 +63,7 @@ plot(m)
 
 ![](man/figures/unnamed-chunk-4-1.png)<!-- -->
 
-\###Trait-environment relationships
+### Trait-environment relationships
 
 Single-trait trait-environment relationships
 
